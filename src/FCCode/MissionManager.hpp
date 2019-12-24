@@ -14,16 +14,8 @@ class MissionManager : public TimedControlTask<void> {
    protected:
     void dispatch_startup();
     void dispatch_detumble();
-    void dispatch_initialization_hold();
-    void dispatch_follower();
-    void dispatch_follower_close_approach();
-    void dispatch_standby();
-    void dispatch_leader_close_approach();
-    void dispatch_docking();
-    void dispatch_docked();
-    void dispatch_paired();
-    void dispatch_spacejunk();
-    void dispatch_safehold();
+    void dispatch_belly_flop();
+    void dispatch_landed();
 
     // Fields required for control of ADCS subsystem.
     /**

@@ -34,36 +34,6 @@ void MissionManager::execute() {
         case mission_mode_t::detumble:
             dispatch_detumble();
             break;
-        case mission_mode_t::initialization_hold:
-            dispatch_initialization_hold();
-            break;
-        case mission_mode_t::follower:
-            dispatch_follower();
-            break;
-        case mission_mode_t::follower_close_approach:
-            dispatch_follower_close_approach();
-            break;
-        case mission_mode_t::standby:
-            dispatch_standby();
-            break;
-        case mission_mode_t::leader_close_approach:
-            dispatch_leader_close_approach();
-            break;
-        case mission_mode_t::docking:
-            dispatch_docking();
-            break;
-        case mission_mode_t::docked:
-            dispatch_docked();
-            break;
-        case mission_mode_t::paired:
-            dispatch_paired();
-            break;
-        case mission_mode_t::spacejunk:
-            dispatch_spacejunk();
-            break;
-        case mission_mode_t::safehold:
-            dispatch_safehold();
-            break;
         default:
             printf(debug_severity::error, "Master state not defined: %d\n", static_cast<unsigned int>(mode));
             mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::safehold));
@@ -74,6 +44,18 @@ void MissionManager::execute() {
 void MissionManager::dispatch_startup() {
     // For now, do absolutely nothing. Wait for the startup controller to
     // bring us out of this mode.
+
+    //exit startup if g in the z axis isn't 9.81 anymore
+    //make sure any handling at this point won't mess up PID
+    //or cause any saturation
+}
+
+void MissionManager::dispatch_belly_flop() {
+    //actuate as you would during belly flop
+}
+
+void MissionManager::dispatch_landed() {
+    //dump data from registry to SD Card
 }
 
 void MissionManager::dispatch_detumble() {
@@ -85,45 +67,4 @@ void MissionManager::dispatch_detumble() {
         adcs_mode_fp->set(static_cast<unsigned int>(adcs_mode_t::point_standby));
         mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::standby));
     }
-}
-
-void MissionManager::dispatch_initialization_hold() {
-    // TODO
-}
-
-void MissionManager::dispatch_follower() {
-    
-    // TODO
-}
-
-void MissionManager::dispatch_follower_close_approach() {
-    // TODO
-}
-
-void MissionManager::dispatch_standby() {
-    // TODO
-}
-
-void MissionManager::dispatch_leader_close_approach() {
-    // TODO
-}
-
-void MissionManager::dispatch_docking() {
-    // TODO
-}
-
-void MissionManager::dispatch_docked() {
-    // TODO
-}
-
-void MissionManager::dispatch_paired() {
-    // TODO
-}
-
-void MissionManager::dispatch_spacejunk() {
-    // TODO
-}
-
-void MissionManager::dispatch_safehold() {
-    // TODO
 }

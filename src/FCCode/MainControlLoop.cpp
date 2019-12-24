@@ -18,4 +18,12 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
 void MainControlLoop::execute() {
     clock_manager.execute();
     mission_manager.execute_on_time();
+
+
+
+
+
+
+
+    
 }
