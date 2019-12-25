@@ -1,8 +1,5 @@
 #include "../StateFieldRegistryMock.hpp"
 
-//#include <cmath>
-//#include <math.h>
-
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
     
@@ -35,7 +32,7 @@ class TestFixture {
 
             // initialize pointers to statefields
             //lin_acc_vec_fp = registry.find_readable_field_t<f_vector_t>("adcs_monitor.rwa_speed_rd");
-            linear_acc_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.linear_acc");
+            linear_acc_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.linear_acc_vec");
             acc_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.acc_vec");
             grav_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.grav_vec");
             euler_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.euler_vec");
@@ -55,7 +52,7 @@ void printEvent(const sensors_event_t event) {
     Serial.println();
     Serial.print(event.type);
     double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
-    if (event.type == SENSOR_TYPE_ACCELEROMETER) {
+    if (event.type == SENSOR_TYPE_ACCELEROMETER || event.type == SENSOR_TYPE_LINEAR_ACCELERATION) {
         x = event.acceleration.x;
         y = event.acceleration.y;
         z = event.acceleration.z;
@@ -76,18 +73,19 @@ void printEvent(const sensors_event_t event) {
         z = event.gyro.z;
     }
     
-    //these just check that the values were read to something
-    //please use something else for sanity check, eyes?
-    TEST_ASSERT_NOT_EQUAL(-1000000, x);
-    TEST_ASSERT_NOT_EQUAL(-1000000, y);
-    TEST_ASSERT_NOT_EQUAL(-1000000, z);
-
     Serial.print(": x= ");
     Serial.print(x);
     Serial.print(" | y= ");
     Serial.print(y);
     Serial.print(" | z= ");
     Serial.println(z);
+
+    //these just check that the values were read to something
+    //please use something else for sanity check, eyes?
+    TEST_ASSERT_NOT_EQUAL(-1000000, x);
+    TEST_ASSERT_NOT_EQUAL(-1000000, y);
+    TEST_ASSERT_NOT_EQUAL(-1000000, z);
+
 }
 
 void test_task_initialization()
