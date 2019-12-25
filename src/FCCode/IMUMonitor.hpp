@@ -1,5 +1,6 @@
-// #ifndef IMU_MONITOR_HPP_
-// #define IMU_MONITOR_HPP_
+#ifndef IMU_MONITOR_HPP_
+#define IMU_MONITOR_HPP_
+#pragma once
 
 #include "TimedControlTask.hpp"
 
@@ -59,4 +60,4 @@ protected:
  
 };
 
-//#endif
+#endif
