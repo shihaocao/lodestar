@@ -30,9 +30,6 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
 
 void IMUMonitor::execute(){
 
-    //create internal container to dump data
-    f_vector_t euler_angle_read;
-
     //linear_acc_vec is acceleration without gravity
     sensors_event_t linear_acc_vec,
         //acc_vec includes gravity
