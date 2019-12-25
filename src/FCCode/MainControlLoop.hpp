@@ -7,6 +7,7 @@
 
 #include "ClockManager.hpp"
 #include "FieldCreatorTask.hpp"
+#include "IMUMonitor.hpp"
 #include "MissionManager.hpp"
 
 class MainControlLoop : public ControlTask<void> {
@@ -14,12 +15,18 @@ class MainControlLoop : public ControlTask<void> {
     FieldCreatorTask field_creator_task;
     ClockManager clock_manager;
 
+    Adafruit_BNO055 imu;
+    IMUMonitor imu_monitor;
+
+    MissionManager mission_manager;
+
+
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
     // https://cornellprod-my.sharepoint.com/:x:/r/personal/saa243_cornell_edu/_layouts/15/Doc.aspx?sourcedoc=%7B04C55BBB-7AED-410B-AC43-67352393D6D5%7D&file=Flight%20Software%20Cycle.xlsx&action=default&mobileredirect=true&cid=e2b9bd89-7037-47bf-ad2a-fd8b25808939
         static constexpr unsigned int debug_task_offset          =   5500;
         static constexpr unsigned int piksi_control_task_offset  =  55000;
-        static constexpr unsigned int adcs_monitor_offset        =  70500;
+        static constexpr unsigned int imu_monitor_offset         =  70500;
         static constexpr unsigned int attitude_estimator_offset  =  85500;
         static constexpr unsigned int gomspace_controller_offset = 106500;
         static constexpr unsigned int uplink_consumer_offset     = 111500;
@@ -28,9 +35,9 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int downlink_producer_offset   = 153400;
         static constexpr unsigned int quake_manager_offset       = 153500;
     #else
-        static constexpr unsigned int debug_task_offset          =   5500;
-        static constexpr unsigned int piksi_control_task_offset  =   6000;
-        static constexpr unsigned int adcs_monitor_offset        =  20500;
+        static constexpr unsigned int debug_task_offset          =   3000;
+        static constexpr unsigned int piksi_control_task_offset  =   4000;
+        static constexpr unsigned int imu_monitor_offset         =   5000;
         static constexpr unsigned int attitude_estimator_offset  =  35500;
         static constexpr unsigned int gomspace_controller_offset =  56500;
         static constexpr unsigned int uplink_consumer_offset     =  61500;
@@ -44,8 +51,6 @@ class MainControlLoop : public ControlTask<void> {
     /**
      * @brief Total memory use, in bytes.
      */
-
-    MissionManager mission_manager;
 
    public:
     /*
