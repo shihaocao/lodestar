@@ -8,6 +8,7 @@
 #include "ClockManager.hpp"
 #include "FieldCreatorTask.hpp"
 #include "IMUMonitor.hpp"
+#include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
 
 class MainControlLoop : public ControlTask<void> {
@@ -18,8 +19,11 @@ class MainControlLoop : public ControlTask<void> {
     Adafruit_BNO055 imu;
     IMUMonitor imu_monitor;
 
+    LEDControlTask led_control_task;
+
     MissionManager mission_manager;
 
+    
 
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
@@ -42,6 +46,7 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int gomspace_controller_offset =  56500;
         static constexpr unsigned int uplink_consumer_offset     =  61500;
         static constexpr unsigned int mission_manager_offset     =  61600;
+        static constexpr unsigned int led_control_task_offset    =  80000;
         static constexpr unsigned int docking_controller_offset  = 103400;
         static constexpr unsigned int downlink_producer_offset   = 104400;
         static constexpr unsigned int quake_manager_offset       = 104500;
