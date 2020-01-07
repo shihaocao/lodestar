@@ -58,6 +58,7 @@ void MissionManager::dispatch_landed() {
     //dump data from registry to SD Card
 }
 
+//lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin
 void MissionManager::dispatch_detumble() {
     mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::detumble));
     adcs_mode_fp->set(static_cast<unsigned int>(adcs_mode_t::detumble));
