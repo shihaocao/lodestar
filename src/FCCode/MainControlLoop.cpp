@@ -8,6 +8,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       clock_manager(registry, PAN::control_cycle_time),
       imu(55, 0x28),
       imu_monitor(registry, imu_monitor_offset, imu),
+      bmp_monitor(registry, bmp_monitor_offset, bmp),
       led_control_task(registry, led_control_task_offset),
       mission_manager(registry, mission_manager_offset) // This item is initialized last so it has access to all state fields
 {
@@ -21,6 +22,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
 void MainControlLoop::execute() {
     clock_manager.execute();
     imu_monitor.execute_on_time();
+    bmp_monitor.execute_on_time();
     mission_manager.execute_on_time();
     led_control_task.execute_on_time();
     

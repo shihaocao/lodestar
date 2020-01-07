@@ -25,7 +25,9 @@ public:
     BMPMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BMP280& _bmp);
 
     /** BMP280 device */
-    Adafruit_BMP280 bmp;
+    Adafruit_BMP280& bmp;
+    Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
+    Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 
     /**
     * @brief Gets inputs from the BMP280 and dumps them into the state
@@ -37,13 +39,15 @@ protected:
 
     /**
     * @brief Inputs to get from BMP280
+    * 
+    * temp in degrees Celcius
+    * pressure in hPa
     */
     InternalStateField<sensors_event_t>
-        // temperature state field
+        /** temperature state field in degrees Celcius */
         temp_f, 
-        // pressure state field
+        /** pressure state field */
         pressure_f;
- 
-};
+ };
 
 #endif
