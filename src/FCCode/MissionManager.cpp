@@ -19,7 +19,7 @@ void MissionManager::execute() {
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
     switch(mode) {
         case mission_mode_t::warmup:
-            dispatch_startup();
+            dispatch_warmup();
             break;
         case mission_mode_t::initialization:
             dispatch_initialization();
@@ -38,7 +38,7 @@ void MissionManager::execute() {
             break;
         default:
             printf(debug_severity::error, "Master state not defined: %d\n", static_cast<unsigned int>(mode));
-            mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::safehold));
+            mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::landed));
             break;
     }
 }

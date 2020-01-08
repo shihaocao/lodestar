@@ -13,8 +13,9 @@ class TestFixture {
         StateFieldRegistryMock registry;
 
         // pointers to output statefields for easy access
-        InternalStateField<sensors_event_t>* temp_fp;
-        InternalStateField<sensors_event_t>* pressure_fp;
+        InternalStateField<float>* temp_fp;
+        InternalStateField<float>* pressure_fp;
+        InternalStateField<float>* altitude_fp;
 
         //pointer to control task
         std::unique_ptr<BMPMonitor> bmp_monitor;
@@ -27,9 +28,9 @@ class TestFixture {
             bmp_monitor = std::make_unique<BMPMonitor>(registry, 0, bmp);  
 
             // initialize pointers to statefields
-            //lin_acc_vec_fp = registry.find_readable_field_t<f_vector_t>("adcs_monitor.rwa_speed_rd");
-            temp_fp = registry.find_internal_field_t<sensors_event_t>("bmp.temp");
-            pressure_fp = registry.find_internal_field_t<sensors_event_t>("bmp.pressure");
+            temp_fp = registry.find_internal_field_t<float>("bmp.temp");
+            pressure_fp = registry.find_internal_field_t<float>("bmp.pressure");
+            altitude_fp = registry.find_internal_field_t<float>("bmp.altitude");
         }
 };
 
@@ -38,24 +39,6 @@ void elements_same(const std::array<float, 3> ref, const std::array<float, 3> ac
     TEST_ASSERT_FLOAT_WITHIN(0.001, ref[0], actual[0]);
     TEST_ASSERT_FLOAT_WITHIN(0.001, ref[1], actual[1]);
     TEST_ASSERT_FLOAT_WITHIN(0.001, ref[2], actual[2]);
-}
-
-void printEvent(const sensors_event_t& event) {
-    float x = -1000000.0f; //dumb values, easy to spot problem
-    if (event.type == SENSOR_TYPE_AMBIENT_TEMPERATURE) {
-        x = event.temperature;
-        Serial.printf("Temp (C): %f\n", x);
-    }
-    else if (event.type == SENSOR_TYPE_PRESSURE) {
-        x = event.pressure;
-        Serial.printf("Pressure (Pa): %f\n", x*BMPMonitor::hPa_to_Pa);
-
-    }
-    
-    //these just check that the values were read to something
-    //please use something else for sanity check, eyes?
-    TEST_ASSERT_NOT_EQUAL(-1000000, x);
-
 }
 
 void test_task_initialization()
@@ -68,8 +51,20 @@ void test_execute(){
 
     tf.bmp_monitor->execute();
 
-    printEvent(tf.temp_fp->get());
-    printEvent(tf.pressure_fp->get());
+    float read_temp = tf.temp_fp->get();
+    float read_pressure = tf.pressure_fp->get();
+    float read_altitude = tf.altitude_fp->get();
+
+    Serial.printf("Temp (C): %f\n", read_temp);
+    //assert within 10 degrees of 21 C for indoor testing lmao
+    TEST_ASSERT_FLOAT_WITHIN(10, 21, read_temp);
+
+    Serial.printf("Pressure (Pa): %f\n", read_pressure);
+    //assert within 1000 Pa of 101000 Pa?
+    TEST_ASSERT_FLOAT_WITHIN(1000, 101000, read_pressure);
+
+    Serial.printf("Altitude (m): %f\n", read_altitude);
+    TEST_ASSERT_FLOAT_WITHIN(500, 500, read_altitude);
 }
 
 int test_control_task()
