@@ -44,7 +44,10 @@ public:
 
     /** molar mass of Earth's air */
     static constexpr float big_M = 0.0289644;
-    
+
+    /** C to K offset */
+    static constexpr float C_to_K = 273.15; 
+
     /** BMP280 device */
     Adafruit_BMP280& bmp;
     Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
