@@ -11,6 +11,7 @@
 #include "BMPMonitor.hpp"
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
+#include "DownlinkControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
    protected:
@@ -25,9 +26,9 @@ class MainControlLoop : public ControlTask<void> {
 
     LEDControlTask led_control_task;
 
-    MissionManager mission_manager;
+    DownlinkControlTask downlink_control_task;
 
-    
+    MissionManager mission_manager; //initallized last
 
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
@@ -47,14 +48,10 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int piksi_control_task_offset  =   4000;
         static constexpr unsigned int imu_monitor_offset         =   5000;
         static constexpr unsigned int bmp_monitor_offset         =   6000;
-        static constexpr unsigned int attitude_estimator_offset  =  35500;
-        static constexpr unsigned int gomspace_controller_offset =  56500;
-        static constexpr unsigned int uplink_consumer_offset     =  61500;
-        static constexpr unsigned int mission_manager_offset     =  61600;
-        static constexpr unsigned int led_control_task_offset    =  80000;
-        static constexpr unsigned int docking_controller_offset  = 103400;
-        static constexpr unsigned int downlink_producer_offset   = 104400;
-        static constexpr unsigned int quake_manager_offset       = 104500;
+        static constexpr unsigned int mission_manager_offset     =  10000;
+        static constexpr unsigned int downlink_ct_offset         =  11000;
+        static constexpr unsigned int led_control_task_offset    =  20000;
+
         
     #endif
 

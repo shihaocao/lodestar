@@ -36,6 +36,7 @@ protected:
     //imu sensor event
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
+    InternalStateField<float>* altitude_fp;
  
 };
 

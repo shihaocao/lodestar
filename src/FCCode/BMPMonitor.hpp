@@ -25,7 +25,28 @@ public:
     BMPMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BMP280& _bmp);
 
     //hPa to Pa conversion
-    static constexpr float hPa_to_Pa = 100.0f;
+    static constexpr float hPa_to_Pa = 100.0;
+
+    /** Static pressure at sea level */
+    static constexpr float P_b = 101325.0;
+
+    /** Temperature lapse rate */
+    static constexpr float L_b = -0.0065;
+
+    /** Reference level for layer, we're always below 11000 m for lodestar lol */
+    static constexpr float h_b = 0.0;
+
+    /** Adjusted gas constant, see wikipedia */
+    static constexpr float R_star = 8.3144598;
+
+    /** gravity */
+    static constexpr float g_0 = 9.80665;
+
+    /** molar mass of Earth's air */
+    static constexpr float big_M = 0.0289644;
+
+    /** C to K offset */
+    static constexpr float C_to_K = 273.15; 
 
     /** BMP280 device */
     Adafruit_BMP280& bmp;
@@ -46,11 +67,13 @@ protected:
     * temp in degrees Celcius
     * pressure in hPa
     */
-    InternalStateField<sensors_event_t>
+    InternalStateField<float>
         /** temperature state field in degrees Celcius */
         temp_f, 
         /** pressure state field */
-        pressure_f;
+        pressure_f,
+        /** altitude statefield */
+        altitude_f;
  };
 
 #endif
