@@ -24,6 +24,9 @@ public:
      */
     BMPMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BMP280& _bmp);
 
+    //hPa to Pa conversion
+    static constexpr float hPa_to_Pa = 100.0f;
+
     /** BMP280 device */
     Adafruit_BMP280& bmp;
     Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
