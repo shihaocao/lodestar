@@ -8,6 +8,7 @@
 #include "ClockManager.hpp"
 #include "FieldCreatorTask.hpp"
 #include "IMUMonitor.hpp"
+#include "BMPMonitor.hpp"
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
 
@@ -18,6 +19,9 @@ class MainControlLoop : public ControlTask<void> {
 
     Adafruit_BNO055 imu;
     IMUMonitor imu_monitor;
+
+    Adafruit_BMP280 bmp;
+    BMPMonitor bmp_monitor;
 
     LEDControlTask led_control_task;
 
@@ -42,6 +46,7 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int debug_task_offset          =   3000;
         static constexpr unsigned int piksi_control_task_offset  =   4000;
         static constexpr unsigned int imu_monitor_offset         =   5000;
+        static constexpr unsigned int bmp_monitor_offset         =   6000;
         static constexpr unsigned int attitude_estimator_offset  =  35500;
         static constexpr unsigned int gomspace_controller_offset =  56500;
         static constexpr unsigned int uplink_consumer_offset     =  61500;
