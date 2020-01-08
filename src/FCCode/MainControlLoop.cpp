@@ -10,6 +10,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       imu_monitor(registry, imu_monitor_offset, imu),
       bmp_monitor(registry, bmp_monitor_offset, bmp),
       led_control_task(registry, led_control_task_offset),
+      downlink_control_task(registry, downlink_ct_offset),
       mission_manager(registry, mission_manager_offset) // This item is initialized last so it has access to all state fields
 {
     //setup I2C bus for Flight Controller
@@ -24,6 +25,7 @@ void MainControlLoop::execute() {
     imu_monitor.execute_on_time();
     bmp_monitor.execute_on_time();
     mission_manager.execute_on_time();
+    downlink_control_task.execute_on_time();
     led_control_task.execute_on_time();
     
 }
