@@ -31,36 +31,39 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
 void IMUMonitor::execute(){
 
     //linear_acc_vec is acceleration without gravity
-    sensors_event_t linear_acc_vec,
+    sensors_event_t linear_acc,
         //acc_vec includes gravity
-        acc_vec,
+        acc,
         //gravity vector
-        grav_vec,
+        grav,
         //orientation in euler angles
-        euler_vec,
+        euler,
         //gyroscope, angular acceleration vector
-        gyr_vec,
+        gyr,
         //magnetometer vector
-        mag_vec;
+        mag;
 
     //poll actual i2c device, and fill containers
-    imu.getEvent(&linear_acc_vec, Adafruit_BNO055::VECTOR_LINEARACCEL);
-    imu.getEvent(&acc_vec, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    imu.getEvent(&grav_vec, Adafruit_BNO055::VECTOR_GRAVITY);
-    imu.getEvent(&euler_vec, Adafruit_BNO055::VECTOR_EULER);
-    imu.getEvent(&gyr_vec, Adafruit_BNO055::VECTOR_GYROSCOPE);
-    imu.getEvent(&mag_vec, Adafruit_BNO055::VECTOR_MAGNETOMETER);
+    imu.getEvent(&linear_acc, Adafruit_BNO055::VECTOR_LINEARACCEL);
+    imu.getEvent(&acc, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    imu.getEvent(&grav, Adafruit_BNO055::VECTOR_GRAVITY);
+    imu.getEvent(&euler, Adafruit_BNO055::VECTOR_EULER);
+    imu.getEvent(&gyr, Adafruit_BNO055::VECTOR_GYROSCOPE);
+    imu.getEvent(&mag, Adafruit_BNO055::VECTOR_MAGNETOMETER);
 
     //IF THIS IS TOO SLOW, DELETE READ OPERATIONS OF ^VECTORS WE DON'T NEED
 
     //IF BELOW TOO SLOW, STOP USING SENSOR EVENTS YIKES
     //dump temporary containers into statefields
-    linear_acc_vec_f.set(f_vector_t({
-        linear_acc_vec.acceleration.x, 
-        linear_acc_vec.acceleration.y, 
-        linear_acc_vec.acceleration.z}));
+    
+    //f_vector_t linear_acc_vec;
 
-    linear_acc_vec_f.set(f_vector_t({
+    linear_acc_vec_f.set(f_vector_t{{
+        linear_acc.acceleration.x, 
+        linear_acc.acceleration.y, 
+        linear_acc.acceleration.z}});
+
+    acc_vec_f.set(f_vector_t({
         9.0f, 
         2.0f, 
         1.0f}));
@@ -71,11 +74,11 @@ void IMUMonitor::execute(){
     //     acc_vec.acceleration.z
     // });
 
-    // grav_vec_f.set(f_vector_t{
-    //     grav_vec.acceleration.x,
-    //     grav_vec.acceleration.y,
-    //     grav_vec.acceleration.z
-    // });
+    grav_vec_f.set(f_vector_t({
+        grav.acceleration.x,
+        grav.acceleration.y,
+        grav.acceleration.z
+    }));
 
     // euler_vec_f.set(f_vector_t{
     //     euler_vec.orientation.x,
