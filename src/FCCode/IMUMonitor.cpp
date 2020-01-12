@@ -55,38 +55,43 @@ void IMUMonitor::execute(){
 
     //IF BELOW TOO SLOW, STOP USING SENSOR EVENTS YIKES
     //dump temporary containers into statefields
-    linear_acc_vec_f.set(f_vector_t{
+    linear_acc_vec_f.set(f_vector_t({
         linear_acc_vec.acceleration.x, 
         linear_acc_vec.acceleration.y, 
-        linear_acc_vec.acceleration.z});
+        linear_acc_vec.acceleration.z}));
 
-    acc_vec_f.set(f_vector_t{
-        acc_vec.acceleration.x, 
-        acc_vec.acceleration.y, 
-        acc_vec.acceleration.z
-    });
+    linear_acc_vec_f.set(f_vector_t({
+        9.0f, 
+        2.0f, 
+        1.0f}));
 
-    grav_vec_f.set(f_vector_t{
-        grav_vec.acceleration.x,
-        grav_vec.acceleration.y,
-        grav_vec.acceleration.z
-    });
+    // acc_vec_f.set(f_vector_t{
+    //     acc_vec.acceleration.x, 
+    //     acc_vec.acceleration.y, 
+    //     acc_vec.acceleration.z
+    // });
 
-    euler_vec_f.set(f_vector_t{
-        euler_vec.orientation.x,
-        euler_vec.orientation.y,
-        euler_vec.orientation.z,
-    });
+    // grav_vec_f.set(f_vector_t{
+    //     grav_vec.acceleration.x,
+    //     grav_vec.acceleration.y,
+    //     grav_vec.acceleration.z
+    // });
+
+    // euler_vec_f.set(f_vector_t{
+    //     euler_vec.orientation.x,
+    //     euler_vec.orientation.y,
+    //     euler_vec.orientation.z,
+    // });
     
-    gyr_vec_f.set(f_vector_t{
-        gyr_vec.gyro.x,
-        gyr_vec.gyro.y,
-        gyr_vec.gyro.z,
-    });
+    // gyr_vec_f.set(f_vector_t{
+    //     gyr_vec.gyro.x,
+    //     gyr_vec.gyro.y,
+    //     gyr_vec.gyro.z,
+    // });
 
-    mag_vec_f.set(f_vector_t{
-        mag_vec.magnetic.x,
-        mag_vec.magnetic.y,
-        mag_vec.magnetic.z
-    });
+    // mag_vec_f.set(f_vector_t{
+    //     mag_vec.magnetic.x,
+    //     mag_vec.magnetic.y,
+    //     mag_vec.magnetic.z
+    // });
 }

@@ -49,7 +49,7 @@ void elements_same(const std::array<float, 3> ref, const std::array<float, 3> ac
     TEST_ASSERT_FLOAT_WITHIN(0.001, ref[2], actual[2]);
 }
 
-void print_f_vec(const f_vector_t& input) {
+void print_f_vec(const std::array<float, 3>& input) {
 
     Serial.printf("%f, %f, %f\n",
         input[0],
