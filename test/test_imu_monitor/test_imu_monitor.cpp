@@ -4,7 +4,8 @@
 #include <Adafruit_Sensor.h>
     
 #include "../../src/FCCode/IMUMonitor.hpp"
-#include "adcs_constants.hpp"
+
+#include "../custom_assertions.hpp"
 
 #include <unity.h>
 
@@ -13,12 +14,12 @@ class TestFixture {
         StateFieldRegistryMock registry;
 
         // pointers to output statefields for easy access
-        InternalStateField<sensors_event_t>* linear_acc_vec_fp;
-        InternalStateField<sensors_event_t>* acc_vec_fp;
-        InternalStateField<sensors_event_t>* grav_vec_fp;
-        InternalStateField<sensors_event_t>* euler_vec_fp;
-        InternalStateField<sensors_event_t>* gyr_vec_fp;
-        InternalStateField<sensors_event_t>* mag_vec_fp;
+        InternalStateField<f_vector_t>* linear_acc_vec_fp;
+        InternalStateField<f_vector_t>* acc_vec_fp;
+        InternalStateField<f_vector_t>* grav_vec_fp;
+        InternalStateField<f_vector_t>* euler_vec_fp;
+        InternalStateField<f_vector_t>* gyr_vec_fp;
+        InternalStateField<f_vector_t>* mag_vec_fp;
 
         //pointer to control task
         std::unique_ptr<IMUMonitor> imu_monitor;
@@ -32,12 +33,12 @@ class TestFixture {
 
             // initialize pointers to statefields
             //lin_acc_vec_fp = registry.find_readable_field_t<f_vector_t>("adcs_monitor.rwa_speed_rd");
-            linear_acc_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.linear_acc_vec");
-            acc_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.acc_vec");
-            grav_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.grav_vec");
-            euler_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.euler_vec");
-            gyr_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.gyr_vec");
-            mag_vec_fp = registry.find_internal_field_t<sensors_event_t>("imu.mag_vec");
+            linear_acc_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.linear_acc_vec");
+            acc_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.acc_vec");
+            grav_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.grav_vec");
+            euler_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.euler_vec");
+            gyr_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.gyr_vec");
+            mag_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.mag_vec");
         }
 };
 
@@ -48,43 +49,12 @@ void elements_same(const std::array<float, 3> ref, const std::array<float, 3> ac
     TEST_ASSERT_FLOAT_WITHIN(0.001, ref[2], actual[2]);
 }
 
-void printEvent(const sensors_event_t event) {
-    Serial.println();
-    Serial.print(event.type);
-    double x = -1000000, y = -1000000 , z = -1000000; //dumb values, easy to spot problem
-    if (event.type == SENSOR_TYPE_ACCELEROMETER || event.type == SENSOR_TYPE_LINEAR_ACCELERATION) {
-        x = event.acceleration.x;
-        y = event.acceleration.y;
-        z = event.acceleration.z;
-    }
-    else if (event.type == SENSOR_TYPE_ORIENTATION) {
-        x = event.orientation.x;
-        y = event.orientation.y;
-        z = event.orientation.z;
-    }
-    else if (event.type == SENSOR_TYPE_MAGNETIC_FIELD) {
-        x = event.magnetic.x;
-        y = event.magnetic.y;
-        z = event.magnetic.z;
-    }
-    else if ((event.type == SENSOR_TYPE_GYROSCOPE) || (event.type == SENSOR_TYPE_ROTATION_VECTOR)) {
-        x = event.gyro.x;
-        y = event.gyro.y;
-        z = event.gyro.z;
-    }
-    
-    Serial.print(": x= ");
-    Serial.print(x);
-    Serial.print(" | y= ");
-    Serial.print(y);
-    Serial.print(" | z= ");
-    Serial.println(z);
+void print_f_vec(const f_vector_t& input) {
 
-    //these just check that the values were read to something
-    //please use something else for sanity check, eyes?
-    TEST_ASSERT_NOT_EQUAL(-1000000, x);
-    TEST_ASSERT_NOT_EQUAL(-1000000, y);
-    TEST_ASSERT_NOT_EQUAL(-1000000, z);
+    Serial.printf("%f, %f, %f\n",
+        input[0],
+        input[1],
+        input[2]);
 
 }
 
@@ -98,12 +68,24 @@ void test_execute(){
 
     tf.imu_monitor->execute();
 
-    printEvent(tf.linear_acc_vec_fp->get());
-    printEvent(tf.acc_vec_fp->get());
-    printEvent(tf.grav_vec_fp->get());
-    printEvent(tf.euler_vec_fp->get());
-    printEvent(tf.gyr_vec_fp->get());
-    printEvent(tf.mag_vec_fp->get());
+    Serial.printf("Linear_Acc: ");
+    print_f_vec(tf.linear_acc_vec_fp->get());
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({5,5,5}).data(), tf.linear_acc_vec_fp->get(), 10)
+
+    Serial.printf("Acc: ");
+    print_f_vec(tf.acc_vec_fp->get());
+
+    Serial.printf("Grav: ");
+    print_f_vec(tf.grav_vec_fp->get());
+
+    Serial.printf("Euler: ");
+    print_f_vec(tf.euler_vec_fp->get());
+
+    Serial.printf("Gyr: ");
+    print_f_vec(tf.gyr_vec_fp->get());
+
+    Serial.printf("Mag: ");
+    print_f_vec(tf.mag_vec_fp->get());
 }
 
 int test_control_task()

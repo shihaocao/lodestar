@@ -54,10 +54,10 @@ void IMUMonitor::execute(){
     //IF THIS IS TOO SLOW, DELETE READ OPERATIONS OF ^VECTORS WE DON'T NEED
 
     //dump temporary containers into statefields
-    linear_acc_vec_f.set(linear_acc_vec);
-    acc_vec_f.set(acc_vec);
-    grav_vec_f.set(grav_vec);
-    euler_vec_f.set(euler_vec);
-    gyr_vec_f.set(gyr_vec);
-    mag_vec_f.set(mag_vec);
+    linear_acc_vec_f.set(f_vector_t{linear_acc_vec.acceleration.x, linear_acc_vec.acceleration.y, linear_acc_vec.acceleration.z});
+    // acc_vec_f.set(acc_vec);
+    // grav_vec_f.set(grav_vec);
+    // euler_vec_f.set(euler_vec);
+    // gyr_vec_f.set(gyr_vec);
+    // mag_vec_f.set(mag_vec);
 }

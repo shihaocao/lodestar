@@ -4,7 +4,6 @@
 #include <Adafruit_Sensor.h>
     
 #include "../../src/FCCode/BMPMonitor.hpp"
-#include "adcs_constants.hpp"
 
 #include <unity.h>
 

@@ -46,7 +46,7 @@ protected:
     //imu sensor event
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
-    InternalStateField<sensors_event_t> 
+    InternalStateField<f_vector_t> 
         //linear_acc_vec does not include gravity
         linear_acc_vec_f,
         //acc_vec includes gravity
