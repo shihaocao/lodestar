@@ -60,11 +60,11 @@ void test_execute(){
     TEST_ASSERT_FLOAT_WITHIN(10, 21, read_temp);
 
     Serial.printf("Pressure (Pa): %f\n", read_pressure);
-    //assert within 1000 Pa of 101000 Pa?
-    TEST_ASSERT_FLOAT_WITHIN(1000, 101000, read_pressure);
+    //assert within 2000 Pa of 101000 Pa?
+    TEST_ASSERT_FLOAT_WITHIN(2000, 101000, read_pressure);
 
     Serial.printf("Altitude (m): %f\n", read_altitude);
-    TEST_ASSERT_FLOAT_WITHIN(500, 500, read_altitude);
+    TEST_ASSERT_FLOAT_WITHIN(700, 500, read_altitude);
 }
 
 int test_control_task()

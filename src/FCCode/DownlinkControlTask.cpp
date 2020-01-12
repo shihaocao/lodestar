@@ -5,6 +5,7 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
+        
 
         #ifdef SERIAL_DEBUG
         Serial.begin(9600);
