@@ -61,6 +61,8 @@ public:
 
 protected:
 
+    InternalStateField<bool> functional_f;
+
     /**
     * @brief Inputs to get from BMP280
     * 

@@ -13,6 +13,8 @@ class TestFixture {
     public:
         StateFieldRegistryMock registry;
 
+        InternalStateField<bool>* functional_fp;
+
         // pointers to output statefields for easy access
         InternalStateField<f_vector_t>* linear_acc_vec_fp;
         InternalStateField<f_vector_t>* acc_vec_fp;
@@ -28,11 +30,11 @@ class TestFixture {
         
         // Create a TestFixture instance of AttitudeEstimator with pointers to statefields
         TestFixture() : registry(), imu(55, 0x28){
-
             imu_monitor = std::make_unique<IMUMonitor>(registry, 0, imu);  
-
+            imu.begin();
             // initialize pointers to statefields
             //lin_acc_vec_fp = registry.find_readable_field_t<f_vector_t>("adcs_monitor.rwa_speed_rd");
+            functional_fp = registry.find_internal_field_t<bool>("imu.functional");
             linear_acc_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.linear_acc_vec");
             acc_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.acc_vec");
             grav_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.grav_vec");
@@ -66,13 +68,22 @@ void test_task_initialization()
 void test_execute(){
     TestFixture tf;
 
-    //bdelay(1000);
+    tf.imu_monitor->execute();
+    tf.imu_monitor->execute();
+    tf.imu_monitor->execute();
+        tf.imu_monitor->execute();
 
     tf.imu_monitor->execute();
+    //delay(1000);
+    tf.imu_monitor->execute();
+
+
+
+    Serial.printf("Functional: %u", tf.functional_fp->get());
 
     Serial.printf("Linear_Acc: ");
     print_f_vec(tf.linear_acc_vec_fp->get());
-    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({5,5,5}).data(), tf.linear_acc_vec_fp->get(), 10)
+    //PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({5,5,5}).data(), tf.linear_acc_vec_fp->get(), 10)
 
     Serial.printf("Acc: ");
     print_f_vec(tf.acc_vec_fp->get());
@@ -88,6 +99,7 @@ void test_execute(){
 
     Serial.printf("Mag: ");
     print_f_vec(tf.mag_vec_fp->get());
+    
 }
 
 int test_control_task()

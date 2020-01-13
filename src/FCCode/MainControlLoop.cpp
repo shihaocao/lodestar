@@ -17,7 +17,10 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
     // #ifndef DESKTOP
     // Wire.begin(I2C_MASTER, 0x00, I2C_PINS_18_19, I2C_PULLUP_EXT, 400000, I2C_OP_MODE_IMM);
     // #endif
+    imu.begin();
+    bmp.begin();
 
+    delay(1000);
 }
 
 void MainControlLoop::execute() {

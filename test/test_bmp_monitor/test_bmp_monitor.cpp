@@ -11,6 +11,8 @@ class TestFixture {
     public:
         StateFieldRegistryMock registry;
 
+        InternalStateField<bool>* functional_fp;
+
         // pointers to output statefields for easy access
         InternalStateField<float>* temp_fp;
         InternalStateField<float>* pressure_fp;
@@ -23,10 +25,11 @@ class TestFixture {
         
         // Create a TestFixture instance of AttitudeEstimator with pointers to statefields
         TestFixture() : registry(), bmp(){
-
+            bmp.begin();
             bmp_monitor = std::make_unique<BMPMonitor>(registry, 0, bmp);  
 
             // initialize pointers to statefields
+            functional_fp = registry.find_internal_field_t<bool>("bmp.functional");
             temp_fp = registry.find_internal_field_t<float>("bmp.temp");
             pressure_fp = registry.find_internal_field_t<float>("bmp.pressure");
             altitude_fp = registry.find_internal_field_t<float>("bmp.altitude");
@@ -53,6 +56,9 @@ void test_execute(){
     float read_temp = tf.temp_fp->get();
     float read_pressure = tf.pressure_fp->get();
     float read_altitude = tf.altitude_fp->get();
+
+    Serial.printf("Functional: ");
+    Serial.printf(tf.functional_fp->get() ? "true\n" : "false\n");
 
     Serial.printf("Temp (C): %f\n", read_temp);
     //assert within 10 degrees of 21 C for indoor testing lmao
