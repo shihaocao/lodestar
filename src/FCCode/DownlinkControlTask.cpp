@@ -7,7 +7,7 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
         euler_fp = find_internal_field<f_vector_t>("imu.euler_vec", __FILE__, __LINE__);
         acc_fp = find_internal_field<f_vector_t>("imu.acc_vec", __FILE__, __LINE__);
-
+        //linear_acc_fp = find_internal_field<f_vector_t>("imu.linear_acc_vec", )
         #ifdef SERIAL_DEBUG
         Serial.begin(9600);
         #endif

@@ -6,15 +6,13 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
     : ControlTask<void>(registry), 
       field_creator_task(registry),
       clock_manager(registry, PAN::control_cycle_time),
-      //imu(55, 0x28),
       imu_monitor(registry, imu_monitor_offset),
       bmp_monitor(registry, bmp_monitor_offset),
       led_control_task(registry, led_control_task_offset),
       downlink_control_task(registry, downlink_ct_offset),
       mission_manager(registry, mission_manager_offset) // This item is initialized last so it has access to all state fields
 {
-
-    delay(1000);
+    delay(1000); //necessary for imu warm-up
 }
 
 void MainControlLoop::execute() {
