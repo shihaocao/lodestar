@@ -24,9 +24,8 @@ class TestFixture {
         Adafruit_BMP280 bmp;
         
         // Create a TestFixture instance of AttitudeEstimator with pointers to statefields
-        TestFixture() : registry(), bmp(){
-            bmp.begin();
-            bmp_monitor = std::make_unique<BMPMonitor>(registry, 0, bmp);  
+        TestFixture() : registry(){
+            bmp_monitor = std::make_unique<BMPMonitor>(registry, 0);  
 
             // initialize pointers to statefields
             functional_fp = registry.find_internal_field_t<bool>("bmp.functional");

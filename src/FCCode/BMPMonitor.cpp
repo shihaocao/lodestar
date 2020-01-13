@@ -2,9 +2,8 @@
 #include <math.h>       /* pow */
 
 BMPMonitor::BMPMonitor(StateFieldRegistry &registry, 
-    unsigned int offset, Adafruit_BMP280 &_bmp)
+    unsigned int offset)
     : TimedControlTask<void>(registry, "bmp_monitor", offset),
-    bmp(_bmp),
     functional_f("bmp.functional"),
     temp_f("bmp.temp"),
     pressure_f("bmp.pressure"),
@@ -16,15 +15,15 @@ BMPMonitor::BMPMonitor(StateFieldRegistry &registry,
         add_internal_field(pressure_f);
         add_internal_field(altitude_f);
 
-        // //set up imu?
-        // if(!bmp.begin()){
-        //     //debug print
-        //     //TODO THROW ERROR?
-        //     functional_f.set(false);
-        // }
-        // else{
-        //     functional_f.set(true);
-        // }
+        //set up imu?
+        if(!bmp.begin()){
+            //debug print
+            //TODO THROW ERROR?
+            functional_f.set(false);
+        }
+        else{
+            functional_f.set(true);
+        }
 
         /* Default settings from datasheet. */
         bmp.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */

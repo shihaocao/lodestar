@@ -22,7 +22,7 @@ public:
      * @param offset control task offset
      * @param _bmp the BMP280 driver object reference
      */
-    BMPMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BMP280& _bmp);
+    BMPMonitor(StateFieldRegistry &registry, unsigned int offset);
 
     //hPa to Pa conversion
     static constexpr float hPa_to_Pa = 100.0;
@@ -49,7 +49,7 @@ public:
     static constexpr float C_to_K = 273.15; 
 
     /** BMP280 device */
-    Adafruit_BMP280& bmp;
+    Adafruit_BMP280 bmp;
     Adafruit_Sensor *bmp_temp = bmp.getTemperatureSensor();
     Adafruit_Sensor *bmp_pressure = bmp.getPressureSensor();
 

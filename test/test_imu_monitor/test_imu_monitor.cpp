@@ -26,12 +26,9 @@ class TestFixture {
         //pointer to control task
         std::unique_ptr<IMUMonitor> imu_monitor;
 
-        Adafruit_BNO055 imu;
-        
         // Create a TestFixture instance of AttitudeEstimator with pointers to statefields
-        TestFixture() : registry(), imu(55, 0x28){
-            imu_monitor = std::make_unique<IMUMonitor>(registry, 0, imu);  
-            imu.begin();
+        TestFixture() : registry(){
+            imu_monitor = std::make_unique<IMUMonitor>(registry, 0);  
             // initialize pointers to statefields
             //lin_acc_vec_fp = registry.find_readable_field_t<f_vector_t>("adcs_monitor.rwa_speed_rd");
             functional_fp = registry.find_internal_field_t<bool>("imu.functional");
@@ -41,6 +38,8 @@ class TestFixture {
             euler_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.euler_vec");
             gyr_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.gyr_vec");
             mag_vec_fp = registry.find_internal_field_t<f_vector_t>("imu.mag_vec");
+
+            delay(1000);
         }
 };
 
@@ -69,37 +68,34 @@ void test_execute(){
     TestFixture tf;
 
     tf.imu_monitor->execute();
-    tf.imu_monitor->execute();
-    tf.imu_monitor->execute();
-        tf.imu_monitor->execute();
 
-    tf.imu_monitor->execute();
-    //delay(1000);
-    tf.imu_monitor->execute();
-
-
-
-    Serial.printf("Functional: %u", tf.functional_fp->get());
+    Serial.printf("Functional: %u\n", tf.functional_fp->get());
+    TEST_ASSERT_EQUAL(1, tf.functional_fp->get());
 
     Serial.printf("Linear_Acc: ");
     print_f_vec(tf.linear_acc_vec_fp->get());
-    //PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({5,5,5}).data(), tf.linear_acc_vec_fp->get(), 10)
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,0}).data(), tf.linear_acc_vec_fp->get(), 1)
 
     Serial.printf("Acc: ");
     print_f_vec(tf.acc_vec_fp->get());
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,9}).data(), tf.acc_vec_fp->get(), 1)
 
     Serial.printf("Grav: ");
     print_f_vec(tf.grav_vec_fp->get());
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,9}).data(), tf.grav_vec_fp->get(), 1)
 
     Serial.printf("Euler: ");
     print_f_vec(tf.euler_vec_fp->get());
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,0}).data(), tf.euler_vec_fp->get(), 370)
 
     Serial.printf("Gyr: ");
     print_f_vec(tf.gyr_vec_fp->get());
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,0}).data(), tf.gyr_vec_fp->get(), 1)
 
     Serial.printf("Mag: ");
     print_f_vec(tf.mag_vec_fp->get());
-    
+    PAN_TEST_ASSERT_EQUAL_FLOAT_VEC(f_vector_t({0,0,0}).data(), tf.mag_vec_fp->get(), 100)
+
 }
 
 int test_control_task()

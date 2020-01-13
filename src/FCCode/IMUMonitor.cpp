@@ -40,81 +40,62 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
 void IMUMonitor::execute(){
 
     //linear_acc_vec is acceleration without gravity
-    //sensors_event_t linear_acc,
+    sensors_event_t linear_acc_vec,
         //acc_vec includes gravity
-        //acc,
+        acc_vec,
         //gravity vector
-        //grav,
+        grav_vec,
         //orientation in euler angles
-        //euler;
-        // //gyroscope, angular acceleration vector
-        // gyr,
-        // //magnetometer vector
-        // mag;
-
-    // int8_t boardTemp = imu.getTemp();
-    // Serial.print(F("temperature: "));
-    // Serial.println(boardTemp);
+        euler_vec,
+        //gyroscope, angular acceleration vector
+        gyr_vec,
+        //magnetometer vector
+        mag_vec;
 
     //poll actual i2c device, and fill containers
-    // imu.getEvent(&linear_acc, Adafruit_BNO055::VECTOR_LINEARACCEL);
-    // // imu.getEvent(&acc, Adafruit_BNO055::VECTOR_ACCELEROMETER);
-    // imu.getEvent(&grav, Adafruit_BNO055::VECTOR_GRAVITY);
-    //imu.getEvent(&euler, Adafruit_BNO055::VECTOR_EULER);
-    //delay(100);
-    // imu.getEvent(&gyr, Adafruit_BNO055::VECTOR_GYROSCOPE);
-    // imu.getEvent(&mag, Adafruit_BNO055::VECTOR_MAGNETOMETER);
+    imu.getEvent(&linear_acc_vec, Adafruit_BNO055::VECTOR_LINEARACCEL);
+    imu.getEvent(&acc_vec, Adafruit_BNO055::VECTOR_ACCELEROMETER);
+    imu.getEvent(&grav_vec, Adafruit_BNO055::VECTOR_GRAVITY);
+    imu.getEvent(&euler_vec, Adafruit_BNO055::VECTOR_EULER);
+    imu.getEvent(&gyr_vec, Adafruit_BNO055::VECTOR_GYROSCOPE);
+    imu.getEvent(&mag_vec, Adafruit_BNO055::VECTOR_MAGNETOMETER);
 
     //IF THIS IS TOO SLOW, DELETE READ OPERATIONS OF ^VECTORS WE DON'T NEED
 
     //IF BELOW TOO SLOW, STOP USING SENSOR EVENTS YIKES
     //dump temporary containers into statefields
-    delay(100);
-    //f_vector_t linear_acc_vec;
-    sensors_event_t linear_acc;
-    imu.getEvent(&linear_acc, Adafruit_BNO055::VECTOR_LINEARACCEL);
+    linear_acc_vec_f.set(f_vector_t{
+        linear_acc_vec.acceleration.x, 
+        linear_acc_vec.acceleration.y, 
+        linear_acc_vec.acceleration.z});
 
-    linear_acc_vec_f.set(f_vector_t{{
-        linear_acc.acceleration.x, 
-        linear_acc.acceleration.y, 
-        linear_acc.acceleration.z}});
+    acc_vec_f.set(f_vector_t{
+        acc_vec.acceleration.x, 
+        acc_vec.acceleration.y, 
+        acc_vec.acceleration.z
+    });
 
-    acc_vec_f.set(f_vector_t({
-        9.0f, 
-        2.0f, 
-        1.0f}));
+    grav_vec_f.set(f_vector_t{
+        grav_vec.acceleration.x,
+        grav_vec.acceleration.y,
+        grav_vec.acceleration.z
+    });
 
-    // acc_vec_f.set(f_vector_t{
-    //     acc_vec.acceleration.x, 
-    //     acc_vec.acceleration.y, 
-    //     acc_vec.acceleration.z
-    // });
-
-    f_vector_t grav_vec;
-    sensors_event_t grav;
-    imu.getEvent(&grav, Adafruit_BNO055::VECTOR_GRAVITY);
-    grav_vec[0] = grav.acceleration.x;
-    grav_vec[1] = grav.acceleration.y;
-    grav_vec[2] = grav.acceleration.z;
-    grav_vec_f.set(grav_vec);
-
-    sensors_event_t euler;
-    imu.getEvent(&euler, Adafruit_BNO055::VECTOR_EULER);
     euler_vec_f.set(f_vector_t{
-        euler.orientation.x,
-        euler.orientation.y,
-        euler.orientation.z,
+        euler_vec.orientation.x,
+        euler_vec.orientation.y,
+        euler_vec.orientation.z,
     });
     
-    // gyr_vec_f.set(f_vector_t{
-    //     gyr_vec.gyro.x,
-    //     gyr_vec.gyro.y,
-    //     gyr_vec.gyro.z,
-    // });
+    gyr_vec_f.set(f_vector_t{
+        gyr_vec.gyro.x,
+        gyr_vec.gyro.y,
+        gyr_vec.gyro.z,
+    });
 
-    // mag_vec_f.set(f_vector_t{
-    //     mag_vec.magnetic.x,
-    //     mag_vec.magnetic.y,
-    //     mag_vec.magnetic.z
-    // });
+    mag_vec_f.set(f_vector_t{
+        mag_vec.magnetic.x,
+        mag_vec.magnetic.y,
+        mag_vec.magnetic.z
+    });
 }
