@@ -1,9 +1,10 @@
 #include "IMUMonitor.hpp"
 
+
 IMUMonitor::IMUMonitor(StateFieldRegistry &registry, 
-    unsigned int offset, Adafruit_BNO055 &_imu)
+    unsigned int offset)
     : TimedControlTask<void>(registry, "imu_monitor", offset),
-    imu(_imu),
+    //imu(_imu),
     functional_f("imu.functional"),
     linear_acc_vec_f("imu.linear_acc_vec"),
     acc_vec_f("imu.acc_vec"),
@@ -21,6 +22,7 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
         add_internal_field(gyr_vec_f);
         add_internal_field(mag_vec_f);
 
+        //imu = Adafruit_BNO055(55, 0x28);
         //set up imu?
         if(!imu.begin()){
             //debug print

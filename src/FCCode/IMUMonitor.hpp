@@ -23,11 +23,13 @@ public:
      * @param offset control task offset
      * @param _imu the input adcs system
      */
-    IMUMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BNO055& _imu);
+    //IMUMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BNO055& _imu);
+    IMUMonitor(StateFieldRegistry &registry, unsigned int offset);
 
     /** ADCS Driver. **/
     //Devices::ADCS& adcs_system;
-    Adafruit_BNO055& imu;
+    //Adafruit_BNO055& imu;
+    Adafruit_BNO055 imu = Adafruit_BNO055(55, 0x28);
 
     /**
     * @brief Gets inputs from the ADCS box and dumps them into the state

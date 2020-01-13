@@ -6,8 +6,8 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
     : ControlTask<void>(registry), 
       field_creator_task(registry),
       clock_manager(registry, PAN::control_cycle_time),
-      imu(55, 0x28),
-      imu_monitor(registry, imu_monitor_offset, imu),
+      //imu(55, 0x28),
+      imu_monitor(registry, imu_monitor_offset),
       bmp_monitor(registry, bmp_monitor_offset, bmp),
       led_control_task(registry, led_control_task_offset),
       downlink_control_task(registry, downlink_ct_offset),
@@ -17,7 +17,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
     // #ifndef DESKTOP
     // Wire.begin(I2C_MASTER, 0x00, I2C_PINS_18_19, I2C_PULLUP_EXT, 400000, I2C_OP_MODE_IMM);
     // #endif
-    imu.begin();
+    //imu.begin();
     bmp.begin();
 
     delay(1000);
