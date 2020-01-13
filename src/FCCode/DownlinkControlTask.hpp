@@ -40,6 +40,7 @@ protected:
     InternalStateField<f_vector_t>* linear_acc_fp;
     InternalStateField<f_vector_t>* euler_fp;
     InternalStateField<f_vector_t>* acc_fp;
+    InternalStateField<f_vector_t>* gyr_fp;
 };
 
 #endif
