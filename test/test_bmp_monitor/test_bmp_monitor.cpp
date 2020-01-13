@@ -4,13 +4,14 @@
 #include <Adafruit_Sensor.h>
     
 #include "../../src/FCCode/BMPMonitor.hpp"
-#include "adcs_constants.hpp"
 
 #include <unity.h>
 
 class TestFixture {
     public:
         StateFieldRegistryMock registry;
+
+        InternalStateField<bool>* functional_fp;
 
         // pointers to output statefields for easy access
         InternalStateField<float>* temp_fp;
@@ -23,11 +24,11 @@ class TestFixture {
         Adafruit_BMP280 bmp;
         
         // Create a TestFixture instance of AttitudeEstimator with pointers to statefields
-        TestFixture() : registry(), bmp(){
-
-            bmp_monitor = std::make_unique<BMPMonitor>(registry, 0, bmp);  
+        TestFixture() : registry(){
+            bmp_monitor = std::make_unique<BMPMonitor>(registry, 0);  
 
             // initialize pointers to statefields
+            functional_fp = registry.find_internal_field_t<bool>("bmp.functional");
             temp_fp = registry.find_internal_field_t<float>("bmp.temp");
             pressure_fp = registry.find_internal_field_t<float>("bmp.pressure");
             altitude_fp = registry.find_internal_field_t<float>("bmp.altitude");
@@ -55,16 +56,19 @@ void test_execute(){
     float read_pressure = tf.pressure_fp->get();
     float read_altitude = tf.altitude_fp->get();
 
+    Serial.printf("Functional: ");
+    Serial.printf(tf.functional_fp->get() ? "true\n" : "false\n");
+
     Serial.printf("Temp (C): %f\n", read_temp);
     //assert within 10 degrees of 21 C for indoor testing lmao
     TEST_ASSERT_FLOAT_WITHIN(10, 21, read_temp);
 
     Serial.printf("Pressure (Pa): %f\n", read_pressure);
-    //assert within 1000 Pa of 101000 Pa?
-    TEST_ASSERT_FLOAT_WITHIN(1000, 101000, read_pressure);
+    //assert within 2000 Pa of 101000 Pa?
+    TEST_ASSERT_FLOAT_WITHIN(2000, 101000, read_pressure);
 
     Serial.printf("Altitude (m): %f\n", read_altitude);
-    TEST_ASSERT_FLOAT_WITHIN(500, 500, read_altitude);
+    TEST_ASSERT_FLOAT_WITHIN(700, 500, read_altitude);
 }
 
 int test_control_task()

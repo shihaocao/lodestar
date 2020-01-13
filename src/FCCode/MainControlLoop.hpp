@@ -18,7 +18,7 @@ class MainControlLoop : public ControlTask<void> {
     FieldCreatorTask field_creator_task;
     ClockManager clock_manager;
 
-    Adafruit_BNO055 imu;
+    //Adafruit_BNO055 imu;
     IMUMonitor imu_monitor;
 
     Adafruit_BMP280 bmp;
