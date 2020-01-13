@@ -4,17 +4,19 @@ import time
 
 import serial
 
+#note hardcoded serial port
 telem = serial.Serial('COM3')
 
 timecnt = 100
 totallen = 100
 xar = [x for x in range(totallen)]
 alt = [5 for x in range(totallen)]
-
-
+var1 = [-40 for x in range(totallen)]
+lin_acc_z = [-40 for x in range(totallen)]
 
 def listgen(input_string):
     ret = input_string.split(",")
+    ret = [float(x) for x in ret]
     return ret
 
 # while(len(alt)!=10):
@@ -32,17 +34,25 @@ def animate(i):
     #         x,y = eachLine.split(',')
     #         xar.append(int(x))
     #         yar.append(int(y))
-    global timecnt, alt, xar
+    global timecnt, alt, xar, var1, lin_acc_z
+
+    telem_data = listgen(telem.readline().strip().decode("utf-8"))
 
     xar = xar[1:] + [timecnt]
     timecnt += 1
 
-    alt = alt[1:] + [listgen(telem.readline().strip().decode("utf-8"))[0]]
+    alt = alt[1:] + [telem_data[0]]
+    lin_acc_z = lin_acc_z[1:] + [telem_data[3] + -40]
 
     ax1.clear()
+    #plt.ylim(-41,-40)
+    # ax1.set_ylim(top=-40)
+    # ax1.set_ylim(bottom=-41)
+    ax1.set_ylim(-42,-38)
+    #print(alt)
     ax1.plot(xar,alt)
+    ax1.plot(xar, lin_acc_z)
     
-plt.ylim(-41,-40)
 fig = plt.figure()
 
 ax1 = fig.add_subplot(1,1,1)
