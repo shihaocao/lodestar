@@ -116,6 +116,9 @@ matrix:
           apt:
             packages:
             - cppcheck
+        install:
+            - pip install -U platformio
+            - platformio update
         script:
             - ./tools/verify_teensy_builds.sh
 
