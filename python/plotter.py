@@ -5,7 +5,7 @@ import time
 import serial
 
 #note hardcoded serial port
-telem = serial.Serial('COM3')
+telem = serial.Serial('COM7')
 
 timecnt = 100
 totallen = 100
@@ -42,13 +42,13 @@ def animate(i):
     timecnt += 1
 
     alt = alt[1:] + [telem_data[0]]
-    lin_acc_z = lin_acc_z[1:] + [telem_data[3] + -40]
+    lin_acc_z = lin_acc_z[1:] + [telem_data[3] + 112.5]
 
     ax1.clear()
     #plt.ylim(-41,-40)
     # ax1.set_ylim(top=-40)
     # ax1.set_ylim(bottom=-41)
-    ax1.set_ylim(-42,-38)
+    ax1.set_ylim(110, 115)
     #print(alt)
     ax1.plot(xar,alt)
     ax1.plot(xar, lin_acc_z)
