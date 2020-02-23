@@ -5,7 +5,7 @@ import time
 import serial
 
 #note hardcoded serial port
-telem = serial.Serial('COM7')
+telem = serial.Serial(port = 'COM4', baudrate = 57600)
 
 timecnt = 100
 totallen = 100
