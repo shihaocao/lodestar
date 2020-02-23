@@ -41,8 +41,11 @@ def animate(i):
     xar = xar[1:] + [timecnt]
     timecnt += 1
 
-    alt = alt[1:] + [telem_data[0]]
-    lin_acc_z = lin_acc_z[1:] + [telem_data[3] + 112.5]
+    alt_index = 1
+    lin_acc_z_index = 4
+    
+    alt = alt[1:] + [telem_data[alt_index]]
+    lin_acc_z = lin_acc_z[1:] + [telem_data[lin_acc_z_index] + 112.5]
 
     ax1.clear()
     #plt.ylim(-41,-40)
