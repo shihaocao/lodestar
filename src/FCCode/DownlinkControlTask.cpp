@@ -10,11 +10,11 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
         linear_acc_fp = find_internal_field<f_vector_t>("imu.linear_acc_vec", __FILE__, __LINE__);
         gyr_fp = find_internal_field<f_vector_t>("imu.gyr_vec", __FILE__, __LINE__);
 
-        #ifdef SERIAL_DEBUG
+        #if defined(SERIAL_DEBUG_COMPACT) || defined(SERIAL_DEBUG) 
         Serial.begin(9600);
         #endif
 
-        #ifdef SERIAL_DEBUG_915
+        #if defined(FLIGHT) || defined(SERIAL_DEBUG_915) 
         Serial1.begin(57600);
         #endif
     }
