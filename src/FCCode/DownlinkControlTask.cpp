@@ -13,6 +13,10 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
         #ifdef SERIAL_DEBUG
         Serial.begin(9600);
         #endif
+
+        #ifdef SERIAL_DEBUG_915
+        Serial1.begin(57600);
+        #endif
     }
 
 void DownlinkControlTask::execute(){
@@ -27,7 +31,18 @@ void DownlinkControlTask::execute(){
     euler_read = euler_fp->get();
     gyr_read = gyr_fp->get();
 
+    #ifdef FLIGHT
+    Serial1.printf("%u,", control_cycle_count);
+    Serial1.printf("%f,", altitude_fp->get());
+    Serial1.printf("%f,%f,%f,", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
+    Serial1.printf("%f,%f,%f,", acc_read[0], acc_read[1], acc_read[2]);
+    Serial1.printf("%f,%f,%f,", euler_read[0], euler_read[1], euler_read[2]);
+    Serial1.printf("%f,%f,%f", gyr_read[0], gyr_read[1], gyr_read[2]);
+    Serial1.print("\n");
+    #endif
+
     #ifdef SERIAL_DEBUG
+    Serial.printf("Control Cycle Num: %u\n", control_cycle_count);
     Serial.printf("Altitude (m): %f\n", altitude_fp->get());
     Serial.printf("Linear Acc: %f, %f, %f\n", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
     Serial.printf("Acc: %f, %f, %f\n", acc_read[0], acc_read[1], acc_read[2]);
@@ -35,7 +50,17 @@ void DownlinkControlTask::execute(){
     Serial.printf("Gyr: %f, %f, %f\n", gyr_read[0], gyr_read[1], gyr_read[2]);
     #endif
 
-    #ifdef SERIAL_COMPACT
+    #ifdef SERIAL_DEBUG_915
+    Serial1.printf("Control Cycle Num: %u\n", control_cycle_count);
+    Serial1.printf("Altitude (m): %f\n", altitude_fp->get());
+    Serial1.printf("Linear Acc: %f, %f, %f\n", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
+    Serial1.printf("Acc: %f, %f, %f\n", acc_read[0], acc_read[1], acc_read[2]);
+    Serial1.printf("Euler: %f, %f, %f\n", euler_read[0], euler_read[1], euler_read[2]);
+    Serial1.printf("Gyr: %f, %f, %f\n", gyr_read[0], gyr_read[1], gyr_read[2]);
+    #endif
+
+    #ifdef SERIAL_DEBUG_COMPACT
+    Serial.printf("%u,", control_cycle_count);
     Serial.printf("%f,", altitude_fp->get());
     Serial.printf("%f,%f,%f,", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
     Serial.printf("%f,%f,%f,", acc_read[0], acc_read[1], acc_read[2]);
