@@ -1,0 +1,3 @@
+[submodule "lib/common/psim"]
+	path = lib/common/psim
+	url = https://github.com/pathfinder-for-autonomous-navigation/psim
