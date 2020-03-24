@@ -5,12 +5,11 @@
  * takes precedence.
  */
 
-#include "FCCode/MainControlLoop.hpp"
-#include <StateFieldRegistry.hpp>
-// #include "flow_data.hpp"
+#include <fsw/FCCode/MainControlLoop.hpp>
+#include <common/StateFieldRegistry.hpp>
 
 #include <core_pins.h>
-//#include <wiring.h>
+#include <wiring.h>
 
 void pan_system_setup() {
     StateFieldRegistry registry;
