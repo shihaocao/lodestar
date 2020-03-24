@@ -76,6 +76,7 @@ python: "3.7"
 install:
     - pip install -U platformio
     - platformio update
+    - pio run -t clean
 
 matrix:
     include:
@@ -119,6 +120,7 @@ matrix:
         install:
             - pip install -U platformio
             - platformio update
+            - pio run -t clean
         script:
             - ./tools/verify_teensy_builds.sh
 
