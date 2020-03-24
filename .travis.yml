@@ -67,15 +67,16 @@
 #     - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
 
 sudo: false
-cache:
-    directories:
-        - "~/.platformio"
+# cache:
+#     directories:
+#         - "~/.platformio"
 
 language: python
 python: "3.7"
 install:
     - pip install -U platformio
     - platformio update
+    - pio run -t clean
 
 matrix:
     include:
@@ -119,6 +120,7 @@ matrix:
         install:
             - pip install -U platformio
             - platformio update
+            - pio run -t clean
         script:
             - ./tools/verify_teensy_builds.sh
 
