@@ -1,0 +1,3 @@
+[submodule "lib/common/lin"]
+	path = lib/common/lin
+	url = https://github.com/kkrol27/lin.git
