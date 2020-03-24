@@ -67,9 +67,9 @@
 #     - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
 
 sudo: false
-cache:
-    directories:
-        - "~/.platformio"
+# cache:
+#     directories:
+#         - "~/.platformio"
 
 language: python
 python: "3.7"
