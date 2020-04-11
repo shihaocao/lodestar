@@ -36,7 +36,7 @@ protected:
     //imu sensor event
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
-    InternalStateField<d_quat_t>* servo_commands;
+    InternalStateField<d_quat_t>* servo_commands_f;
 };
 
 #endif
