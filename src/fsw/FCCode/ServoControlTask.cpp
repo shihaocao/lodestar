@@ -4,15 +4,7 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
     unsigned int offset)
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
-        servo_vector = find_internal_field<f_quat_t>("servo.cmd", __FILE__, __LINE__);
-
-        #if defined(SERIAL_DEBUG_COMPACT) || defined(SERIAL_DEBUG) 
-        Serial.begin(9600);
-        #endif
-
-        #if defined(FLIGHT) || defined(SERIAL_DEBUG_915) 
-        Serial1.begin(57600);
-        #endif
+        servo_commands_f = find_internal_field<d_quat_t>("servo.cmd", __FILE__, __LINE__);
     }
 
 void ServoControlTask::execute(){

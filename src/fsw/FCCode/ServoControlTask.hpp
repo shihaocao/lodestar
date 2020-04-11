@@ -1,9 +1,9 @@
-#ifndef DOWNLINK_CONTROL_TASK_HPP_
-#define DOWNLINK_CONTROL_TASK_HPP_
+#ifndef SERVO_CONTROL_TASK_HPP_
+#define SERVO_CONTROL_TASK_HPP_
 #pragma once
 
 #include "TimedControlTask.hpp"
-
+#
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.
