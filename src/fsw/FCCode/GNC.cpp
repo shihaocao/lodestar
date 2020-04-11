@@ -2,14 +2,20 @@
 
 GNC::GNC(StateFieldRegistry &registry, 
     unsigned int offset)
-    : TimedControlTask<void>(registry, "gnc", offset)
+    : TimedControlTask<void>(registry, "gnc", offset),
+    servo_commands_f("gnc.servo_cmds")
     {
-        servo_commands_f = find_internal_field<d_quat_t>("servo.cmd", __FILE__, __LINE__);
+
     }
 
 void GNC::execute(){
 
-    d_quat_t servo_commands = servo_commands_f->get();
+    servo_commands_f.set(d_quat_t{
+        20.0,
+        30.0,
+        40.0,
+        50.0,
+    });
 
     
 }

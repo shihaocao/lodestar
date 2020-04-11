@@ -4,7 +4,7 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
     unsigned int offset)
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
-        servo_commands_f = find_internal_field<d_quat_t>("servo.cmd", __FILE__, __LINE__);
+        servo_commands_f = find_internal_field<d_quat_t>("gnc.servo_cmds", __FILE__, __LINE__);
     }
 
 void ServoControlTask::execute(){
