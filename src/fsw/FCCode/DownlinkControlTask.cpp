@@ -33,6 +33,11 @@ void DownlinkControlTask::execute(){
     euler_read = euler_fp->get();
     gyr_read = gyr_fp->get();
 
+    // unsigned int temp = PAN::control_cycle_time;
+    #ifdef SPEED_TEST
+    Serial.printf("CN: %u, CCT: %u\n", control_cycle_count, PAN::control_cycle_time_ms);
+    #endif
+
     #ifdef DL_OFF
     return;
     #endif

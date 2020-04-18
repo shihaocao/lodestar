@@ -33,7 +33,7 @@ protected:
     InternalStateField<f_quat_t> flap_commands_f;
 
     // eventually not needed, just was for debug
-    int inc_dir = 0;
+    float inc_dir = 0;
 };
 
 #endif

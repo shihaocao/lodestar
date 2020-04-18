@@ -21,10 +21,11 @@ void GNC::execute(){
     f_quat_t flap_commands = flap_commands_f.get();
 
     // the block below is dummy code that cycles the servos back and forth
-    if(flap_commands[0] == 90)
-        inc_dir = -1;
-    if(flap_commands[0] == 0)
-        inc_dir = 1;
+    float speed = 0.5;
+    if(flap_commands[0] > 90)
+        inc_dir = -speed;
+    if(flap_commands[0] <= 0)
+        inc_dir = speed;
     for(unsigned int i = 0; i < SERVO::num_flaps; i++){
         flap_commands[i] += inc_dir;
     }

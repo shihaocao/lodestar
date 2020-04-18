@@ -58,16 +58,26 @@ class MainControlLoop : public ControlTask<void> {
         // static constexpr unsigned int servo_ct_offset            =  12000;
         // static constexpr unsigned int downlink_ct_offset         =  13000;
         // static constexpr unsigned int led_control_task_offset    =  15000;
-        
+
+        // static constexpr unsigned int debug_task_offset          =   0;
+        // static constexpr unsigned int piksi_control_task_offset  =   1000;
+        // static constexpr unsigned int imu_monitor_offset         =   2000;
+        // static constexpr unsigned int bmp_monitor_offset         =   3000;
+        // static constexpr unsigned int mission_manager_offset     =   4000;
+        // static constexpr unsigned int gnc_offset                 =   5000;
+        // static constexpr unsigned int servo_ct_offset            =   6000;
+        // static constexpr unsigned int downlink_ct_offset         =   7000;
+        // static constexpr unsigned int led_control_task_offset    =   8000;    
+
         static constexpr unsigned int debug_task_offset          =   0;
-        static constexpr unsigned int piksi_control_task_offset  =   0;
-        static constexpr unsigned int imu_monitor_offset         =   0;
-        static constexpr unsigned int bmp_monitor_offset         =   0;
-        static constexpr unsigned int mission_manager_offset     =   0;
-        static constexpr unsigned int gnc_offset                 =   0;
-        static constexpr unsigned int servo_ct_offset            =   0;
-        static constexpr unsigned int downlink_ct_offset         =   0;
-        static constexpr unsigned int led_control_task_offset    =   0;    
+        static constexpr unsigned int piksi_control_task_offset  =   1;
+        static constexpr unsigned int imu_monitor_offset         =   2;
+        static constexpr unsigned int bmp_monitor_offset         =   3;
+        static constexpr unsigned int mission_manager_offset     =   4;
+        static constexpr unsigned int gnc_offset                 =   5;
+        static constexpr unsigned int servo_ct_offset            =   6;
+        static constexpr unsigned int downlink_ct_offset         =   7;
+        static constexpr unsigned int led_control_task_offset    =   8;    
         
     #endif
 
