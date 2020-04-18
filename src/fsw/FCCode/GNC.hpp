@@ -30,7 +30,7 @@ protected:
     * @brief Inputs to get from GNC.
     */
 
-    InternalStateField<d_quat_t> servo_commands_f;
+    InternalStateField<d_quat_t> flap_commands_f;
 };
 
 #endif

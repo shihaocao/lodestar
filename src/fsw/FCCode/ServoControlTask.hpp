@@ -1,6 +1,7 @@
 #ifndef SERVO_CONTROL_TASK_HPP_
 #define SERVO_CONTROL_TASK_HPP_
 #pragma once
+#include <Servo.h>
 
 #include "TimedControlTask.hpp"
 
@@ -29,8 +30,12 @@ protected:
     /**
     * @brief Inputs to get from GNC.
     */
+    InternalStateField<d_quat_t>* flap_commands_f;
 
-    InternalStateField<d_quat_t>* servo_commands_f;
+    Servo flap1;
+    Servo flap2;
+    Servo flap3;
+    Servo flap4;
 };
 
 #endif

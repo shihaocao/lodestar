@@ -10,4 +10,16 @@ namespace PAN {
     constexpr unsigned int control_cycle_time = 120000;
 }
 
+/**
+ * @brief A set of constants for the Servo CT
+ * 
+ */
+namespace SERVO {
+
+    constexpr unsigned char flap1_pin = 29;
+    constexpr unsigned char flap2_pin = 30;
+    constexpr unsigned char flap3_pin = 31;
+    constexpr unsigned char flap4_pin = 32;
+}
+
 #endif
