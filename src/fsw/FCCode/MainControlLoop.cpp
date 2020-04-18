@@ -9,6 +9,8 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       imu_monitor(registry, imu_monitor_offset),
       bmp_monitor(registry, bmp_monitor_offset),
       led_control_task(registry, led_control_task_offset),
+      gnc(registry, gnc_offset),
+      servo_controller(registry, servo_ct_offset),
       downlink_control_task(registry, downlink_ct_offset),
       mission_manager(registry, mission_manager_offset) // This item is initialized last so it has access to all state fields
 {
@@ -20,6 +22,8 @@ void MainControlLoop::execute() {
     imu_monitor.execute_on_time();
     bmp_monitor.execute_on_time();
     mission_manager.execute_on_time();
+    gnc.execute_on_time();
+    servo_controller.execute_on_time();
     downlink_control_task.execute_on_time();
     led_control_task.execute_on_time();
     

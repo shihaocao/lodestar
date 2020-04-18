@@ -5,9 +5,9 @@ namespace PAN {
     // Environment-based initializations of the control loop time.
     // control_cycle_time is the value actually used for timing. The
     // other constants are just informational.
-    constexpr unsigned int control_cycle_time_ms = 120;
-    constexpr unsigned int control_cycle_time_us = 120000;
-    constexpr unsigned int control_cycle_time = 120000;
+    constexpr unsigned int control_cycle_time_ms = 10;
+    constexpr unsigned int control_cycle_time_us = control_cycle_time_ms * 100;
+    constexpr unsigned int control_cycle_time = control_cycle_time_us;
 }
 
 /**
@@ -18,8 +18,8 @@ namespace SERVO {
     constexpr unsigned char num_flaps = 4;
     constexpr unsigned char flap1_pin = 29;
     constexpr unsigned char flap2_pin = 30;
-    constexpr unsigned char flap3_pin = 31;
-    constexpr unsigned char flap4_pin = 32;
+    constexpr unsigned char flap3_pin = 35;
+    constexpr unsigned char flap4_pin = 36;
 
     // bounds expected from GNC
     constexpr float servo_cmd_range = 90;
