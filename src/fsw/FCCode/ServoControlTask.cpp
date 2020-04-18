@@ -11,5 +11,5 @@ void ServoControlTask::execute(){
 
     d_quat_t servo_commands = servo_commands_f->get();
 
-    
+    Serial1.write("TEST-HI-GOVIND\n");
 }

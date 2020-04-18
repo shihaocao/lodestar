@@ -17,5 +17,4 @@ void GNC::execute(){
         50.0,
     });
 
-    
 }
