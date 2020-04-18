@@ -12,6 +12,8 @@
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
 #include "DownlinkControlTask.hpp"
+#include "GNC.hpp"
+#include "ServoControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
    protected:
@@ -29,6 +31,10 @@ class MainControlLoop : public ControlTask<void> {
     DownlinkControlTask downlink_control_task;
 
     MissionManager mission_manager; //initallized last
+
+    GNC gnc;
+
+    ServoControlTask servo_controller;
 
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
@@ -50,7 +56,10 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int bmp_monitor_offset         =   6000;
         static constexpr unsigned int mission_manager_offset     =  10000;
         static constexpr unsigned int downlink_ct_offset         =  11000;
-        static constexpr unsigned int led_control_task_offset    =  20000;
+        static constexpr unsigned int gnc_offset                 =  12000;
+        static constexpr unsigned int servo_ct_offset            =  13000;
+        static constexpr unsigned int led_control_task_offset    =  15000;
+        
 
         
     #endif
