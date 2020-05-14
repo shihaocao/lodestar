@@ -24,7 +24,7 @@ function interleave(times, vals){
   return times.reduce((acc, elem, i) => acc.concat(createData(elem, vals[i])),[]);
 }
 
-export default function Chart() {
+export default function Chart(props) {
   const theme = useTheme();
 
   const t0 = [5,6,7,8]
@@ -32,6 +32,7 @@ export default function Chart() {
   const v2 = [40,50,23,55]
 
   const [alts, setAlts] = useState(interleave(t1,v2));
+  const [key, set_key] = useState(0);
 
   // setAlts(interleave(t1,v2));
 
@@ -50,8 +51,9 @@ export default function Chart() {
       alts_copy.shift();
       // let alts_copy = alts.co();
       alts_copy.push(createData(data.cc, data.alt))
-      console.log(alts_copy);
       setAlts(alts_copy);
+      console.log(alts);
+      set_key(key + 1);
     });
   }
 
@@ -60,7 +62,7 @@ export default function Chart() {
       update_graph();
     }, 100);
     return () => clearInterval(interval);
-  }, []);
+  }, [update_graph]);
 
 
   // var updateAlts = () => {
