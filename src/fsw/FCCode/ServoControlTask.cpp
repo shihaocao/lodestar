@@ -18,7 +18,7 @@ void ServoControlTask::execute(){
     f_quat_t unit_range;
     f_quat_t flap_servo_writes;
 
-    Serial.printf("GNC Commands: %f,%f,%f,%f\n",flap_commands[0],flap_commands[1],flap_commands[2],flap_commands[3]);
+    // Serial.printf("GNC Commands: %f,%f,%f,%f\n",flap_commands[0],flap_commands[1],flap_commands[2],flap_commands[3]);
 
     for(unsigned int i = 0; i < SERVO::num_flaps; i++){
         unit_range[i] = (flap_commands[i] - SERVO::flap_cmd_min)/SERVO::servo_cmd_range;
