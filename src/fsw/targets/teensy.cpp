@@ -15,6 +15,8 @@ void pan_system_setup() {
     StateFieldRegistry registry;
     MainControlLoop fcp(registry);
 
+    delay(2000);
+
     while (true) {
         fcp.execute();
     }
