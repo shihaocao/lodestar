@@ -7,9 +7,13 @@ LEDControlTask::LEDControlTask(StateFieldRegistry &registry,
         pinMode(13, OUTPUT);
     }
 
+static long last_millis = millis();
+static bool led_on = false;
+
 void LEDControlTask::execute(){
-    if(control_cycle_count % 2 == 0)
-        digitalWrite(13, HIGH);
-    else
-        digitalWrite(13, LOW);
+    if(millis() - last_millis > 500){
+        led_on = !led_on;
+        last_millis = millis();
+        digitalWrite(13, led_on);
+    }
 }

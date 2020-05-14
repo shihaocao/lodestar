@@ -63,7 +63,9 @@ protected:
         gyr_vec_f,
         //magnetometer vector
         mag_vec_f;
- 
+    
+    // quaternion
+    InternalStateField<d_quat_t> quat_f;
 };
 
 #endif

@@ -41,6 +41,46 @@ protected:
     InternalStateField<f_vector_t>* euler_fp;
     InternalStateField<f_vector_t>* acc_fp;
     InternalStateField<f_vector_t>* gyr_fp;
+    InternalStateField<d_quat_t>* quat_fp;
+
+    // helper functions for debug out
+    template<typename T, size_t N>
+    void hardline_compact(std::array<T, N>& array){
+        for(size_t i = 0; i < N; i++){
+            hardline_element(array[i]);
+        }
+    }
+
+    template<typename T, size_t N>
+    void airline_compact(std::array<T, N>& array){
+        for(size_t i = 0; i < N; i++){
+            airline_element(array[i]);
+        }
+    }
+
+    template<typename T>
+    void hardline_element(T element){
+        if(std::is_same<T, float>::value || std::is_same<T, double>::value)
+            Serial.printf("%f,", element);
+        else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
+            Serial.printf("%u,", element);
+        else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
+            Serial.printf("%d,", element);
+        else
+            Serial.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
+    }
+
+    template<typename T>
+    void airline_element(T element){
+        if(std::is_same<T, float>::value || std::is_same<T, double>::value)
+            Serial1.printf("%f,", element);
+        else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
+            Serial1.printf("%u,", element);
+        else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
+            Serial1.printf("%d,", element);
+        else
+            Serial1.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
+    }
 };
 
 #endif
