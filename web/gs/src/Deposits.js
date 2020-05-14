@@ -25,7 +25,7 @@ export default function Deposits() {
     });
   }
 
-  setInterval(updateAlt, 0.1);
+  setInterval(updateAlt, 1000);
 
   return (
     <React.Fragment>

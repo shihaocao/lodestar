@@ -1,15 +1,41 @@
 from flask import Flask
+from flask import jsonify
 import threading
 import time
 import serial
 
-POOL_TIME = 1
+POOL_TIME = 0.001
 altitude = 0
-
+incr = 0
+ccno = 0
 dataLock = threading.Lock()
 threadHandler = threading.Thread()
 
-telem = serial.Serial('dev/ttyUSB0')
+telem = serial.Serial('/dev/ttyACM0')
+
+def str_to_val(field):
+    '''
+    Automatically detects floats, ints and bools
+
+    Returns a float, int or bool
+    '''
+    if 'nan' in field:
+        return float("NAN")
+    elif '.' in field:
+        return float(field)
+    elif field == 'true':
+        return True
+    elif field == 'false':
+        return False
+    else:
+        return int(field)
+
+def listgen(input_string):
+    ret = input_string.split(",")
+    ret = [x for x in ret if x != '']
+    ret = [str_to_val(x) for x in ret]
+    return ret
+
 
 def interrupt():
     global threadHandler
@@ -18,9 +44,14 @@ def interrupt():
 def doStuff():
     global altitude
     global threadHandler
+    global incr
     with dataLock:
     # Do your stuff with commonDataStruct Here
-        altitude += 1
+        telem_data = listgen(telem.readline().strip().decode("utf-8"))
+        # print(telem_data)
+        ccno = telem_data[0]
+        altitude = telem_data[1]
+        incr += 1
     # Set the next thread to happen
     threadHandler = threading.Timer(POOL_TIME, doStuff, ())
     threadHandler.start()   
@@ -46,6 +77,12 @@ def get_current_time():
 
 @app.route('/altitude')
 def get_altitude():
-    global dataLock, altitude
+    global dataLock, altitude, incr
     with dataLock:
-        return {'altitude': altitude}
+        return {'altitude': incr}
+
+@app.route('/altitudes')
+def get_altitudes():
+    global dataLock, altitude, ccno
+    with dataLock:
+        return jsonify(cc=cnno,alt = altitude)
