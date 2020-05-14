@@ -21,26 +21,48 @@ const data = [
 ];
 
 function interleave(times, vals){
-  return times.reduce((acc, elem, i) => acc.concat(elem, vals[i]));
+  return times.reduce((acc, elem, i) => acc.concat(createData(elem, vals[i])),[]);
 }
 
 export default function Chart() {
   const theme = useTheme();
 
-  const [alts, setAlts] = useState(0);
-
   const t0 = [5,6,7,8]
   const t1 = t0.map(x => x.toString())
   const v2 = [40,50,23,55]
 
+  const [alts, setAlts] = useState(interleave(t1,v2));
+
   // setAlts(interleave(t1,v2));
 
+  // useEffect(() => {
+  //   setAlts(interleave(t1,v2));
+  // }, []);
+
+
+  const update_graph = async () => {
+    await fetch('/altitudes')
+      .then(res => res.json())
+      .then(data => {
+      
+      
+      let alts_copy = alts;
+      alts_copy.shift();
+      // let alts_copy = alts.co();
+      alts_copy.push(createData(data.cc, data.alt))
+      console.log(alts_copy);
+      setAlts(alts_copy);
+    });
+  }
+
   useEffect(() => {
-    setAlts(['0',0,'1',10,'2',2300]);
+    const interval = setInterval(() => {
+      update_graph();
+    }, 100);
+    return () => clearInterval(interval);
   }, []);
 
 
-  console.log(alts);
   // var updateAlts = () => {
   //   fetch('/altitude').then(res => res.json()).then(data => {
   //         setAlts(data.altitude);

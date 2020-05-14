@@ -17,21 +17,28 @@ const useStyles = makeStyles({
 export default function Deposits() {
   const classes = useStyles();
 
-  const [alt, setAlt] = useState(0);
+  const [ccno, set_ccno] = useState(0);
 
-  var updateAlt = () => {
-    fetch('/altitude').then(res => res.json()).then(data => {
-      setAlt(data.altitude);
+  const update_ccno = async () => {
+    await fetch('/ccno')
+      .then(res => res.json())
+      .then(data => {
+      set_ccno(data.ccno);
     });
   }
 
-  setInterval(updateAlt, 1000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      update_ccno();
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <React.Fragment>
       <Title>Recent Deposits</Title>
       <Typography component="p" variant="h4">
-        Altitude: {alt}
+        CCNO: {ccno}
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019

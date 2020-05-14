@@ -45,11 +45,13 @@ def doStuff():
     global altitude
     global threadHandler
     global incr
+    global ccno
     with dataLock:
     # Do your stuff with commonDataStruct Here
         telem_data = listgen(telem.readline().strip().decode("utf-8"))
         # print(telem_data)
         ccno = telem_data[0]
+        # print(ccno)
         altitude = telem_data[1]
         incr += 1
     # Set the next thread to happen
@@ -75,14 +77,20 @@ def get_query_from_react():
 def get_current_time():
     return {'time': time.time()}
 
+@app.route('/ccno')
+def get_ccno():
+    global ccno
+    with dataLock:
+        return {'ccno': ccno}
+
 @app.route('/altitude')
 def get_altitude():
     global dataLock, altitude, incr
     with dataLock:
-        return {'altitude': incr}
+        return {'altitude': altitude}
 
 @app.route('/altitudes')
 def get_altitudes():
     global dataLock, altitude, ccno
     with dataLock:
-        return jsonify(cc=cnno,alt = altitude)
+        return jsonify(cc=ccno,alt = altitude)
