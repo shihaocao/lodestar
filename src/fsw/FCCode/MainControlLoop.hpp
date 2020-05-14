@@ -12,6 +12,8 @@
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
 #include "DownlinkControlTask.hpp"
+#include "GNC.hpp"
+#include "ServoControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
    protected:
@@ -26,6 +28,10 @@ class MainControlLoop : public ControlTask<void> {
 
     LEDControlTask led_control_task;
 
+    GNC gnc;
+
+    ServoControlTask servo_controller;
+
     DownlinkControlTask downlink_control_task;
 
     MissionManager mission_manager; //initallized last
@@ -33,25 +39,45 @@ class MainControlLoop : public ControlTask<void> {
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
     // https://cornellprod-my.sharepoint.com/:x:/r/personal/saa243_cornell_edu/_layouts/15/Doc.aspx?sourcedoc=%7B04C55BBB-7AED-410B-AC43-67352393D6D5%7D&file=Flight%20Software%20Cycle.xlsx&action=default&mobileredirect=true&cid=e2b9bd89-7037-47bf-ad2a-fd8b25808939
-        static constexpr unsigned int debug_task_offset          =   5500;
-        static constexpr unsigned int piksi_control_task_offset  =  55000;
-        static constexpr unsigned int imu_monitor_offset         =  70500;
-        static constexpr unsigned int attitude_estimator_offset  =  85500;
-        static constexpr unsigned int gomspace_controller_offset = 106500;
-        static constexpr unsigned int uplink_consumer_offset     = 111500;
-        static constexpr unsigned int mission_manager_offset     = 111600;
-        static constexpr unsigned int docking_controller_offset  = 152400;
-        static constexpr unsigned int downlink_producer_offset   = 153400;
-        static constexpr unsigned int quake_manager_offset       = 153500;
-    #else
         static constexpr unsigned int debug_task_offset          =   3000;
         static constexpr unsigned int piksi_control_task_offset  =   4000;
         static constexpr unsigned int imu_monitor_offset         =   5000;
         static constexpr unsigned int bmp_monitor_offset         =   6000;
         static constexpr unsigned int mission_manager_offset     =  10000;
-        static constexpr unsigned int downlink_ct_offset         =  11000;
-        static constexpr unsigned int led_control_task_offset    =  20000;
+        static constexpr unsigned int gnc_offset                 =  11000;
+        static constexpr unsigned int servo_ct_offset            =  12000;
+        static constexpr unsigned int downlink_ct_offset         =  13000;
+        static constexpr unsigned int led_control_task_offset    =  15000;
+    #else
+        // static constexpr unsigned int debug_task_offset          =   3000;
+        // static constexpr unsigned int piksi_control_task_offset  =   4000;
+        // static constexpr unsigned int imu_monitor_offset         =   5000;
+        // static constexpr unsigned int bmp_monitor_offset         =   6000;
+        // static constexpr unsigned int mission_manager_offset     =  10000;
+        // static constexpr unsigned int gnc_offset                 =  11000;
+        // static constexpr unsigned int servo_ct_offset            =  12000;
+        // static constexpr unsigned int downlink_ct_offset         =  13000;
+        // static constexpr unsigned int led_control_task_offset    =  15000;
 
+        // static constexpr unsigned int debug_task_offset          =   0;
+        // static constexpr unsigned int piksi_control_task_offset  =   1000;
+        // static constexpr unsigned int imu_monitor_offset         =   2000;
+        // static constexpr unsigned int bmp_monitor_offset         =   3000;
+        // static constexpr unsigned int mission_manager_offset     =   4000;
+        // static constexpr unsigned int gnc_offset                 =   5000;
+        // static constexpr unsigned int servo_ct_offset            =   6000;
+        // static constexpr unsigned int downlink_ct_offset         =   7000;
+        // static constexpr unsigned int led_control_task_offset    =   8000;    
+
+        static constexpr unsigned int debug_task_offset          =   0;
+        static constexpr unsigned int piksi_control_task_offset  =   1;
+        static constexpr unsigned int imu_monitor_offset         =   2;
+        static constexpr unsigned int bmp_monitor_offset         =   3;
+        static constexpr unsigned int mission_manager_offset     =   4;
+        static constexpr unsigned int gnc_offset                 =   5;
+        static constexpr unsigned int servo_ct_offset            =   6;
+        static constexpr unsigned int downlink_ct_offset         =   7;
+        static constexpr unsigned int led_control_task_offset    =   8;    
         
     #endif
 

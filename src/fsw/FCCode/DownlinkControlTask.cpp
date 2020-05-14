@@ -10,9 +10,11 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
         linear_acc_fp = find_internal_field<f_vector_t>("imu.linear_acc_vec", __FILE__, __LINE__);
         gyr_fp = find_internal_field<f_vector_t>("imu.gyr_vec", __FILE__, __LINE__);
 
-        #if defined(SERIAL_DEBUG_COMPACT) || defined(SERIAL_DEBUG) 
         Serial.begin(9600);
-        #endif
+
+        // #if defined(SERIAL_DEBUG_COMPACT) || defined(SERIAL_DEBUG) 
+        // Serial.begin(9600);
+        // #endif
 
         #if defined(FLIGHT) || defined(SERIAL_DEBUG_915) 
         Serial1.begin(57600);
@@ -30,6 +32,15 @@ void DownlinkControlTask::execute(){
     acc_read = acc_fp->get();
     euler_read = euler_fp->get();
     gyr_read = gyr_fp->get();
+
+    // unsigned int temp = PAN::control_cycle_time;
+    #ifdef SPEED_TEST
+    Serial.printf("CN: %u, CCT: %u\n", control_cycle_count, PAN::control_cycle_time_ms);
+    #endif
+
+    #ifdef DL_OFF
+    return;
+    #endif
 
     #ifdef FLIGHT
     Serial1.printf("%u,", control_cycle_count);
