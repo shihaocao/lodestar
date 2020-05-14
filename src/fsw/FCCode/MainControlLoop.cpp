@@ -23,7 +23,9 @@ void MainControlLoop::execute() {
     bmp_monitor.execute_on_time();
     mission_manager.execute_on_time();
     gnc.execute_on_time();
+    #ifndef STATIC
     servo_controller.execute_on_time();
+    #endif
     downlink_control_task.execute_on_time();
     led_control_task.execute_on_time();
     
