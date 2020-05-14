@@ -1,109 +1,46 @@
-import React, { useState, useEffect, useRef} from 'react';
-import { useTheme } from '@material-ui/core/styles';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
-import Title from './Title';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-// Generate Sales Data
-function createData(time, amount) {
-  return { time, amount };
-}
+import {Line} from 'react-chartjs-2'
 
-const data = [
-  createData('00:00', 0),
-  createData('03:00', 300),
-  createData('06:00', 600),
-  createData('09:00', 800),
-  createData('12:00', 1500),
-  createData('15:00', 2000),
-  createData('18:00', 2400),
-  createData('21:00', 2400),
-  createData('24:00', undefined),
-];
+export default  class Chart extends React.Component {
 
-function interleave(times, vals){
-  return times.reduce((acc, elem, i) => acc.concat(createData(elem, vals[i])),[]);
-}
+  constructor(props)
+  {
+      super(props)
+      this.buffersize
 
-export default function Chart() {
-  const theme = useTheme();
+      this.data = {
+        labels: [],
+        datasets: [
+          {
+            label: 'My Chart',
+            data: []
+          }
+        ]
+      }
 
-  const t0 = [5,6,7,8]
-  const t1 = t0.map(x => x.toString())
-  const v2 = [40,50,23,55]
-
-  const [alts, setAlts] = useState(interleave(t1,v2));
-
-  // setAlts(interleave(t1,v2));
-
-  // useEffect(() => {
-  //   setAlts(interleave(t1,v2));
-  // }, []);
-
-
-  const update_graph = async () => {
-    await fetch('/altitudes')
-      .then(res => res.json())
-      .then(data => {
-      
-      
-      let alts_copy = alts;
-      alts_copy.shift();
-      // let alts_copy = alts.co();
-      alts_copy.push(createData(data.cc, data.alt))
-      console.log(alts_copy);
-      setAlts(alts_copy);
-    });
   }
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      update_graph();
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
+  onChange(newdata) {
 
+    const size = this.data.datasets[0].data.length
+    if (size >= this.buffersize)
+    {
+      this.data.datasets[0].data.shift()
+      this.data.labels.shift()
+    }
 
-  // var updateAlts = () => {
-  //   fetch('/altitude').then(res => res.json()).then(data => {
-  //         setAlts(data.altitude);
-  //       });
-  // }
+    this.data.labels.push(newdata.label)
+    this.data.datasets[0].data.push(newdata.value)
 
-  // var updateAlt = () => {
-  //   fetch('/altitude').then(res => res.json()).then(data => {
-  //     setAlt(data.altitude);
-  //   });
-  // }
+  }
 
-  // setInterval(updateAlt, 0.1);
-  // setInterval(updateAlts, 0.1);
+  render()
+  {
+    return (
+      <Line data={this.data}/>
+    )
+  }
 
-  return (
-    <React.Fragment>
-      <Title>Today</Title>
-      <ResponsiveContainer>
-        <LineChart
-          data={alts}
-          margin={{
-            top: 16,
-            right: 16,
-            bottom: 0,
-            left: 24,
-          }}
-        >
-          <XAxis dataKey="time" stroke={theme.palette.text.secondary} />
-          <YAxis stroke={theme.palette.text.secondary}>
-            <Label
-              angle={270}
-              position="left"
-              style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
-            >
-              Sales ($)
-            </Label>
-          </YAxis>
-          <Line type="monotone" dataKey="amount" stroke={theme.palette.primary.main} dot={false} />
-        </LineChart>
-      </ResponsiveContainer>
-    </React.Fragment>
-  );
 }
