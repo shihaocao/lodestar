@@ -26,10 +26,7 @@ export default function Chart(props) {
   }
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      update_data();
-    }, 100);
-    return () => clearInterval(interval);
+    update_data();
   }, [update_data]);
   return (
     <React.Fragment>

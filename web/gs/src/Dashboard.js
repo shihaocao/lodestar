@@ -144,7 +144,7 @@ export default function Dashboard() {
   useEffect(() => {
     const interval = setInterval(() => {
       update_data();
-    }, 100);
+    }, 80);
     return () => clearInterval(interval);
   }, [update_data]);
 
