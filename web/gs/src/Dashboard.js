@@ -132,29 +132,15 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const n = 30;
-  const t0 = Array(n).fill(0)
-  const t1 = t0.map(x => x.toString())
-  const v2 = Array(n).fill(0)
-  const v3 = Array(n).fill(0)
-
-  const [key, set_key] = useState(0);
-
-  const [data_points, set_data] = useState(Array(n).fill(createTelemData(0,0,0)));
+  const [data_point, set_data] = useState(createTelemData(0,0,0));
 
   const update_data = async () => {
     await fetch('/telem_packet')
       .then(res => res.json())
       .then(data => {
       
-      
-      let data_copy = data_points;
-      data_copy.shift();
-      // let alts_copy = alts.co();
-      data_copy.push(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
-      set_data(data_copy);
-      console.log(data_points);
-      set_key(key + 1);
+      // console.log(data);
+      set_data(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
     });
   }
 
@@ -213,7 +199,7 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart data={data_points}/>
+                <Chart data={data_point}/>
               </Paper>
             </Grid>
             {/* Recent Deposits */}

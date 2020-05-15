@@ -36,14 +36,33 @@ export default function Chart(props) {
   const theme = useTheme();
 
   const delta_alt = 1;
-  console.log(props.data);
+  let n = 30;
+  // console.log(props.data);
+  const [data_points, set_data] = useState(Array(n).fill(createTelemData(0,0,0)));
 
+  const update_data = () => {
+    let data = props.data
+    let data_copy = data_points;
+    data_copy.shift();
+    // let alts_copy = alts.co();
+    data_copy.push(createTelemData(data.ccno, data.altitude, data.lin_acc_z))
+    set_data(data_copy);
+    // console.log(data_points);
+    // set_key(key + 1);
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      update_data();
+    }, 100);
+    return () => clearInterval(interval);
+  }, [update_data]);
   return (
     <React.Fragment>
       <Title>Today</Title>
       <ResponsiveContainer>
         <LineChart
-          data={props.data}
+          data={data_points}
           margin={{
             top: 16,
             right: 16,
