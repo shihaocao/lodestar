@@ -22,6 +22,7 @@ import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
 import Deposits from './Deposits';
 import Orders from './Orders';
+var inits = require("./InitializeData");
 
 function Copyright() {
   return (
@@ -117,10 +118,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function createTelemData(ccno, altitude, lin_acc_z){
-  return { ccno, altitude, lin_acc_z};
-}
-
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -132,7 +129,7 @@ export default function Dashboard() {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
-  const [data_point, set_data] = useState(createTelemData(0,0,0));
+  const [data_point, set_data] = useState(inits.initial_point);
 
   const update_data = async () => {
     await fetch('/telem_packet')
@@ -140,7 +137,7 @@ export default function Dashboard() {
       .then(data => {
       
       // console.log(data);
-      set_data(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
+      set_data(data);
     });
   }
 
@@ -199,7 +196,9 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart data={data_point}/>
+                <Chart ccno={data_point.ccno} 
+                       altitude={data_point.altitude} 
+                       lin_acc_z={data_point.linear_acc[2]}/>
               </Paper>
             </Grid>
             {/* Recent Deposits */}
@@ -211,7 +210,7 @@ export default function Dashboard() {
             {/* Recent Orders */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders />
+                <Orders data={data_point}/>
               </Paper>
             </Grid>
           </Grid>

@@ -3,33 +3,8 @@ import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
 
-// Generate Sales Data
-function createData(time, amount) {
-  return { time, amount };
-}
-
-function createTelemData(ccno, altitude, lin_acc_z){
+function createGraphData(ccno, altitude, lin_acc_z){
   return { ccno, altitude, lin_acc_z};
-}
-
-const data = [
-  createData('00:00', 0),
-  createData('03:00', 300),
-  createData('06:00', 600),
-  createData('09:00', 800),
-  createData('12:00', 1500),
-  createData('15:00', 2000),
-  createData('18:00', 2400),
-  createData('21:00', 2400),
-  createData('24:00', undefined),
-];
-
-function interleave(times, vals){
-  return times.reduce((acc, elem, i) => acc.concat(createData(elem, vals[i])),[]);
-}
-
-function interleave3(times, vals, v3){
-  return times.reduce((acc, elem, i) => acc.concat(createTelemData(elem, vals[i], v3[i])),[]);
 }
 
 export default function Chart(props) {
@@ -38,14 +13,13 @@ export default function Chart(props) {
   const delta_alt = 1;
   let n = 30;
   // console.log(props.data);
-  const [data_points, set_data] = useState(Array(n).fill(createTelemData(0,0,0)));
+  const [data_points, set_data] = useState(Array(n).fill(createGraphData(0,0,0)));
 
   const update_data = () => {
-    let data = props.data
     let data_copy = data_points;
     data_copy.shift();
     // let alts_copy = alts.co();
-    data_copy.push(createTelemData(data.ccno, data.altitude, data.lin_acc_z))
+    data_copy.push(createGraphData(props.ccno, props.altitude, props.lin_acc_z))
     set_data(data_copy);
     // console.log(data_points);
     // set_key(key + 1);
