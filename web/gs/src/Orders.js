@@ -24,6 +24,19 @@ function array_to_table_cells(array, precision){
   <TableCell>{x.toFixed(precision)}</TableCell>))
 }
 
+function col_width_gen(array){
+  return array.map((x) => (
+    <col width={x.toString()+"%"} />
+  ))
+}
+
+function name_xyz_cells(name){
+  return <>
+    <TableCell>{name}<sub>x</sub></TableCell>
+    <TableCell>{name}<sub>y</sub></TableCell>
+    <TableCell>{name}<sub>z</sub></TableCell>
+  </>
+}
 export default function Orders(props) {
   const classes = useStyles();
 
@@ -54,13 +67,19 @@ export default function Orders(props) {
     <React.Fragment>
       <Title>Telemetry Points</Title>
       <Table size="small">
+      <colgroup>
+        {col_width_gen(Array(15).fill(2))} 
+        {/* idk if the above is doing anything */}
+      </colgroup>
         <TableHead>
           <TableRow>
             <TableCell>CCNO</TableCell>
-            <TableCell>Altitude</TableCell>
-            <TableCell>LinearAcc</TableCell>
-            <TableCell>Acc</TableCell>
-            <TableCell>Euler</TableCell>
+            <TableCell>Alt</TableCell>
+            {name_xyz_cells("L_a")}
+            {name_xyz_cells("a")}
+            {name_xyz_cells("Euler")}
+            {name_xyz_cells("&omega;")}
+
             <TableCell>&omega;<sub>x</sub></TableCell>
             <TableCell>&omega;<sub>y</sub></TableCell>
             <TableCell>&omega;<sub>z</sub></TableCell>
@@ -76,9 +95,15 @@ export default function Orders(props) {
             <TableRow key={row.ccno}>
               <TableCell>{row.ccno}</TableCell>
               <TableCell>{row.altitude}</TableCell>
-              <TableCell>{row.linear_acc}</TableCell>
-              <TableCell>{row.acc}</TableCell>
-              <TableCell>{row.euler}</TableCell>
+              {
+                array_to_table_cells(row.linear_acc, 3)
+              }
+              {
+                array_to_table_cells(row.acc, 3)
+              }
+              {
+                array_to_table_cells(row.euler, 3)
+              }
               {
                 array_to_table_cells(row.gyr, 3)
               }
@@ -89,11 +114,6 @@ export default function Orders(props) {
           ))}
         </TableBody>
       </Table>
-      <div className={classes.seeMore}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          See more orders
-        </Link>
-      </div>
     </React.Fragment>
   );
 }
