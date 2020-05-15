@@ -23,14 +23,9 @@ export default function Deposits(props) {
       <Typography component="p" variant="h4">
         CCNO: {props.ccno}
       </Typography>
-      <Typography color="textSecondary" className={classes.depositContext}>
+      {/* <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019
-      </Typography>
-      <div>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          View balance
-        </Link>
-      </div>
+      </Typography> */}
     </React.Fragment>
   );
 }

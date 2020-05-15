@@ -76,9 +76,8 @@ export default function Orders(props) {
             <TableCell>CCNO</TableCell>
             <TableCell>Alt</TableCell>
             {name_xyz_cells("L_a")}
-            {name_xyz_cells("a")}
+            {/* {name_xyz_cells("a")} */}
             {name_xyz_cells("Euler")}
-            {name_xyz_cells("&omega;")}
 
             <TableCell>&omega;<sub>x</sub></TableCell>
             <TableCell>&omega;<sub>y</sub></TableCell>
@@ -99,7 +98,7 @@ export default function Orders(props) {
                 array_to_table_cells(row.linear_acc, 3)
               }
               {
-                array_to_table_cells(row.acc, 3)
+                // array_to_table_cells(row.acc, 3)
               }
               {
                 array_to_table_cells(row.euler, 3)
