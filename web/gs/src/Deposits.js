@@ -14,31 +14,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Deposits() {
+export default function Deposits(props) {
   const classes = useStyles();
-
-  const [ccno, set_ccno] = useState(0);
-
-  const update_ccno = async () => {
-    await fetch('/ccno')
-      .then(res => res.json())
-      .then(data => {
-      set_ccno(data.ccno);
-    });
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      update_ccno();
-    }, 100);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <React.Fragment>
-      <Title>Recent Deposits</Title>
+      <Title>State</Title>
       <Typography component="p" variant="h4">
-        CCNO: {ccno}
+        CCNO: {props.ccno}
       </Typography>
       <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019
