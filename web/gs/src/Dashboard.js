@@ -146,7 +146,7 @@ export default function Dashboard() {
       update_data();
     }, 80);
     return () => clearInterval(interval);
-  }, [update_data]);
+  });
 
   return (
     <div className={classes.root}>

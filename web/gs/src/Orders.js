@@ -9,19 +9,6 @@ import TableRow from '@material-ui/core/TableRow';
 import Title from './Title';
 var inits = require("./InitializeData");
 
-// Generate Order Data
-function createData(id, date, name, shipTo, paymentMethod, amount) {
-  return { id, date, name, shipTo, paymentMethod, amount };
-}
-
-const rows = [
-  createData(0, '16 Mar, 2019', 'Elvis Presley', 'Tupelo, MS', 'VISA ⠀•••• 3719', 312.44),
-  createData(1, '16 Mar, 2019', 'Paul McCartney', 'London, UK', 'VISA ⠀•••• 2574', 866.99),
-  createData(2, '16 Mar, 2019', 'Tom Scholz', 'Boston, MA', 'MC ⠀•••• 1253', 100.81),
-  createData(3, '16 Mar, 2019', 'Michael Jackson', 'Gary, IN', 'AMEX ⠀•••• 2000', 654.39),
-  createData(4, '15 Mar, 2019', 'Bruce Springsteen', 'Long Branch, NJ', 'VISA ⠀•••• 5919', 212.79),
-];
-
 function preventDefault(event) {
   event.preventDefault();
 }
@@ -31,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3),
   },
 }));
+
+function array_to_table_cells(array, precision){
+  return array.map((x) => (
+  <TableCell>{x.toFixed(precision)}</TableCell>))
+}
 
 export default function Orders(props) {
   const classes = useStyles();
@@ -42,7 +34,7 @@ export default function Orders(props) {
   }
 
   // console.log(props.data);
-  console.log(init_data);
+  console.log(array_to_table_cells(props.data.quat))
   const [local_data, set_data] = useState(init_data);
 
   const update_data = () => {
@@ -56,10 +48,7 @@ export default function Orders(props) {
     // console.log(local_data);
     // set_key(key + 1);
   }
-
-  useEffect(() => {
-    update_data();
-  }, [update_data]);
+  useEffect(() => update_data());
 
   return (
     <React.Fragment>
@@ -72,8 +61,14 @@ export default function Orders(props) {
             <TableCell>LinearAcc</TableCell>
             <TableCell>Acc</TableCell>
             <TableCell>Euler</TableCell>
-            <TableCell>Gyr</TableCell>
-            <TableCell>Quaternion</TableCell>
+            <TableCell>&omega;<sub>x</sub></TableCell>
+            <TableCell>&omega;<sub>y</sub></TableCell>
+            <TableCell>&omega;<sub>z</sub></TableCell>
+
+            <TableCell>q<sub>x</sub></TableCell>
+            <TableCell>q<sub>y</sub></TableCell>
+            <TableCell>q<sub>z</sub></TableCell>
+            <TableCell>q<sub>w</sub></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -84,8 +79,12 @@ export default function Orders(props) {
               <TableCell>{row.linear_acc}</TableCell>
               <TableCell>{row.acc}</TableCell>
               <TableCell>{row.euler}</TableCell>
-              <TableCell>{row.gyr}</TableCell>
-              <TableCell>{row.quat}</TableCell>
+              {
+                array_to_table_cells(row.gyr, 3)
+              }
+              {
+                array_to_table_cells(row.quat, 3)
+              }
             </TableRow>
           ))}
         </TableBody>

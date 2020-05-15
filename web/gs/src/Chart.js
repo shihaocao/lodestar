@@ -25,9 +25,8 @@ export default function Chart(props) {
     // set_key(key + 1);
   }
 
-  useEffect(() => {
-    update_data();
-  }, [update_data]);
+  useEffect(() => update_data());
+
   return (
     <React.Fragment>
       <Title>Today</Title>
