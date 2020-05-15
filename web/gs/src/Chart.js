@@ -41,18 +41,11 @@ export default function Chart(props) {
   const v2 = Array(n).fill(0)
   const v3 = Array(n).fill(0)
 
-  const [alts, setAlts] = useState(interleave(t1,v2));
   const [key, set_key] = useState(0);
 
   const [data_points, set_data] = useState(interleave3(t1,v2,v3));
 
   const delta_alt = 1
-  // setAlts(interleave(t1,v2));
-
-  // useEffect(() => {
-  //   setAlts(interleave(t1,v2));
-  // }, []);
-
 
   const update_graph = async () => {
     await fetch('/telem_packet')
@@ -76,22 +69,6 @@ export default function Chart(props) {
     }, 100);
     return () => clearInterval(interval);
   }, [update_graph]);
-
-
-  // var updateAlts = () => {
-  //   fetch('/altitude').then(res => res.json()).then(data => {
-  //         setAlts(data.altitude);
-  //       });
-  // }
-
-  // var updateAlt = () => {
-  //   fetch('/altitude').then(res => res.json()).then(data => {
-  //     setAlt(data.altitude);
-  //   });
-  // }
-
-  // setInterval(updateAlt, 0.1);
-  // setInterval(updateAlts, 0.1);
 
   return (
     <React.Fragment>
