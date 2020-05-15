@@ -8,6 +8,10 @@ function createData(time, amount) {
   return { time, amount };
 }
 
+function createTelemData(ccno, altitude, lin_acc_z){
+  return { ccno, altitude, lin_acc_z};
+}
+
 const data = [
   createData('00:00', 0),
   createData('03:00', 300),
@@ -24,6 +28,10 @@ function interleave(times, vals){
   return times.reduce((acc, elem, i) => acc.concat(createData(elem, vals[i])),[]);
 }
 
+function interleave3(times, vals, v3){
+  return times.reduce((acc, elem, i) => acc.concat(createTelemData(elem, vals[i], v3[i])),[]);
+}
+
 export default function Chart(props) {
   const theme = useTheme();
 
@@ -31,9 +39,12 @@ export default function Chart(props) {
   const t0 = Array(n).fill(0)
   const t1 = t0.map(x => x.toString())
   const v2 = Array(n).fill(0)
+  const v3 = Array(n).fill(0)
 
   const [alts, setAlts] = useState(interleave(t1,v2));
   const [key, set_key] = useState(0);
+
+  const [data_points, set_data] = useState(interleave3(t1,v2,v3));
 
   const delta_alt = 1
   // setAlts(interleave(t1,v2));
@@ -44,17 +55,17 @@ export default function Chart(props) {
 
 
   const update_graph = async () => {
-    await fetch('/altitudes')
+    await fetch('/telem_packet')
       .then(res => res.json())
       .then(data => {
       
       
-      let alts_copy = alts;
-      alts_copy.shift();
+      let data_copy = data_points;
+      data_copy.shift();
       // let alts_copy = alts.co();
-      alts_copy.push(createData(data.cc, data.alt))
-      setAlts(alts_copy);
-      console.log(alts);
+      data_copy.push(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
+      set_data(data_copy);
+      console.log(data_points);
       set_key(key + 1);
     });
   }
@@ -87,7 +98,7 @@ export default function Chart(props) {
       <Title>Today</Title>
       <ResponsiveContainer>
         <LineChart
-          data={alts}
+          data={data_points}
           margin={{
             top: 16,
             right: 16,
@@ -95,8 +106,9 @@ export default function Chart(props) {
             left: 24,
           }}
         >
-          <XAxis dataKey="time" stroke={theme.palette.text.secondary} />
+          <XAxis dataKey="ccno" stroke={theme.palette.text.secondary} />
           <YAxis stroke={theme.palette.text.secondary}
+                yAxisId="left"
                 type="number" 
                 domain={[dataMin => (Math.floor(dataMin)-delta_alt), max => (Math.floor(max)+delta_alt)]}>
             <Label
@@ -104,10 +116,21 @@ export default function Chart(props) {
               position="left"
               style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
             >
-              Sales ($)
+              Altitude (ASL) (m)
             </Label>
           </YAxis>
-          <Line type="monotone" dataKey="amount" stroke={theme.palette.primary.main} dot={false} />
+          <YAxis yAxisId="right" orientation="right" type="number"
+                 domain={[-12,12]} allowDataOverflow='true'>
+            <Label
+              angle={90}
+              position="right"
+              style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
+            >
+              Linear Acceleration Z (g)
+            </Label>
+                 </YAxis>
+          <Line yAxisId="left" type="monotone" dataKey="altitude" stroke={theme.palette.primary.main} dot={false} />
+          <Line yAxisId="right" type="monotone" dataKey="lin_acc_z" stroke={theme.palette.primary.main} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </React.Fragment>
