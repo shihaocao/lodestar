@@ -27,13 +27,15 @@ function interleave(times, vals){
 export default function Chart(props) {
   const theme = useTheme();
 
-  const t0 = [5,6,7,8]
+  const n = 30;
+  const t0 = Array(n).fill(0)
   const t1 = t0.map(x => x.toString())
-  const v2 = [40,50,23,55]
+  const v2 = Array(n).fill(0)
 
   const [alts, setAlts] = useState(interleave(t1,v2));
   const [key, set_key] = useState(0);
 
+  const delta_alt = 1
   // setAlts(interleave(t1,v2));
 
   // useEffect(() => {
@@ -94,7 +96,9 @@ export default function Chart(props) {
           }}
         >
           <XAxis dataKey="time" stroke={theme.palette.text.secondary} />
-          <YAxis stroke={theme.palette.text.secondary}>
+          <YAxis stroke={theme.palette.text.secondary}
+                type="number" 
+                domain={[dataMin => (Math.floor(dataMin)-delta_alt), max => (Math.floor(max)+delta_alt)]}>
             <Label
               angle={270}
               position="left"
