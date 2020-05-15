@@ -34,6 +34,10 @@ void DownlinkControlTask::execute(){
     d_quat_t quat_read = quat_fp->get();
     #endif
 
+    #ifdef AIR_TEST
+    Serial1.print("0000;1111;2222;3333;4444;5555;6666;7777;8888;9999;0000,,,");
+    return;
+    #endif
 
     // unsigned int temp = PAN::control_cycle_time;
     #ifdef SPEED_TEST
@@ -41,8 +45,8 @@ void DownlinkControlTask::execute(){
     #endif
 
     #if defined(AIR) && defined(COMPACT)
-    airline_element(control_cycle_count);
-    airline_element(altitude_fp->get());
+    airline_solo(control_cycle_count);
+    airline_solo(altitude_fp->get());
     airline_compact(linear_acc_read);
     airline_compact(acc_read);
     airline_compact(euler_read);

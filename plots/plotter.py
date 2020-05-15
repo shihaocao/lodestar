@@ -1,11 +1,14 @@
+import matplotlib
+matplotlib.use('TkAgg')
+
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import time
 
-import serial
-
+# from serial import Serial
+import serial 
 #note hardcoded serial port
-telem = serial.Serial('COM7')
+telem = serial.Serial('/dev/ttyUSB0', 57600)
 
 timecnt = 100
 totallen = 100
@@ -15,7 +18,9 @@ var1 = [-40 for x in range(totallen)]
 lin_acc_z = [-40 for x in range(totallen)]
 
 def listgen(input_string):
-    ret = input_string.split(",")
+    print(input_string)
+    ret = input_string.replace(',',';').split(";")
+    ret = [x for x in ret if x != '']
     ret = [float(x) for x in ret]
     return ret
 

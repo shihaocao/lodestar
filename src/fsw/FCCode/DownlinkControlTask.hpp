@@ -53,31 +53,40 @@ protected:
 
     template<typename T, size_t N>
     void airline_compact(std::array<T, N>& array){
-        for(size_t i = 0; i < N; i++){
+        for(size_t i = 0; i < N - 1; i++){
             airline_element(array[i]);
+            Serial1.print(",");
         }
+        airline_element(array[N-1]);
+        Serial1.print(";");
     }
 
     template<typename T>
     void hardline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
-            Serial.printf("%f,", element);
+            Serial.printf("%g", element);
         else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
-            Serial.printf("%u,", element);
+            Serial.printf("%u", element);
         else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
-            Serial.printf("%d,", element);
+            Serial.printf("%d", element);
         else
             Serial.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
 
     template<typename T>
+    void airline_solo(T element){
+        airline_element(element);
+        Serial1.print(";");
+    }
+
+    template<typename T>
     void airline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
-            Serial1.printf("%f,", element);
+            Serial1.printf("%g", element);
         else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
-            Serial1.printf("%u,", element);
+            Serial1.printf("%u", element);
         else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
-            Serial1.printf("%d,", element);
+            Serial1.printf("%d", element);
         else
             Serial1.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
