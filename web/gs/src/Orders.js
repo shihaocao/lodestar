@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 
 function array_to_table_cells(array, precision){
   return array.map((x) => (
-  <TableCell>{x.toFixed(precision)}</TableCell>))
+  <TableCell align='right'>{x.toFixed(precision)}</TableCell>))
 }
 
 function col_width_gen(array){
