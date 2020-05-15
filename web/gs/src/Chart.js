@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react';
+import React, { useState, useEffect} from 'react';
 import { useTheme } from '@material-ui/core/styles';
 import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
@@ -35,47 +35,15 @@ function interleave3(times, vals, v3){
 export default function Chart(props) {
   const theme = useTheme();
 
-  const n = 30;
-  const t0 = Array(n).fill(0)
-  const t1 = t0.map(x => x.toString())
-  const v2 = Array(n).fill(0)
-  const v3 = Array(n).fill(0)
-
-  const [key, set_key] = useState(0);
-
-  const [data_points, set_data] = useState(interleave3(t1,v2,v3));
-
-  const delta_alt = 1
-
-  const update_graph = async () => {
-    await fetch('/telem_packet')
-      .then(res => res.json())
-      .then(data => {
-      
-      
-      let data_copy = data_points;
-      data_copy.shift();
-      // let alts_copy = alts.co();
-      data_copy.push(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
-      set_data(data_copy);
-      console.log(data_points);
-      set_key(key + 1);
-    });
-  }
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      update_graph();
-    }, 100);
-    return () => clearInterval(interval);
-  }, [update_graph]);
+  const delta_alt = 1;
+  console.log(props.data);
 
   return (
     <React.Fragment>
       <Title>Today</Title>
       <ResponsiveContainer>
         <LineChart
-          data={data_points}
+          data={props.data}
           margin={{
             top: 16,
             right: 16,
@@ -97,7 +65,7 @@ export default function Chart(props) {
             </Label>
           </YAxis>
           <YAxis yAxisId="right" orientation="right" type="number"
-                 domain={[-12,12]} allowDataOverflow='true'>
+                 domain={[-12,12]} allowDataOverflow={true}>
             <Label
               angle={90}
               position="right"

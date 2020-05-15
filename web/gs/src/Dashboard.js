@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect} from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -117,6 +117,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function createTelemData(ccno, altitude, lin_acc_z){
+  return { ccno, altitude, lin_acc_z};
+}
+
 export default function Dashboard() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
@@ -127,6 +131,39 @@ export default function Dashboard() {
     setOpen(false);
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  const n = 30;
+  const t0 = Array(n).fill(0)
+  const t1 = t0.map(x => x.toString())
+  const v2 = Array(n).fill(0)
+  const v3 = Array(n).fill(0)
+
+  const [key, set_key] = useState(0);
+
+  const [data_points, set_data] = useState(Array(n).fill(createTelemData(0,0,0)));
+
+  const update_data = async () => {
+    await fetch('/telem_packet')
+      .then(res => res.json())
+      .then(data => {
+      
+      
+      let data_copy = data_points;
+      data_copy.shift();
+      // let alts_copy = alts.co();
+      data_copy.push(createTelemData(data.ccno, data.altitude, data.linear_acc[2]))
+      set_data(data_copy);
+      console.log(data_points);
+      set_key(key + 1);
+    });
+  }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      update_data();
+    }, 100);
+    return () => clearInterval(interval);
+  }, [update_data]);
 
   return (
     <div className={classes.root}>
@@ -176,7 +213,7 @@ export default function Dashboard() {
             {/* Chart */}
             <Grid item xs={12} md={8} lg={9}>
               <Paper className={fixedHeightPaper}>
-                <Chart />
+                <Chart data={data_points}/>
               </Paper>
             </Grid>
             {/* Recent Deposits */}
