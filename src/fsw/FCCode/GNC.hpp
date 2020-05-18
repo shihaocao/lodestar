@@ -30,7 +30,7 @@ protected:
     * @brief Inputs to get from GNC.
     */
 
-    InternalStateField<f_quat_t> flap_commands_f;
+    InternalStateField<f_quat_t> flap_commands_fp;
 
     // eventually not needed, just was for debug
     float inc_dir = 0;

@@ -27,7 +27,10 @@ class MissionManager : public TimedControlTask<void> {
          * @brief Current mission mode (see mission_mode_t.enum)
          */
         InternalStateField<unsigned char> mission_mode_f;
+        InternalStateField<float> ground_level_f;
 
+        InternalStateField<float>* alt_fp;
+     
 };
 
 #endif

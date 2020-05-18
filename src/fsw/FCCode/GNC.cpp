@@ -3,12 +3,12 @@
 GNC::GNC(StateFieldRegistry &registry, 
     unsigned int offset)
     : TimedControlTask<void>(registry, "gnc", offset),
-    flap_commands_f("gnc.flap_cmds")
+    flap_commands_fp("gnc.flap_cmds")
     {
-        add_internal_field(flap_commands_f);
+        add_internal_field(flap_commands_fp);
 
         // default all flaps to no actuation
-        flap_commands_f.set(f_quat_t{
+        flap_commands_fp.set(f_quat_t{
             0.0,
             0.0,
             0.0,
@@ -18,7 +18,7 @@ GNC::GNC(StateFieldRegistry &registry,
 
 void GNC::execute(){
 
-    f_quat_t flap_commands = flap_commands_f.get();
+    f_quat_t flap_commands = flap_commands_fp.get();
 
     // the block below is dummy code that cycles the servos back and forth
     float speed = 0.5;
@@ -30,9 +30,9 @@ void GNC::execute(){
         flap_commands[i] += inc_dir;
     }
 
-    flap_commands_f.set(flap_commands);
+    flap_commands_fp.set(flap_commands);
     
-    // flap_commands_f.set(f_quat_t{
+    // flap_commands_fp.set(f_quat_t{
     //     20.0,
     //     30.0,
     //     40.0,

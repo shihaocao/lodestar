@@ -2,9 +2,13 @@
 
 MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset) :
     TimedControlTask<void>(registry, "mission_ct", offset),
-    mission_mode_f("pan.mode")
+    mission_mode_f("ls.mode"),
+    ground_level_f("ls.ground_level")
 {
     add_internal_field(mission_mode_f);
+    add_internal_field(ground_level_f);
+
+    alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
 
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
     // adcs_cmd_attitude_fp = find_writable_field<f_quat_t>("adcs.cmd_attitude", __FILE__, __LINE__);
@@ -13,6 +17,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     // radio_mode_fp = find_readable_field<unsigned char>("radio.mode", __FILE__, __LINE__);
 
     mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::warmup));
+    ground_level_f.set(0);
 }
 
 void MissionManager::execute() {
@@ -34,7 +39,7 @@ void MissionManager::execute() {
             dispatch_bellyflop();
             break;
         case mission_mode_t::landed:
-            dispatch_bellyflop();
+            dispatch_landed();
             break;
         default:
             printf(debug_severity::error, "Master state not defined: %d\n", static_cast<unsigned int>(mode));

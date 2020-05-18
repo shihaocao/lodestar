@@ -4,7 +4,7 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
     unsigned int offset)
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
-        flap_commands_f = find_internal_field<f_quat_t>("gnc.flap_cmds", __FILE__, __LINE__);
+        flap_commands_fp = find_internal_field<f_quat_t>("gnc.flap_cmds", __FILE__, __LINE__);
 
         flap1.attach(SERVO::flap1_pin);
         flap2.attach(SERVO::flap2_pin);
@@ -14,7 +14,7 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
 
 void ServoControlTask::execute(){
 
-    f_quat_t flap_commands = flap_commands_f->get();
+    f_quat_t flap_commands = flap_commands_fp->get();
     f_quat_t unit_range;
     f_quat_t flap_servo_writes;
 
