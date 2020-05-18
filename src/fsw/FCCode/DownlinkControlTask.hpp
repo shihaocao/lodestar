@@ -37,6 +37,7 @@ protected:
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
     InternalStateField<float>* altitude_fp;
+    InternalStateField<unsigned int>* mm_fp;
     InternalStateField<f_vector_t>* linear_acc_fp;
     InternalStateField<f_vector_t>* euler_fp;
     InternalStateField<f_vector_t>* acc_fp;
@@ -46,9 +47,12 @@ protected:
     // helper functions for debug out
     template<typename T, size_t N>
     void hardline_compact(std::array<T, N>& array){
-        for(size_t i = 0; i < N; i++){
+        for(size_t i = 0; i < N-1; i++){
             hardline_element(array[i]);
+            Serial.print(",");
         }
+        hardline_element(array[N-1]);
+        Serial.print(";");
     }
 
     template<typename T, size_t N>
@@ -72,13 +76,7 @@ protected:
         else
             Serial.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
-
-    template<typename T>
-    void airline_solo(T element){
-        airline_element(element);
-        Serial1.print(";");
-    }
-
+    
     template<typename T>
     void airline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
@@ -90,6 +88,18 @@ protected:
         else
             Serial1.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
+
+    template<typename T>
+    void airline_solo(T element){
+        airline_element(element);
+        Serial1.print(";");
+    }
+
+    template<typename T>
+    void hardline_solo(T element){
+        hardline_element(element);
+        Serial.print(";");
+    }    
 };
 
 #endif
