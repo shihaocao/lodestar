@@ -10,6 +10,11 @@ namespace PAN {
     constexpr unsigned int control_cycle_time = control_cycle_time_us;
 }
 
+namespace MM {
+    constexpr unsigned int warmup_millis = 5 * 1000;
+    constexpr unsigned int init_millis = 10 * 1000;
+    constexpr unsigned int init_cycles = 100;
+}
 /**
  * @brief A set of constants for the Servo CT
  * 

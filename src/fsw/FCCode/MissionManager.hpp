@@ -15,6 +15,8 @@ class MissionManager : public TimedControlTask<void> {
 
     protected:
 
+        void set_mission_mode(mission_mode_t mode);
+
         void dispatch_warmup();
         void dispatch_initialization();
         void dispatch_standby();
@@ -31,6 +33,9 @@ class MissionManager : public TimedControlTask<void> {
 
         InternalStateField<float>* alt_fp;
      
+        long enter_init_millis;
+        int enter_init_ccno;
+        // long enter_standby_millis;
 };
 
 #endif

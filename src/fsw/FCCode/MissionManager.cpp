@@ -18,6 +18,8 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
 
     mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::warmup));
     ground_level_f.set(0);
+
+    enter_init_ccno = -1;
 }
 
 void MissionManager::execute() {
@@ -48,16 +50,29 @@ void MissionManager::execute() {
     }
 }
 
-void MissionManager::dispatch_warmup() {
+void MissionManager::set_mission_mode(mission_mode_t mode){
+    mission_mode_f.set(static_cast<unsigned int>(mode));
+}
 
+void MissionManager::dispatch_warmup() {
+    // if 5 sec elapse go to init
+    if(millis() > MM::warmup_millis){
+        set_mission_mode(mission_mode_t::initialization);
+        enter_init_ccno = control_cycle_count;
+    }
 }
 
 void MissionManager::dispatch_initialization() {
+    // weight the current altitude readings
+    ground_level_f.set(ground_level_f.get() + alt_fp->get() / MM::init_cycles);
 
+    if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
+        set_mission_mode(mission_mode_t::standby);
+    }
 }
 
 void MissionManager::dispatch_standby() {
-
+    
 }
 
 //lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin
