@@ -11,8 +11,9 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       led_control_task(registry, led_control_task_offset),
       gnc(registry, gnc_offset),
       servo_controller(registry, servo_ct_offset),
-      downlink_control_task(registry, downlink_ct_offset),
-      mission_manager(registry, mission_manager_offset) // This item is initialized last so it has access to all state fields
+      mission_manager(registry, mission_manager_offset),
+      downlink_control_task(registry, downlink_ct_offset)
+ // This item is initialized last so it has access to all state fields
 {
     delay(1000); //necessary for imu warm-up
 }

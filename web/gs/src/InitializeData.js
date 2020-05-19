@@ -9,6 +9,7 @@ export const initial_point = {
     // "gyr": 5,
     // "quat": 6
     ccno:0,
+    mm_mode:0,
     altitude:0,
     linear_acc:f_vector,
     acc:f_vector,
@@ -20,6 +21,7 @@ export const initial_point = {
 export function initial_point_from_cn(cn) {
     return {
     ccno:cn,
+    mm_mode:0,
     altitude:0,
     linear_acc:f_vector,
     acc:f_vector,

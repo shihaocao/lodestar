@@ -11,7 +11,7 @@ namespace PAN {
 }
 
 namespace MM {
-    constexpr unsigned int warmup_millis = 5 * 1000;
+    constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;
     constexpr unsigned int init_cycles = 100;
 }

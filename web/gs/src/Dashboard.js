@@ -204,7 +204,7 @@ export default function Dashboard() {
             {/* Recent Deposits */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits ccno={data_point.ccno}/>
+                <Deposits ccno={data_point.ccno} mm_mode={data_point.mm_mode}/>
               </Paper>
             </Grid>
             {/* Recent Orders */}

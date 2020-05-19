@@ -23,6 +23,9 @@ export default function Deposits(props) {
       <Typography component="p" variant="h4">
         CCNO: {props.ccno}
       </Typography>
+      <Typography component="p" variant="h4">
+        Mode: {props.mm_mode}
+      </Typography>
       {/* <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019
       </Typography> */}

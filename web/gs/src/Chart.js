@@ -64,7 +64,7 @@ export default function Chart(props) {
             </Label>
                  </YAxis>
           <Line yAxisId="left" type="monotone" dataKey="altitude" stroke={theme.palette.primary.main} dot={false} />
-          <Line yAxisId="right" type="monotone" dataKey="lin_acc_z" stroke={theme.palette.primary.main} dot={false} />
+          <Line yAxisId="right" type="monotone" dataKey="lin_acc_z" stroke={theme.palette.secondary.main} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </React.Fragment>

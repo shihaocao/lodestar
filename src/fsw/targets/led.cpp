@@ -7,6 +7,8 @@ void execute()
     digitalWrite(13, LOW);
     delay(500);
     Serial.write("LED cycle\n");
+    unsigned char a = 5;
+    Serial.printf("%u", a);
 }
 
 void setup()

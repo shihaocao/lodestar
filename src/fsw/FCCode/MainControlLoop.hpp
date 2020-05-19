@@ -32,9 +32,8 @@ class MainControlLoop : public ControlTask<void> {
 
     ServoControlTask servo_controller;
 
-    DownlinkControlTask downlink_control_task;
-
     MissionManager mission_manager; //initallized last
+    DownlinkControlTask downlink_control_task;
 
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST

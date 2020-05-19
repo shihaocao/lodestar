@@ -5,7 +5,7 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
-        mm_fp = find_internal_field<unsigned int>("ls.mode", __FILE__, __LINE__);
+        mm_fp = find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
         euler_fp = find_internal_field<f_vector_t>("imu.euler_vec", __FILE__, __LINE__);
         acc_fp = find_internal_field<f_vector_t>("imu.acc_vec", __FILE__, __LINE__);
         linear_acc_fp = find_internal_field<f_vector_t>("imu.linear_acc_vec", __FILE__, __LINE__);
@@ -33,6 +33,7 @@ void DownlinkControlTask::execute(){
     f_vector_t euler_read = euler_fp->get();
     f_vector_t gyr_read = gyr_fp->get();
     d_quat_t quat_read = quat_fp->get();
+    unsigned char mm = mm_fp->get();
     #endif
 
     #ifdef AIR_TEST
@@ -47,7 +48,7 @@ void DownlinkControlTask::execute(){
 
     #if defined(AIR) && defined(COMPACT)
     airline_solo(control_cycle_count);
-    airline_solo(mm_fp->get());
+    airline_solo(mm);
     airline_solo(altitude_fp->get());
     airline_compact(linear_acc_read);
     airline_compact(acc_read);
@@ -58,8 +59,9 @@ void DownlinkControlTask::execute(){
     #endif
 
     #if defined(HARDLINE) && defined(COMPACT)
+    
     hardline_solo(control_cycle_count);
-    hardline_solo(mm_fp->get());
+    hardline_solo(mm);
     hardline_solo(altitude_fp->get());
     hardline_compact(linear_acc_read);
     hardline_compact(acc_read);

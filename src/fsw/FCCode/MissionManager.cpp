@@ -16,7 +16,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     // adcs_min_stable_ang_rate_fp = find_writable_field<float>("adcs.min_stable_ang_rate", __FILE__, __LINE__);
     // radio_mode_fp = find_readable_field<unsigned char>("radio.mode", __FILE__, __LINE__);
 
-    mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::warmup));
+    mission_mode_f.set(static_cast<unsigned char>(mission_mode_t::warmup));
     ground_level_f.set(0);
 
     enter_init_ccno = -1;
@@ -24,6 +24,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
 
 void MissionManager::execute() {
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
+
     switch(mode) {
         case mission_mode_t::warmup:
             dispatch_warmup();
@@ -45,13 +46,13 @@ void MissionManager::execute() {
             break;
         default:
             printf(debug_severity::error, "Master state not defined: %d\n", static_cast<unsigned int>(mode));
-            mission_mode_f.set(static_cast<unsigned int>(mission_mode_t::landed));
+            mission_mode_f.set(static_cast<unsigned char>(mission_mode_t::landed));
             break;
     }
 }
 
 void MissionManager::set_mission_mode(mission_mode_t mode){
-    mission_mode_f.set(static_cast<unsigned int>(mode));
+    mission_mode_f.set(static_cast<unsigned char>(mode));
 }
 
 void MissionManager::dispatch_warmup() {
@@ -72,7 +73,7 @@ void MissionManager::dispatch_initialization() {
 }
 
 void MissionManager::dispatch_standby() {
-    
+
 }
 
 //lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin

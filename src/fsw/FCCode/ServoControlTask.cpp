@@ -6,10 +6,12 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
     {
         flap_commands_fp = find_internal_field<f_quat_t>("gnc.flap_cmds", __FILE__, __LINE__);
 
+        #ifndef STATIC
         flap1.attach(SERVO::flap1_pin);
         flap2.attach(SERVO::flap2_pin);
         flap3.attach(SERVO::flap3_pin);
         flap4.attach(SERVO::flap4_pin);
+        #endif
     }
 
 void ServoControlTask::execute(){

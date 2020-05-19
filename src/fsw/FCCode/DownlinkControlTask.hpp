@@ -37,7 +37,7 @@ protected:
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
     InternalStateField<float>* altitude_fp;
-    InternalStateField<unsigned int>* mm_fp;
+    InternalStateField<unsigned char>* mm_fp;
     InternalStateField<f_vector_t>* linear_acc_fp;
     InternalStateField<f_vector_t>* euler_fp;
     InternalStateField<f_vector_t>* acc_fp;
@@ -76,7 +76,7 @@ protected:
         else
             Serial.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
-    
+
     template<typename T>
     void airline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)

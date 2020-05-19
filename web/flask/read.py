@@ -27,8 +27,8 @@ dataLock = threading.Lock()
 threadHandler = threading.Thread()
 
 
-# telem = serial.Serial('/dev/ttyACM0')
-telem = serial.Serial('/dev/ttyUSB0', 57600)
+telem = serial.Serial('/dev/ttyACM0')
+# telem = serial.Serial('/dev/ttyUSB0', 57600)
 telem.reset_input_buffer()
 
 def str_to_val(field):
@@ -80,20 +80,20 @@ def doStuff():
     with dataLock:
     # Do your stuff with commonDataStruct Here
         raw_bytes = telem.readline().strip().decode("utf-8")
-        # print(raw_bytes)
-        tokens = listgen(raw_bytes)
-        if len(tokens) != len(telem_index):
-            print(f"INVALID NUMBER TOKENS, got: {len(tokens)}, expected: {len(telem_index)}")
+        print(raw_bytes)
+        # tokens = listgen(raw_bytes)
+        # if len(tokens) != len(telem_index):
+        #     print(f"INVALID NUMBER TOKENS, got: {len(tokens)}, expected: {len(telem_index)}")
             
-        else:
-            for i in range(len(tokens)):
-                telem_data[reverse_telem_index[i]] = tokens[i]
+        # else:
+        #     for i in range(len(tokens)):
+        #         telem_data[reverse_telem_index[i]] = tokens[i]
 
-            # print(telem_data)
-            ccno = tokens[0]
-            # print(ccno)
-            altitude = tokens[1]
-            incr += 1
+        #     # print(telem_data)
+        #     ccno = tokens[0]
+        #     # print(ccno)
+        #     altitude = tokens[1]
+        #     incr += 1
 
     # Set the next thread to happen
     threadHandler = threading.Timer(POOL_TIME, doStuff, ())
