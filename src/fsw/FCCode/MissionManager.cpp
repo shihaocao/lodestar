@@ -103,7 +103,8 @@ void MissionManager::dispatch_standby() {
 
 }
 
-//lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin
+// lode star needs detumble too. If we're tumbling waaaay to fast, 
+// step one should just be to keep fins out to zero out all spin
 void MissionManager::dispatch_detumble() {
 
 }
