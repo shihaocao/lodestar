@@ -21,7 +21,7 @@ namespace MM {
      */
     constexpr float free_fall_thresh = 4.0;
 
-    constexpr unsigned int consectuve_free_fall_cycles = 2;
+    constexpr unsigned int consectuve_free_fall_cycles = 0;
     
 }
 /**
