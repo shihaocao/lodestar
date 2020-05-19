@@ -32,7 +32,7 @@ protected:
     /**
     * @brief Outputs of GNC
     */
-    InternalStateField<f_quat_t> flap_commands_f;
+    InternalStateField<lin::Vector4f> flap_commands_f;
 
     // eventually not needed, just was for debug
     float inc_dir = 0;

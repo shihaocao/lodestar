@@ -37,6 +37,7 @@ protected:
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
     InternalStateField<float>* altitude_fp;
+    InternalStateField<float>* agl_alt_fp;
     InternalStateField<unsigned char>* mm_fp;
     InternalStateField<lin::Vector3f>* linear_acc_fp;
     InternalStateField<lin::Vector3f>* euler_fp;

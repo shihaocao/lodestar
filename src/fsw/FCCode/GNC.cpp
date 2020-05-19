@@ -9,7 +9,7 @@ GNC::GNC(StateFieldRegistry &registry,
         mission_mode_fp = find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
 
         // default all flaps to no actuation
-        flap_commands_f.set(f_quat_t{
+        flap_commands_f.set({
             0.0,
             0.0,
             0.0,
@@ -49,16 +49,16 @@ void GNC::execute(){
 }
 
 void GNC::dispatch_sweep(){
-    f_quat_t flap_commands = flap_commands_f.get();
+    lin::Vector4f flap_commands = flap_commands_f.get();
 
     // the block below is dummy code that cycles the servos back and forth
     float speed = 0.5;
-    if(flap_commands[0] > 90)
+    if(flap_commands(0) > 90)
         inc_dir = -speed;
-    if(flap_commands[0] <= 0)
+    if(flap_commands(0) <= 0)
         inc_dir = speed;
     for(unsigned int i = 0; i < SERVO::num_flaps; i++){
-        flap_commands[i] += inc_dir;
+        flap_commands(i) += inc_dir;
     }
 
     flap_commands_f.set(flap_commands);
@@ -66,7 +66,7 @@ void GNC::dispatch_sweep(){
 void GNC::dispatch_detumble(){
 
     // everything 0 degrees of actuation
-    flap_commands_f.set(f_quat_t{
+    flap_commands_f.set({
         0.0,
         0.0,
         0.0,

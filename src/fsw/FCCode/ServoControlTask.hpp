@@ -30,7 +30,7 @@ protected:
     /**
     * @brief Inputs to get from GNC.
     */
-    InternalStateField<f_quat_t>* flap_commands_fp;
+    InternalStateField<lin::Vector4f>* flap_commands_fp;
     InternalStateField<bool>* servo_on_fp;
     
     Servo flap1;

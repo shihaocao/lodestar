@@ -17,6 +17,8 @@ class MissionManager : public TimedControlTask<void> {
 
         void set_mission_mode(mission_mode_t mode);
 
+        void calibrate_data();
+
         void dispatch_warmup();
         void dispatch_initialization();
         void dispatch_standby();
@@ -31,7 +33,9 @@ class MissionManager : public TimedControlTask<void> {
         InternalStateField<unsigned char> mission_mode_f;
         InternalStateField<float> ground_level_f;
         InternalStateField<bool> engine_on_f;
-        InternalStateField<bool> servo_on_f;        
+        InternalStateField<bool> servo_on_f;
+
+        InternalStateField<float> agl_alt_f;        
 
         InternalStateField<float>* alt_fp;
         InternalStateField<lin::Vector3f>* acc_vec_fp;

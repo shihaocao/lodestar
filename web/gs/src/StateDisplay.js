@@ -38,6 +38,9 @@ export default function StateDisplay(props) {
         Mode: {mm_num_to_string(props.mm_mode)}
       </Typography>
       <Typography component="p" variant="h4">
+        AGL (m): {(props.agl).toFixed(3)}
+      </Typography>
+      <Typography component="p" variant="h4">
         Alt (m): {(props.altitude).toFixed(3)}
       </Typography>
       {/* <Typography color="textSecondary" className={classes.depositContext}>

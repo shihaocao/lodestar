@@ -206,6 +206,7 @@ export default function Dashboard() {
               <Paper className={fixedHeightPaper}>
                 <StateDisplay 
                 ccno={data_point.ccno}
+                agl={data_point.agl}
                 altitude={data_point.altitude} 
                 mm_mode={data_point.mm_mode}/>
               </Paper>

@@ -5,6 +5,7 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
+        agl_alt_fp = find_internal_field<float>("ls.agl", __FILE__, __LINE__);
         mm_fp = find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
         euler_fp = find_internal_field<lin::Vector3f>("imu.euler_vec", __FILE__, __LINE__);
         acc_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
@@ -49,6 +50,7 @@ void DownlinkControlTask::execute(){
     #if defined(AIR) && defined(COMPACT)
     airline_solo(control_cycle_count);
     airline_solo(mm);
+    airline_solo(agl_alt_fp->get());
     airline_solo(altitude_fp->get());
     airline_compact(linear_acc_read);
     airline_compact(acc_read);
@@ -62,6 +64,7 @@ void DownlinkControlTask::execute(){
     
     hardline_solo(control_cycle_count);
     hardline_solo(mm);
+    hardline_solo(agl_alt_fp->get());
     hardline_solo(altitude_fp->get());
     hardline_compact(linear_acc_read);
     hardline_compact(acc_read);

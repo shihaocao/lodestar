@@ -5,12 +5,14 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     mission_mode_f("ls.mode"),
     ground_level_f("ls.ground_level"),
     engine_on_f("ls.engine_on"),
-    servo_on_f("ls.servo_on")
+    servo_on_f("ls.servo_on"),
+    agl_alt_f("ls.agl")
 {
     add_internal_field(mission_mode_f);
     add_internal_field(ground_level_f);
     add_internal_field(engine_on_f);
     add_internal_field(servo_on_f);
+    add_internal_field(agl_alt_f);
 
     alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
     acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
@@ -34,6 +36,8 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
 
 void MissionManager::execute() {
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
+
+    calibrate_data();
 
     if(millis() > MM::FTS_millis)
         set_mission_mode(mission_mode_t::landed);
@@ -67,7 +71,11 @@ void MissionManager::execute() {
 void MissionManager::set_mission_mode(mission_mode_t mode){
     mission_mode_f.set(static_cast<unsigned char>(mode));
 }
+void MissionManager::calibrate_data(){
 
+    agl_alt_f.set(alt_fp->get() - ground_level_f.get());
+
+}
 void MissionManager::dispatch_warmup() {
     // if 5 sec elapse go to init
     if(millis() > MM::warmup_millis){

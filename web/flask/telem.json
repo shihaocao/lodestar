@@ -1,10 +1,11 @@
 {
     "ccno": 0,
     "mm_mode": 1,
-    "altitude": 2,
-    "linear_acc": 3,
-    "acc": 4,
-    "euler": 5,
-    "gyr": 6,
-    "quat": 7
+    "agl": 2,
+    "altitude": 3,
+    "linear_acc": 4,
+    "acc": 5,
+    "euler": 6,
+    "gyr": 7,
+    "quat": 8
 }
