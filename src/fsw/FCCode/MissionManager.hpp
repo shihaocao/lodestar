@@ -32,10 +32,11 @@ class MissionManager : public TimedControlTask<void> {
         InternalStateField<float> ground_level_f;
 
         InternalStateField<float>* alt_fp;
-        InternalStateField<f_vector_t>* acc_vec_fp;
-             
+        InternalStateField<lin::Vector3f>* acc_vec_fp;
+
         long enter_init_millis;
         int enter_init_ccno;
+        int enter_freefall_cnno;
         // long enter_standby_millis;
 };
 

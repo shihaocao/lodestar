@@ -9,7 +9,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     add_internal_field(ground_level_f);
 
     alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
-    acc_vec_fp = find_internal_field<f_vector_t>("imu.acc_vec", __FILE__, __LINE__);
+    acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
 
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
     // adcs_cmd_attitude_fp = find_writable_field<f_quat_t>("adcs.cmd_attitude", __FILE__, __LINE__);
@@ -21,6 +21,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     ground_level_f.set(0);
 
     enter_init_ccno = -1;
+    enter_freefall_cnno = -1;
 }
 
 void MissionManager::execute() {
@@ -75,8 +76,19 @@ void MissionManager::dispatch_initialization() {
 
 void MissionManager::dispatch_standby() {
 
-    
-    
+    float norm = lin::norm(acc_vec_fp->get());
+    if(norm < MM::free_fall_thresh){
+        if(enter_freefall_cnno == -1)
+            enter_freefall_cnno = control_cycle_count;
+            
+        if(control_cycle_count - enter_freefall_cnno >= MM::consectuve_free_fall_cycles)
+            set_mission_mode(mission_mode_t::detumble);
+    }
+    else
+        enter_freefall_cnno = -1;
+    // Serial1.printf("%f", norm);
+    // Serial1.print("yeet");
+
 }
 
 //lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin

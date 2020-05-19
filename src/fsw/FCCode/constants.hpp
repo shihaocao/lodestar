@@ -14,6 +14,15 @@ namespace MM {
     constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;
     constexpr unsigned int init_cycles = 100;
+
+    /**
+     * @brief If measure acceleration is below this threshold, we're in free fall.
+     * 
+     */
+    constexpr float free_fall_thresh = 4.0;
+
+    constexpr unsigned int consectuve_free_fall_cycles = 2;
+    
 }
 /**
  * @brief A set of constants for the Servo CT
