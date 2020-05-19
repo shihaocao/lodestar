@@ -14,7 +14,8 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
 
     alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
     acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
-
+    omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
+    
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
     // adcs_cmd_attitude_fp = find_writable_field<f_quat_t>("adcs.cmd_attitude", __FILE__, __LINE__);
     // adcs_ang_rate_fp = find_readable_field<float>("adcs.ang_rate", __FILE__, __LINE__);
@@ -106,12 +107,17 @@ void MissionManager::dispatch_standby() {
 // lode star needs detumble too. If we're tumbling waaaay to fast, 
 // step one should just be to keep fins out to zero out all spin
 void MissionManager::dispatch_detumble() {
+    
+    float omega_norm = lin::norm(omega_vec_fp->get());
+    if(omega_norm < MM::detumble_thresh){
+        set_mission_mode(mission_mode_t::bellyflop);
+    }
 
 }
 
 void MissionManager::dispatch_bellyflop() {
     //servo should already be on
-    engine_on_f.set(true);
+
     //actuate as you would during belly flop
 }
 

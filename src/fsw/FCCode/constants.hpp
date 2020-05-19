@@ -19,7 +19,7 @@ namespace MM {
      * @brief Terminate flight after N minutes. Automatically transition to landing.
      * 
      */
-    constexpr unsigned int FTS_millis = 1 * 60 * 1000;
+    constexpr unsigned int FTS_millis = 2 * 60 * 1000;
 
     /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
@@ -29,6 +29,7 @@ namespace MM {
 
     constexpr unsigned int consectuve_free_fall_cycles = 0;
     
+    constexpr float detumble_thresh = 300.0; // rads per sec?
 }
 /**
  * @brief A set of constants for the Servo CT

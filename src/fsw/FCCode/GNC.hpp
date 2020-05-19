@@ -3,7 +3,7 @@
 #pragma once
 
 #include "TimedControlTask.hpp"
-
+#include "mission_mode_t.enum"
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.
@@ -26,14 +26,20 @@ public:
     void execute() override;
 
 protected:
-    /**
-    * @brief Inputs to get from GNC.
-    */
 
-    InternalStateField<f_quat_t> flap_commands_fp;
+    InternalStateField<unsigned char>* mission_mode_fp;
+
+    /**
+    * @brief Outputs of GNC
+    */
+    InternalStateField<f_quat_t> flap_commands_f;
 
     // eventually not needed, just was for debug
     float inc_dir = 0;
+
+    void dispatch_sweep();
+    void dispatch_detumble();
+    void dispatch_bellyflop();
 };
 
 #endif
