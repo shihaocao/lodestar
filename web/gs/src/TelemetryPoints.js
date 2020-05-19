@@ -37,7 +37,7 @@ function name_xyz_cells(name){
     <TableCell>{name}<sub>z</sub></TableCell>
   </>
 }
-export default function Orders(props) {
+export default function TelemetryPoints(props) {
   const classes = useStyles();
 
   let n = 10;

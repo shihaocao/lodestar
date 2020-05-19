@@ -25,7 +25,7 @@ function mm_num_to_string(mode){
   ]
   return names[mode]
 }
-export default function Deposits(props) {
+export default function StateDisplay(props) {
   const classes = useStyles();
 
   return (
@@ -36,6 +36,9 @@ export default function Deposits(props) {
       </Typography>
       <Typography component="p" variant="h4">
         Mode: {mm_num_to_string(props.mm_mode)}
+      </Typography>
+      <Typography component="p" variant="h4">
+        Alt (m): {(props.altitude).toFixed(3)}
       </Typography>
       {/* <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019

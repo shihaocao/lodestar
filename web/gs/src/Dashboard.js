@@ -20,8 +20,8 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, secondaryListItems } from './listItems';
 import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
+import StateDisplay from './StateDisplay';
+import TelemetryPoints from './TelemetryPoints';
 var inits = require("./InitializeData");
 
 function Copyright() {
@@ -201,16 +201,19 @@ export default function Dashboard() {
                        lin_acc_z={data_point.linear_acc[2]}/>
               </Paper>
             </Grid>
-            {/* Recent Deposits */}
+            {/* Recent StateDisplay */}
             <Grid item xs={12} md={4} lg={3}>
               <Paper className={fixedHeightPaper}>
-                <Deposits ccno={data_point.ccno} mm_mode={data_point.mm_mode}/>
+                <StateDisplay 
+                ccno={data_point.ccno}
+                altitude={data_point.altitude} 
+                mm_mode={data_point.mm_mode}/>
               </Paper>
             </Grid>
-            {/* Recent Orders */}
+            {/* Recent TelemetryPoints */}
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <Orders data={data_point}/>
+                <TelemetryPoints data={data_point}/>
               </Paper>
             </Grid>
           </Grid>
