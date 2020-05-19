@@ -9,6 +9,7 @@ MissionManager::MissionManager(StateFieldRegistry& registry, unsigned int offset
     add_internal_field(ground_level_f);
 
     alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
+    acc_vec_fp = find_internal_field<f_vector_t>("imu.acc_vec", __FILE__, __LINE__);
 
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
     // adcs_cmd_attitude_fp = find_writable_field<f_quat_t>("adcs.cmd_attitude", __FILE__, __LINE__);
@@ -74,6 +75,8 @@ void MissionManager::dispatch_initialization() {
 
 void MissionManager::dispatch_standby() {
 
+    
+    
 }
 
 //lode star needs detumble too. If we're tumbling waaaay to fast, step one should just be to keep fins out to zero out all spin
