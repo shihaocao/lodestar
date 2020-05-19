@@ -10,6 +10,20 @@ This project is setup within VSCode and leverages the PlatformIO extension heavi
 Link to PAN repo:
 https://github.com/pathfinder-for-autonomous-navigation
 
+## Groundstation
+
+To start the Flask server that reads from either hardline serial or the 915 MHz Telemetry Radio:
+```
+cd web/flask
+. start
+```
+
+To start the ground station website:
+```
+cd web/gs
+npm start
+```
+
 ## FAQ / Fixes
 Error:
 > error: there are no arguments to 'isnan' that depend on a template parameter, so a declaration of 'isnan' must be available
