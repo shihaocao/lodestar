@@ -31,11 +31,15 @@ protected:
     * @brief Inputs to get from GNC.
     */
     InternalStateField<f_quat_t>* flap_commands_fp;
-
+    InternalStateField<bool>* servo_on_fp;
+    
     Servo flap1;
     Servo flap2;
     Servo flap3;
     Servo flap4;
+
+    void terminate();
+    void actuate();
 };
 
 #endif

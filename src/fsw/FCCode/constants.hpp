@@ -16,6 +16,12 @@ namespace MM {
     constexpr unsigned int init_cycles = 100;
 
     /**
+     * @brief Terminate flight after N minutes. Automatically transition to landing.
+     * 
+     */
+    constexpr unsigned int FTS_millis = 1 * 60 * 1000;
+
+    /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
      * 
      */

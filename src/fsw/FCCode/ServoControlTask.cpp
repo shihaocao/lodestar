@@ -5,6 +5,7 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
         flap_commands_fp = find_internal_field<f_quat_t>("gnc.flap_cmds", __FILE__, __LINE__);
+        servo_on_fp = find_internal_field<bool>("ls.servo_on", __FILE__, __LINE__);
 
         #ifndef STATIC
         flap1.attach(SERVO::flap1_pin);
@@ -16,6 +17,19 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
 
 void ServoControlTask::execute(){
 
+    if(servo_on_fp->get())
+        actuate();
+    else{
+        // flap1.write(0);
+        // flap2.write(0);
+        // flap3.write(0);
+        // flap4.write(0);
+
+        // nevermind, don't return to 0, just stop moving all together
+    }
+}
+
+void ServoControlTask::actuate(){
     f_quat_t flap_commands = flap_commands_fp->get();
     f_quat_t unit_range;
     f_quat_t flap_servo_writes;

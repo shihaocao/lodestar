@@ -26,14 +26,12 @@ class MainControlLoop : public ControlTask<void> {
     Adafruit_BMP280 bmp;
     BMPMonitor bmp_monitor;
 
-    LEDControlTask led_control_task;
-
+    MissionManager mission_manager;
+    
     GNC gnc;
-
     ServoControlTask servo_controller;
-
-    MissionManager mission_manager; //initallized last
     DownlinkControlTask downlink_control_task;
+    LEDControlTask led_control_task;
 
     // Control cycle time offsets, in microseconds
     #ifdef FUNCTIONAL_TEST
