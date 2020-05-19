@@ -28,6 +28,9 @@ public:
 protected:
 
     InternalStateField<unsigned char>* mission_mode_fp;
+    InternalStateField<lin::Vector3f>* omega_vec_fp;
+    InternalStateField<lin::Vector3f>* euler_vec_fp;
+    InternalStateField<lin::Vector4d>* quat_fp;
 
     /**
     * @brief Outputs of GNC
@@ -37,7 +40,11 @@ protected:
     // eventually not needed, just was for debug
     float inc_dir = 0;
 
+    // not real control laws, just cool
     void dispatch_sweep();
+    void imu_response();
+    //
+
     void dispatch_detumble();
     void dispatch_bellyflop();
 };

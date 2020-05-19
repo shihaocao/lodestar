@@ -7,6 +7,9 @@ GNC::GNC(StateFieldRegistry &registry,
     {
         add_internal_field(flap_commands_f);
         mission_mode_fp = find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
+        omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
+        euler_vec_fp = find_internal_field<lin::Vector3f>("imu.euler_vec", __FILE__, __LINE__);
+        quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
 
         // default all flaps to no actuation
         flap_commands_f.set({
@@ -63,6 +66,22 @@ void GNC::dispatch_sweep(){
 
     flap_commands_f.set(flap_commands);
 }
+
+// not a real control law, just cool feedback
+void GNC::imu_response(){
+    lin::Vector3f omega = omega_vec_fp->get();
+    float omega_norm = lin::norm(omega);
+    if(omega_norm < 100.0)
+        omega_norm = omega_norm*20;
+    lin::Vector3f omega_scaled = (omega / omega_norm)*45.0 + 45.0*lin::ones<lin::Vector3f>();
+    flap_commands_f.set({
+        omega_scaled(0),
+        omega_scaled(1),
+        omega_scaled(2),
+        omega_scaled(0),
+    });
+}
+
 void GNC::dispatch_detumble(){
 
     // everything 0 degrees of actuation
@@ -80,6 +99,7 @@ void GNC::dispatch_bellyflop(){
     // 3. ???
     // 4. PROFIT???
 
-    dispatch_sweep();
+    // dispatch_sweep();
+    imu_response();
 
 }
