@@ -68,7 +68,7 @@ void GNC::dispatch_sweep(){
 }
 
 // not a real control law, just cool feedback
-void GNC::imu_response(){
+void GNC::omega_response(){
     lin::Vector3f omega = omega_vec_fp->get();
     float omega_norm = lin::norm(omega);
     if(omega_norm < 100.0)
@@ -80,6 +80,18 @@ void GNC::imu_response(){
         omega_scaled(2),
         omega_scaled(0),
     });
+}
+
+void GNC::euler_response(){
+    lin::Vector3f euler = euler_vec_fp->get();
+
+    lin::Vector3f euler_scaled = (euler / 100.0)*45.0 + 45.0*lin::ones<lin::Vector3f>();
+    flap_commands_f.set({
+        euler_scaled(0),
+        euler_scaled(1),
+        euler_scaled(2),
+        euler_scaled(0),
+    });    
 }
 
 void GNC::dispatch_detumble(){
@@ -100,6 +112,7 @@ void GNC::dispatch_bellyflop(){
     // 4. PROFIT???
 
     // dispatch_sweep();
-    imu_response();
+    // omega_response();
+    euler_response();
 
 }

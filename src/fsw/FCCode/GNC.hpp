@@ -42,7 +42,8 @@ protected:
 
     // not real control laws, just cool
     void dispatch_sweep();
-    void imu_response();
+    void omega_response();
+    void euler_response();
     //
 
     void dispatch_detumble();
