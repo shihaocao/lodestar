@@ -29,7 +29,7 @@ export default function Chart(props) {
 
   return (
     <React.Fragment>
-      <Title>Today</Title>
+      <Title>CCNO vs Altitude and Linear Acceleration<sub>z</sub></Title>
       <ResponsiveContainer>
         <LineChart
           data={data_points}
@@ -60,7 +60,7 @@ export default function Chart(props) {
               position="right"
               style={{ textAnchor: 'middle', fill: theme.palette.text.primary }}
             >
-              Linear Acceleration Z (g)
+              Linear Acc. Z (m/s^2)
             </Label>
                  </YAxis>
           <Line yAxisId="left" type="monotone" dataKey="altitude" stroke={theme.palette.primary.main} dot={false} />

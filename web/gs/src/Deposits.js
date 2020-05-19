@@ -14,6 +14,17 @@ const useStyles = makeStyles({
   },
 });
 
+function mm_num_to_string(mode){
+  let names = [
+    "Warm-Up",
+    "Initialization",
+    "Standby",
+    "Detumble",
+    "Belly-flop",
+    "Landed"
+  ]
+  return names[mode]
+}
 export default function Deposits(props) {
   const classes = useStyles();
 
@@ -24,7 +35,7 @@ export default function Deposits(props) {
         CCNO: {props.ccno}
       </Typography>
       <Typography component="p" variant="h4">
-        Mode: {props.mm_mode}
+        Mode: {mm_num_to_string(props.mm_mode)}
       </Typography>
       {/* <Typography color="textSecondary" className={classes.depositContext}>
         on 15 March, 2019
