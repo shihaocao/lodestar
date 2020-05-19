@@ -153,7 +153,7 @@ export default function Dashboard() {
       <CssBaseline />
       <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
         <Toolbar className={classes.toolbar}>
-          <IconButton
+          {/* <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
@@ -161,7 +161,7 @@ export default function Dashboard() {
             className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
             Lodestar Ground Station
           </Typography>
@@ -172,7 +172,7 @@ export default function Dashboard() {
           </IconButton> */}
         </Toolbar>
       </AppBar>
-      <Drawer
+      {/* <Drawer
         variant="permanent"
         classes={{
           paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
@@ -188,7 +188,7 @@ export default function Dashboard() {
         <List>{mainListItems}</List>
         <Divider />
         <List>{secondaryListItems}</List>
-      </Drawer>
+      </Drawer> */}
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>

@@ -50,7 +50,21 @@ protected:
 
     InternalStateField<bool> functional_f;
 
-    InternalStateField<f_vector_t> 
+    // InternalStateField<f_vector_t> 
+    //     //linear_acc_vec does not include gravity
+    //     linear_acc_vec_f,
+    //     //acc_vec includes gravity
+    //     acc_vec_f,
+    //     //gravity vector
+    //     grav_vec_f,
+    //     //orientation in euler angles
+    //     euler_vec_f,
+    //     //gyroscope, angular acceleration vector
+    //     gyr_vec_f,
+    //     //magnetometer vector
+    //     mag_vec_f;
+    
+    InternalStateField<lin::Vector3f> 
         //linear_acc_vec does not include gravity
         linear_acc_vec_f,
         //acc_vec includes gravity
@@ -63,9 +77,9 @@ protected:
         gyr_vec_f,
         //magnetometer vector
         mag_vec_f;
-    
+
     // quaternion
-    InternalStateField<d_quat_t> quat_f;
+    InternalStateField<lin::Vector4d> quat_f;
 };
 
 #endif

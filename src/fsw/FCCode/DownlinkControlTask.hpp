@@ -31,22 +31,32 @@ protected:
     */
 
     //! IMU Read Statefields, Internal float for now
-    //InternalStateField<f_vector_t> euler_angles;
+    //InternalStateField<lin::Vector3f> euler_angles;
 
     //imu sensor event
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
     InternalStateField<float>* altitude_fp;
     InternalStateField<unsigned char>* mm_fp;
-    InternalStateField<f_vector_t>* linear_acc_fp;
-    InternalStateField<f_vector_t>* euler_fp;
-    InternalStateField<f_vector_t>* acc_fp;
-    InternalStateField<f_vector_t>* gyr_fp;
-    InternalStateField<d_quat_t>* quat_fp;
+    InternalStateField<lin::Vector3f>* linear_acc_fp;
+    InternalStateField<lin::Vector3f>* euler_fp;
+    InternalStateField<lin::Vector3f>* acc_fp;
+    InternalStateField<lin::Vector3f>* gyr_fp;
+    InternalStateField<lin::Vector4d>* quat_fp;
 
     // helper functions for debug out
     template<typename T, size_t N>
     void hardline_compact(std::array<T, N>& array){
+        for(size_t i = 0; i < N-1; i++){
+            hardline_element(array[i]);
+            Serial.print(",");
+        }
+        hardline_element(array[N-1]);
+        Serial.print(";");
+    }
+
+    template<typename T, size_t N>
+    void hardline_compact(lin::Vector<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
             hardline_element(array[i]);
             Serial.print(",");
@@ -63,6 +73,16 @@ protected:
         }
         airline_element(array[N-1]);
         Serial1.print(";");
+    }
+
+    template<typename T, size_t N>
+    void airline_compact(lin::Vector<T, N>& array){
+        for(size_t i = 0; i < N - 1; i++){
+            airline_element(array(i));
+            Serial1.print(",");
+        }
+        airline_element(array(N-1));
+        Serial1.print(";");        
     }
 
     template<typename T>
