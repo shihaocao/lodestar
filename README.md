@@ -57,3 +57,40 @@ Error:
 > error: there are no arguments to 'isnan' that depend on a template parameter, so a declaration of 'isnan' must be available
 
 If you run into a isnan() definition error in utility/vector.h in the Adafruit BNO_055 library within the .pio folder, change `#include <math.h>` to `#include <cmath>` and `isnan()` to `std::isnan()`within the utility/vector.h file.
+
+## Github Basics
+
+To checkout the most recent changes, make sure you're on master, then pull the changes.
+Angle brackets indicate template.
+
+```
+git checkout master
+git pull
+```
+
+If there are conflicts and you're sure your work is not relevant or saved externally to this directory:
+```
+git reset --hard
+```
+
+To create a new branch from master:
+```
+git checkout -b "dev/<feature>"
+```
+
+To index changes, commit changes, and push them to the branch you're working on:
+```
+git add .
+git commit -m "Added XYZ to ABC"
+git push
+```
+
+To merge master's code into your branch, first commit your current
+changes on `dev/<feature>`. Then:
+
+```
+git checkout master
+git pull
+git checkout dev/<feature>
+git merge master
+```
