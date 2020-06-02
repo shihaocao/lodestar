@@ -10,6 +10,34 @@ This project is setup within VSCode and leverages the PlatformIO extension heavi
 Link to PAN repo:
 https://github.com/pathfinder-for-autonomous-navigation
 
+### Installations
+
+You will need the latest Teensyduino, and a compatible version of Arduino.
+
+You will need VSCode and the Platformio extension.
+
+## Uploading Code
+
+This command will upload the current flight software stack.
+This project assumes you have a Teensy 3.6 plugged in.
+```
+pio run -e flight -t upload
+```
+
+You can replace the `flight` environment with your own enviorment as configured in `platformio.ini`.
+
+The below environment is linked to the `your_target.cpp` file.
+```
+pio run -e your_target -t upload
+```
+
+You can check your code compiles without uploading through:
+```
+pio run -e your_target
+```
+
+For more information, google `pio run`, and change the `platformio.ini` accordingly.
+
 ## Groundstation
 
 To start the Flask server that reads from either hardline serial or the 915 MHz Telemetry Radio:
