@@ -73,6 +73,11 @@ If there are conflicts and you're sure your work is not relevant or saved extern
 git reset --hard
 ```
 
+To reset to origin
+```
+git reset --hard origin/master
+```
+
 To create a new branch from master:
 ```
 git checkout -b "dev/<feature>"
