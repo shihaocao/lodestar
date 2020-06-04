@@ -32,11 +32,18 @@ protected:
     */
     InternalStateField<lin::Vector4f>* flap_commands_fp;
     InternalStateField<bool>* servo_on_fp;
+    InternalStateField<lin::Vector4f>* fin_commands_fp;
     
     Servo flap1;
     Servo flap2;
     Servo flap3;
     Servo flap4;
+
+    Servo fin1;
+    Servo fin2;
+    Servo fin3;
+    Servo fin4;
+
 
     void terminate();
     void actuate();

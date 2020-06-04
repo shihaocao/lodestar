@@ -41,6 +41,10 @@ namespace SERVO {
     constexpr unsigned char flap2_pin = 30;
     constexpr unsigned char flap3_pin = 35;
     constexpr unsigned char flap4_pin = 36;
+    constexpr unsigned char fin1_pin = 2;
+    constexpr unsigned char fin2_pin = 3;
+    constexpr unsigned char fin3_pin = 22;
+    constexpr unsigned char fin4_pin = 23;
 
     // bounds expected from GNC
     constexpr float servo_cmd_range = 90;

@@ -90,9 +90,9 @@ void loop(void)
   bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
   bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
 
-  printEvent(&orientationData);
+  //printEvent(&orientationData);
   printEvent(&angVelocityData);
-  printEvent(&linearAccelData);
+  //printEvent(&linearAccelData);
 
   int8_t boardTemp = bno.getTemp();
   Serial.print(F("temperature: "));

@@ -11,8 +11,10 @@
 #include "BMPMonitor.hpp"
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
+#include "MissionManager_a.hpp"
 #include "DownlinkControlTask.hpp"
 #include "GNC.hpp"
+#include "GNC_a.hpp"
 #include "ServoControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
@@ -26,9 +28,14 @@ class MainControlLoop : public ControlTask<void> {
     Adafruit_BMP280 bmp;
     BMPMonitor bmp_monitor;
 
-    MissionManager mission_manager;
-    
-    GNC gnc;
+    //Commented Out Stuff for full launch
+    //MissionManager mission_manager;
+    //GNC gnc;
+
+    //Starhopper Stuff
+    MissionManager_a mission_manager_a;
+    GNC_a gnc_a;
+
     ServoControlTask servo_controller;
     DownlinkControlTask downlink_control_task;
     LEDControlTask led_control_task;

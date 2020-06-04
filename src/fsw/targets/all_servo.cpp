@@ -4,14 +4,20 @@ Servo s1;
 Servo s2;
 Servo s3;
 Servo s4;
-int pos = 0;
 
-int servoSetter(int w,int x,int y,int z){
-    s1.write(w);
-    s2.write(x);
-    s3.write(y);
-    s4.write(z);
-    return 0;
+void servoSetter(int w,int x,int y,int z){
+    s1.write(w+90);
+    s2.write(x+90);
+    s3.write(y+90);
+    s4.write(z+90);
+}
+
+void yaw(int th){
+    servoSetter(th,0,0,-th);
+}
+
+void pitch(int th){
+    servoSetter(0,th,-th,0);
 }
 
 void execute()
@@ -22,18 +28,18 @@ void execute()
     delay(500);
     Serial.write("LED cycle\n");
 
-    for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        servoSetter(pos,pos,pos,pos);            // tell servo to go to position in variable 'pos'
-        Serial.print("POS: "+String(pos)+"\n");
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
-    for (pos = 180; pos >=0; pos -= 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        servoSetter(pos,pos,pos,pos);               // tell servo to go to position in variable 'pos'
-        Serial.print("POS: "+String(pos)+"\n");
-        delay(15);                       // waits 15ms for the servo to reach the position
-    }
+    delay(1000);
+    yaw(20);
+    delay(1000);
+    yaw(-20);
+    delay(1000);
+    servoSetter(0,0,0,0);
+    delay(1000);
+    pitch(20);
+    delay(1000);
+    pitch(-20);
+    delay(1000);
+    servoSetter(0,0,0,0);  
 }
 
 void setup()

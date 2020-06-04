@@ -7,11 +7,19 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
         flap_commands_fp = find_internal_field<lin::Vector4f>("gnc.flap_cmds", __FILE__, __LINE__);
         servo_on_fp = find_internal_field<bool>("ls.servo_on", __FILE__, __LINE__);
 
+        fin_commands_fp = find_internal_field<lin::Vector4f>("gnc.fin_cmds", __FILE__, __LINE__);
+
+
         #ifndef STATIC
         flap1.attach(SERVO::flap1_pin);
         flap2.attach(SERVO::flap2_pin);
         flap3.attach(SERVO::flap3_pin);
         flap4.attach(SERVO::flap4_pin);
+
+        fin1.attach(SERVO::fin1_pin);
+        fin2.attach(SERVO::fin2_pin);
+        fin3.attach(SERVO::fin3_pin);
+        fin4.attach(SERVO::fin4_pin);
         #endif
     }
 
@@ -34,6 +42,8 @@ void ServoControlTask::actuate(){
     lin::Vector4f unit_range;
     lin::Vector4f flap_servo_writes;
 
+    lin::Vector4f fin_commands = fin_commands_fp->get();
+
     // Serial.printf("GNC Commands: %f,%f,%f,%f\n",flap_commands[0],flap_commands[1],flap_commands[2],flap_commands[3]);
 
     for(unsigned int i = 0; i < SERVO::num_flaps; i++){
@@ -51,4 +61,10 @@ void ServoControlTask::actuate(){
     flap2.write(flap_servo_writes(1));
     flap3.write(flap_servo_writes(2));
     flap4.write(flap_servo_writes(3));
+
+    //Add 90 degrees, since fin_commands are given with respect to equilibrium. The equilibrium fin position is 90 degrees
+    fin1.write(fin_commands(0)+90);
+    fin2.write(fin_commands(1)+90);
+    fin3.write(fin_commands(2)+90);
+    fin4.write(fin_commands(3)+90);
 }

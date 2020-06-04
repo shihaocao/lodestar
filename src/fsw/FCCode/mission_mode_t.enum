@@ -9,6 +9,7 @@ enum class mission_mode_t {
     detumble,
     bellyflop,
     landed,
+    starhopper,
 };
 
 #endif

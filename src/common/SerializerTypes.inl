@@ -8,7 +8,7 @@
 #include "types.hpp"
 #include "constant_tracker.hpp"
 
-#include <lin.hpp> // for norm
+//#include <lin.hpp> // for norm
 
 /**
  * @brief Specialization of Serializer for booleans.

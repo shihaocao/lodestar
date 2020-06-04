@@ -59,20 +59,20 @@ protected:
     template<typename T, size_t N>
     void hardline_compact(lin::Vector<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
-            hardline_element(array[i]);
+            hardline_element(array(i));
             Serial.print(",");
         }
-        hardline_element(array[N-1]);
+        hardline_element(array(N-1));
         Serial.print(";");
     }
 
     template<typename T, size_t N>
     void airline_compact(std::array<T, N>& array){
         for(size_t i = 0; i < N - 1; i++){
-            airline_element(array[i]);
+            airline_element(array(i));
             Serial1.print(",");
         }
-        airline_element(array[N-1]);
+        airline_element(array(N-1));
         Serial1.print(";");
     }
 
