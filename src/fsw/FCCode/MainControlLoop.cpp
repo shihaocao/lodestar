@@ -39,7 +39,9 @@ void MainControlLoop::execute() {
     #ifndef STATIC
     servo_controller.execute_on_time();
     #endif
+    #ifndef DL_OFF
     downlink_control_task.execute_on_time();
+    #endif
     led_control_task.execute_on_time();
     
 }

@@ -24,18 +24,12 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
 
 void DownlinkControlTask::execute(){
 
-    #ifdef DL_OFF
-    return;
-    #endif
-
-    #ifndef DL_OFF
     lin::Vector3f linear_acc_read = linear_acc_fp->get();
     lin::Vector3f acc_read = acc_fp->get();
     lin::Vector3f euler_read = euler_fp->get();
     lin::Vector3f gyr_read = gyr_fp->get();
     lin::Vector4d quat_read = quat_fp->get();
     unsigned char mm = mm_fp->get();
-    #endif
 
     #ifdef AIR_TEST
     Serial1.print("0000;1111;2222;3333;4444;5555;6666;7777;8888;9999;0000,,,");

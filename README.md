@@ -99,3 +99,14 @@ git pull
 git checkout dev/<feature>
 git merge master
 ```
+
+To update submodules:
+```
+git submodule update --init --recursive
+```
+
+If platformio is having issues linking libraries try:
+This removes cached compiled files
+```
+pio run -t clean
+```
