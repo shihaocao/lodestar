@@ -1,6 +1,5 @@
 #include "IMUMonitor.hpp"
 
-
 IMUMonitor::IMUMonitor(StateFieldRegistry &registry, 
     unsigned int offset)
     : TimedControlTask<void>(registry, "imu_monitor", offset),
@@ -37,6 +36,10 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
 
         /* Use external crystal for better accuracy */
         imu.setExtCrystalUse(true);
+
+        /** Remap Axis Settings to P5 per the BNO055 spec. */
+        imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
+        imu.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P5);
     }
 
 void IMUMonitor::execute(){
