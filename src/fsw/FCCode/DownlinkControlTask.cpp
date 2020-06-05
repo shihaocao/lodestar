@@ -70,20 +70,24 @@ void DownlinkControlTask::execute(){
 
     #if defined(HARDLINE) && defined(FULL_DL)
     Serial.printf("Control Cycle Num: %u\n", control_cycle_count);
+    hardline_solo(mm); // should make nicer
     Serial.printf("Altitude (m): %f\n", altitude_fp->get());
-    Serial.printf("Linear Acc: %f, %f, %f\n", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
-    Serial.printf("Acc: %f, %f, %f\n", acc_read[0], acc_read[1], acc_read[2]);
-    Serial.printf("Euler: %f, %f, %f\n", euler_read[0], euler_read[1], euler_read[2]);
-    Serial.printf("Gyr: %f, %f, %f\n", gyr_read[0], gyr_read[1], gyr_read[2]);
+    Serial.printf("Linear Acc: %f, %f, %f\n", linear_acc_read(0), linear_acc_read(1), linear_acc_read(2));
+    Serial.printf("Acc: %f, %f, %f\n", acc_read(0), acc_read(1), acc_read(2));
+    Serial.printf("Euler: %f, %f, %f\n", euler_read(0), euler_read(1), euler_read(2));
+    Serial.printf("Gyr: %f, %f, %f\n", gyr_read(0), gyr_read(1), gyr_read(2));
+    Serial.printf("Q: %f, %f, %f, %f\n", quat_read(0), quat_read(1), quat_read(2), quat_read(3));
     Serial.print("\n");
     #endif
 
     #if defined(AIR) && defined(FULL_DL)
     Serial1.printf("Control Cycle Num: %u\n", control_cycle_count);
+    airline_solo(mm);
     Serial1.printf("Altitude (m): %f\n", altitude_fp->get());
-    Serial1.printf("Linear Acc: %f, %f, %f\n", linear_acc_read[0], linear_acc_read[1], linear_acc_read[2]);
-    Serial1.printf("Acc: %f, %f, %f\n", acc_read[0], acc_read[1], acc_read[2]);
-    Serial1.printf("Euler: %f, %f, %f\n", euler_read[0], euler_read[1], euler_read[2]);
-    Serial1.printf("Gyr: %f, %f, %f\n", gyr_read[0], gyr_read[1], gyr_read[2]);
+    Serial1.printf("Linear Acc: %f, %f, %f\n", linear_acc_read(0), linear_acc_read(1), linear_acc_read(2));
+    Serial1.printf("Acc: %f, %f, %f\n", acc_read(0), acc_read(1), acc_read(2));
+    Serial1.printf("Euler: %f, %f, %f\n", euler_read(0), euler_read(1), euler_read(2));
+    Serial1.printf("Gyr: %f, %f, %f\n", gyr_read(0), gyr_read(1), gyr_read(2));
+    Serial1.printf("Q: %f, %f, %f, %f\n", quat_read(0), quat_read(1), quat_read(2), quat_read(3));
     #endif
 }

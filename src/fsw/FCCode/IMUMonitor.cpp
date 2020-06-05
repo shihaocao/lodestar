@@ -23,6 +23,10 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
         add_internal_field(mag_vec_f);
         add_internal_field(quat_f);
 
+        // /** Remap Axis Settings to P5 per the BNO055 spec. */
+        // imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
+        // imu.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P5);
+
         //imu = Adafruit_BNO055(55, 0x28);
         //set up imu?
         if(!imu.begin()){
@@ -34,12 +38,14 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
             functional_f.set(true);
         }
 
-        /* Use external crystal for better accuracy */
-        imu.setExtCrystalUse(true);
-
-        /** Remap Axis Settings to P5 per the BNO055 spec. */
+        // /** Remap Axis Settings to P5 per the BNO055 spec. */
+        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_CONFIG);
         imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
         imu.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P5);
+        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF);
+
+        /* Use external crystal for better accuracy */
+        imu.setExtCrystalUse(true);
     }
 
 void IMUMonitor::execute(){
