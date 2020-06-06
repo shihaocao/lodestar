@@ -1,5 +1,8 @@
 #include "GNC.hpp"
 
+#include <lin.hpp>
+#include <gnc/utilities.hpp>
+
 GNC::GNC(StateFieldRegistry &registry, 
     unsigned int offset)
     : TimedControlTask<void>(registry, "gnc", offset),

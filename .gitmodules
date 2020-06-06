@@ -1,3 +1,6 @@
 [submodule "lib/common/lin"]
 	path = lib/common/lin
 	url = https://github.com/pathfinder-for-autonomous-navigation/lin
+[submodule "lib/common/psim"]
+	path = lib/common/psim
+	url = https://github.com/pathfinder-for-autonomous-navigation/psim.git
