@@ -2,6 +2,7 @@
 #define GNC_a_HPP_
 #pragma once
 
+#include <math.h>
 #include "TimedControlTask.hpp"
 #include "mission_mode_t.enum"
 /**
@@ -30,19 +31,24 @@ protected:
     InternalStateField<unsigned char>* mission_mode_fp;
     InternalStateField<lin::Vector3f>* omega_vec_fp;
     InternalStateField<lin::Vector3f>* acc_vec_fp;
+    InternalStateField<lin::Vector3f>* net_acc_vec_fp;
     InternalStateField<lin::Vector3f>* euler_vec_fp;
+    InternalStateField<lin::Vector3f>* grav_vec_fp;
     InternalStateField<lin::Vector4d>* quat_fp;
+    InternalStateField<lin::Vector4d>* quat_inv_fp;
+
 
     /**
     * @brief Outputs of GNC_a
     */
     InternalStateField<lin::Vector4f> fin_commands_f;
-
+    InternalStateField<lin::Vector3f> glob_acc_vec_f;
     // eventually not needed, just was for debug
     float inc_dir = 0;
 
     // not real control laws, just cool
     void tvc();
+
     
 };
 

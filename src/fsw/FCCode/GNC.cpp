@@ -27,6 +27,7 @@ GNC::GNC(StateFieldRegistry &registry,
         lin::Vector3d v_in_a{0,1,0}; 
         lin::Vector3d v_in_b{0,1,0};
 
+
         gnc::utl::rotate_frame(frame_a_to_b, v_in_a, v_in_b);
         // b should now be mutated?
 

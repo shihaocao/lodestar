@@ -24,7 +24,6 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
 }
 
 void MainControlLoop::execute() {
-    Serial.print("Execute");///////////////////////////////////
     clock_manager.execute();
     imu_monitor.execute_on_time();
     bmp_monitor.execute_on_time();

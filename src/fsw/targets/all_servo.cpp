@@ -6,7 +6,7 @@ Servo s3;
 Servo s4;
 
 void servoSetter(int w,int x,int y,int z){
-    s1.write(w+90);
+    s1.write(180);
     s2.write(x+90);
     s3.write(y+90);
     s4.write(z+90);
@@ -48,10 +48,10 @@ void setup()
     delay(2000);
     pinMode(13, OUTPUT);
     Serial.begin(9600);
-    s1.attach(29);
-    s2.attach(30);
-    s3.attach(35);
-    s4.attach(36);
+    s1.attach(2);
+    s2.attach(3);
+    s3.attach(22);
+    s4.attach(23);
 }
 
 void loop()

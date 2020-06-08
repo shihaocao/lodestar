@@ -36,6 +36,9 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 
 void setup(void)
 {
+  
+  bno.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
+  bno.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P5);
   Serial.begin(115200);
   Serial.println("Orientation Sensor Test"); Serial.println("");
 

@@ -54,6 +54,7 @@ void MissionManager_a::execute() {
             tvc();
             break;
         case mission_mode_t::landed:
+            Serial.print("Landed"); ///////////////////////////////////
             dispatch_landed();
             break;
         default:
@@ -72,31 +73,30 @@ void MissionManager_a::calibrate_data(){
 
 }
 void MissionManager_a::dispatch_warmup() {
+    Serial.println("Warmup");
     // if 5 sec elapse go to init
     if(millis() > MM::warmup_millis){
-        Serial.print("Initialization");///////////////////////////////////////////////
         set_mission_mode(mission_mode_t::initialization);
         enter_init_ccno = control_cycle_count;
     }
 }
 
 void MissionManager_a::dispatch_initialization() {
+    Serial.println("Initialization");
     // weight the current altitude readings
     ground_level_f.set(ground_level_f.get() + alt_fp->get() / MM::init_cycles);
 
     if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
-        Serial.print("Starhopper"); ///////////////////////////////////////////////
         set_mission_mode(mission_mode_t::starhopper);
         servo_on_f.set(true);
     }
 }
 
-// lode star needs detumble too. If we're tumbling waaaay to fast, 
-// step one should just be to keep fins out to zero out all spin
+
 void MissionManager_a::tvc() {
-    //Exit condition for starhopper is if the FTS time is exceeded
+
+    //Exit condition for starhopper is if the FTS time is exceeded (Eventaully it will be an altitude condition)
     if(millis() > MM::FTS_millis){
-        Serial.print("Landed");///////////////////////////////////////////////
         set_mission_mode(mission_mode_t::landed);
     }
 }
