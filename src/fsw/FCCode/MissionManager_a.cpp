@@ -23,6 +23,11 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
     quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
     lin_acc_vec_fp = find_internal_field<lin::Vector3f>("imu.linear_acc_vec", __FILE__, __LINE__);
     omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
+
+    sys_cal = find_internal_field<unsigned char>("imu.sys_cal", __FILE__, __LINE__);
+    gyro_cal = find_internal_field<unsigned char>("imu.gyro_cal", __FILE__, __LINE__);
+    accel_cal = find_internal_field<unsigned char>("imu.accel_cal", __FILE__, __LINE__);
+    mag_cal = find_internal_field<unsigned char>("imu.mag_cal", __FILE__, __LINE__);
     
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
     // adcs_cmd_attitude_fp = find_writable_field<f_quat_t>("adcs.cmd_attitude", __FILE__, __LINE__);
@@ -86,16 +91,19 @@ void MissionManager_a::calibrate_data(){
 
 }
 void MissionManager_a::dispatch_warmup() {
-    Serial.println("Warmup");
+
+    unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
+
     // if 5 sec elapse go to init
-    if(millis() > MM::warmup_millis){
+    // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
+    if(millis() > MM::warmup_millis && calibration_sum == 12){
         set_mission_mode(mission_mode_t::initialization);
         enter_init_ccno = control_cycle_count;
     }
 }
 
 void MissionManager_a::dispatch_initialization() {
-    Serial.println("Initialization");
+
     // weight the current altitude readings
     ground_level_f.set(ground_level_f.get() + alt_fp->get() / MM::init_cycles);
 

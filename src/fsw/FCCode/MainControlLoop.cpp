@@ -8,6 +8,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       clock_manager(registry, PAN::control_cycle_time),
       imu_monitor(registry, imu_monitor_offset),
       bmp_monitor(registry, bmp_monitor_offset),
+      gps_monitor(registry, gps_monitor_offset),
 
       //mission_manager(registry, mission_manager_offset),
       //gnc(registry, gnc_offset),
@@ -27,6 +28,7 @@ void MainControlLoop::execute() {
     clock_manager.execute();
     imu_monitor.execute_on_time();
     bmp_monitor.execute_on_time();
+    gps_monitor.execute_on_time();
 
     /*
     mission_manager.execute_on_time();

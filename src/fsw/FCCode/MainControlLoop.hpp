@@ -9,6 +9,8 @@
 #include "FieldCreatorTask.hpp"
 #include "IMUMonitor.hpp"
 #include "BMPMonitor.hpp"
+#include "GPSMonitor.hpp"
+
 #include "LEDControlTask.hpp"
 #include "MissionManager.hpp"
 #include "MissionManager_a.hpp"
@@ -27,6 +29,7 @@ class MainControlLoop : public ControlTask<void> {
 
     Adafruit_BMP280 bmp;
     BMPMonitor bmp_monitor;
+    GPSMonitor gps_monitor;
 
     //Commented Out Stuff for full launch
     //MissionManager mission_manager;
@@ -77,11 +80,12 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int piksi_control_task_offset  =   1;
         static constexpr unsigned int imu_monitor_offset         =   2;
         static constexpr unsigned int bmp_monitor_offset         =   3;
-        static constexpr unsigned int mission_manager_offset     =   4;
-        static constexpr unsigned int gnc_offset                 =   5;
-        static constexpr unsigned int servo_ct_offset            =   6;
-        static constexpr unsigned int downlink_ct_offset         =   7;
-        static constexpr unsigned int led_control_task_offset    =   8;    
+        static constexpr unsigned int gps_monitor_offset         =   4;
+        static constexpr unsigned int mission_manager_offset     =   5;
+        static constexpr unsigned int gnc_offset                 =   6;
+        static constexpr unsigned int servo_ct_offset            =   7;
+        static constexpr unsigned int downlink_ct_offset         =   8;
+        static constexpr unsigned int led_control_task_offset    =   9;    
         
     #endif
 

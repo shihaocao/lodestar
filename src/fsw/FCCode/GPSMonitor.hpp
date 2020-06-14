@@ -1,5 +1,5 @@
-#ifndef IMU_MONITOR_HPP_
-#define IMU_MONITOR_HPP_
+#ifndef GPS_MONITOR_HPP_
+#define GPS_MONITOR_HPP_
 #pragma once
 
 #include "TimedControlTask.hpp"
@@ -13,7 +13,7 @@
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.
 */
-class IMUMonitor : public TimedControlTask<void>
+class GPSMonitor : public TimedControlTask<void>
 {
 public:
     /**
@@ -23,8 +23,8 @@ public:
      * @param offset control task offset
      * @param _imu the input adcs system
      */
-    //IMUMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BNO055& _imu);
-    IMUMonitor(StateFieldRegistry &registry, unsigned int offset);
+    //GPSMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BNO055& _imu);
+    GPSMonitor(StateFieldRegistry &registry, unsigned int offset);
 
     /** ADCS Driver. **/
     //Devices::ADCS& adcs_system;
@@ -49,16 +49,12 @@ protected:
     //InternalStateField<sensors_event_t> imu_sensor_event;
 
     InternalStateField<bool> functional_f;
-
+    
     /**
-     * @brief Calibration statuses
+     * @brief True if the GPS has a 3D fix.
      * 
      */
-    InternalStateField<unsigned char> sys_cal;
-    InternalStateField<unsigned char> gyro_cal;
-    InternalStateField<unsigned char> accel_cal;
-    InternalStateField<unsigned char> mag_cal;
-
+    InternalStateField<bool> has_fix_f;
 
     // InternalStateField<f_vector_t> 
     //     //linear_acc_vec does not include gravity
@@ -79,6 +75,8 @@ protected:
         linear_acc_vec_f,
         //acc_vec includes gravity
         acc_vec_f,
+        //net_acc_vec doesn't contain gravity
+        net_acc_vec_f,
         //gravity vector
         grav_vec_f,
         //orientation in euler angles
