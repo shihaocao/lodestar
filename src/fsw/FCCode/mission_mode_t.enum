@@ -9,7 +9,9 @@ enum class mission_mode_t {
     detumble,
     bellyflop,
     landed,
-    starhopper,
+    starhopper1, // starhopper1-3 coorespond to different setpoints in the hop
+    starhopper2,
+    starhopper3,
 };
 
 #endif

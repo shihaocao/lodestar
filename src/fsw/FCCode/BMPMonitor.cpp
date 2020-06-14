@@ -58,7 +58,10 @@ void BMPMonitor::execute(){
     float temp_K_float = temp_float + C_to_K;
     float exponent = g_0 * big_M / (R_star * L_b);
     float altitude_float = (temp_K_float / L_b) * (pow((pressure_float / P_b), -1.0f/exponent) - 1.0f) + h_b;
-
     altitude_f.set(altitude_float);
+
+    //Serial.print(temp_float);
+    //Serial.print("  ");
+    //Serial.print(pressure_float);
 
 }

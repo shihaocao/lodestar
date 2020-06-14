@@ -7,7 +7,6 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
     functional_f("imu.functional"),
     linear_acc_vec_f("imu.linear_acc_vec"),
     acc_vec_f("imu.acc_vec"),
-    net_acc_vec_f("imu.net_acc_vec"),
     grav_vec_f("imu.grav_vec"),
     euler_vec_f("imu.euler_vec"),
     gyr_vec_f("imu.gyr_vec"),
@@ -23,12 +22,13 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
         add_internal_field(functional_f);
         add_internal_field(linear_acc_vec_f);
         add_internal_field(acc_vec_f);
-        add_internal_field(net_acc_vec_f);
         add_internal_field(grav_vec_f);
         add_internal_field(euler_vec_f);
         add_internal_field(gyr_vec_f);
         add_internal_field(mag_vec_f);
         add_internal_field(quat_f);
+        add_internal_field(quat_inv_f);
+
 
         add_internal_field(sys_cal);
         add_internal_field(gyro_cal);
@@ -141,12 +141,6 @@ void IMUMonitor::execute(){
         grav_vec.acceleration.z
     });
 
-    net_acc_vec_f.set({
-        acc_vec.acceleration.x-grav_vec.acceleration.x,
-        acc_vec.acceleration.y-grav_vec.acceleration.y,
-        acc_vec.acceleration.z-grav_vec.acceleration.z
-    });
-
     euler_vec_f.set({
         euler_vec.orientation.x,
         euler_vec.orientation.y,
@@ -166,16 +160,17 @@ void IMUMonitor::execute(){
     });
 
     quat_f.set({
+        local_quat.w(),
         local_quat.x(),
         local_quat.y(),
         local_quat.z(),
-        local_quat.w()
+        
     });
 
     quat_inv_f.set({
-        local_quat.x(),
+        local_quat.w(),
+        -local_quat.x(),
         -local_quat.y(),
-        -local_quat.z(),
-        -local_quat.w()
+        -local_quat.z(), 
     });
 }

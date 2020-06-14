@@ -79,8 +79,6 @@ protected:
         linear_acc_vec_f,
         //acc_vec includes gravity
         acc_vec_f,
-        //net_acc_vec doesn't contain gravity
-        net_acc_vec_f,
         //gravity vector
         grav_vec_f,
         //orientation in euler angles

@@ -31,10 +31,12 @@ protected:
     InternalStateField<unsigned char>* mission_mode_fp;
     InternalStateField<lin::Vector3f>* omega_vec_fp;
     InternalStateField<lin::Vector3f>* acc_vec_fp;
-    InternalStateField<lin::Vector3f>* net_acc_vec_fp;
+    InternalStateField<lin::Vector3f>* lin_acc_vec_fp;
+    InternalStateField<lin::Vector3f>* acc_error_fp;
     InternalStateField<lin::Vector3f>* euler_vec_fp;
     InternalStateField<lin::Vector3f>* grav_vec_fp;
     InternalStateField<lin::Vector4d>* quat_fp;
+    InternalStateField<lin::Vector4d>* init_quat_dp;
     InternalStateField<lin::Vector4d>* quat_inv_fp;
 
 
@@ -43,6 +45,17 @@ protected:
     */
     InternalStateField<lin::Vector4f> fin_commands_f;
     InternalStateField<lin::Vector3f> glob_acc_vec_f;
+    InternalStateField<lin::Vector2f> thrust_commands_f;
+    InternalStateField<lin::Vector3d> setpoint_d;
+    InternalStateField<lin::Vector3d> velocity_d;
+    InternalStateField<lin::Vector3d> position_d;
+    InternalStateField<lin::Vector3d> glob_pos_err_d;
+    InternalStateField<lin::Vector3d> body_pos_err_d;
+    InternalStateField<lin::Vector3d> body_velocity_d;
+
+
+
+    
     // eventually not needed, just was for debug
     float inc_dir = 0;
 
