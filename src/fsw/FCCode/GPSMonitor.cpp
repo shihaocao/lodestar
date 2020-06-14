@@ -4,7 +4,9 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
     unsigned int offset)
     : TimedControlTask<void>(registry, "imu_monitor", offset),
     //imu(_imu),
-    functional_f("imu.functional"),
+    functional_f("gps.functional"),
+    has_fix_f("gps.fix"),
+
     linear_acc_vec_f("imu.linear_acc_vec"),
     acc_vec_f("imu.acc_vec"),
     net_acc_vec_f("imu.net_acc_vec"),

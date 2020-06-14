@@ -5,7 +5,7 @@ namespace PAN {
     // Environment-based initializations of the control loop time.
     // control_cycle_time is the value actually used for timing. The
     // other constants are just informational.
-    constexpr unsigned int control_cycle_time_ms = 20;
+    constexpr unsigned int control_cycle_time_ms = 100;
     constexpr unsigned int control_cycle_time_us = control_cycle_time_ms * 1000;
     constexpr unsigned int control_cycle_time = control_cycle_time_us;
 }
