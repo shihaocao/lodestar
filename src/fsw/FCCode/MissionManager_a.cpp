@@ -3,12 +3,16 @@
 MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int offset) :
     TimedControlTask<void>(registry, "mission_ct", offset),
     mission_mode_f("ls.mode"),
+    acc_error_f("ls.acc_error"),
+    init_quat_d("ls.init_quat"),
     ground_level_f("ls.ground_level"),
     engine_on_f("ls.engine_on"),
     servo_on_f("ls.servo_on"),
     agl_alt_f("ls.agl")
 {
     add_internal_field(mission_mode_f);
+    add_internal_field(acc_error_f);
+    add_internal_field(init_quat_d);
     add_internal_field(ground_level_f);
     add_internal_field(engine_on_f);
     add_internal_field(servo_on_f);
@@ -16,6 +20,8 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
 
     alt_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
     acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
+    quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
+    lin_acc_vec_fp = find_internal_field<lin::Vector3f>("imu.linear_acc_vec", __FILE__, __LINE__);
     omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
     
     // adcs_mode_fp = find_writable_field<unsigned char>("adcs.mode", __FILE__, __LINE__);
@@ -50,7 +56,13 @@ void MissionManager_a::execute() {
         case mission_mode_t::initialization:
             dispatch_initialization();
             break;
-        case mission_mode_t::starhopper:
+        case mission_mode_t::starhopper1:
+            tvc();
+            break;
+        case mission_mode_t::starhopper2:
+            tvc();
+            break;
+        case mission_mode_t::starhopper3:
             tvc();
             break;
         case mission_mode_t::landed:
@@ -70,6 +82,7 @@ void MissionManager_a::set_mission_mode(mission_mode_t mode){
 void MissionManager_a::calibrate_data(){
 
     agl_alt_f.set(alt_fp->get() - ground_level_f.get());
+    
 
 }
 void MissionManager_a::dispatch_warmup() {
@@ -86,19 +99,44 @@ void MissionManager_a::dispatch_initialization() {
     // weight the current altitude readings
     ground_level_f.set(ground_level_f.get() + alt_fp->get() / MM::init_cycles);
 
+    acc_error_f.set({
+        acc_error_f.get()(0)+lin_acc_vec_fp->get()(0) / MM::init_cycles,
+        acc_error_f.get()(1)+lin_acc_vec_fp->get()(1) / MM::init_cycles,
+        acc_error_f.get()(2)+lin_acc_vec_fp->get()(2) / MM::init_cycles,
+        });
+
+    
+    init_quat_d.set({
+        init_quat_d.get()(0)+quat_fp->get()(0) / MM::init_cycles,
+        init_quat_d.get()(1)+quat_fp->get()(1) / MM::init_cycles,
+        init_quat_d.get()(2)+quat_fp->get()(2) / MM::init_cycles,
+        init_quat_d.get()(3)+quat_fp->get()(3) / MM::init_cycles,
+        });
+
+
+    double quat_norm=lin::norm(init_quat_d.get());
+
+    init_quat_d.set({
+        init_quat_d.get()(0)/quat_norm,
+        init_quat_d.get()(1)/quat_norm,
+        init_quat_d.get()(2)/quat_norm,
+        init_quat_d.get()(3)/quat_norm,
+    });
+
     if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
-        set_mission_mode(mission_mode_t::starhopper);
+        set_mission_mode(mission_mode_t::starhopper2);
         servo_on_f.set(true);
+        engine_on_f.set(true);
     }
 }
 
 
 void MissionManager_a::tvc() {
-
     //Exit condition for starhopper is if the FTS time is exceeded (Eventaully it will be an altitude condition)
     if(millis() > MM::FTS_millis){
         set_mission_mode(mission_mode_t::landed);
     }
+
 }
 
 

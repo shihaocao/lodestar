@@ -45,6 +45,8 @@ namespace SERVO {
     constexpr unsigned char fin2_pin = 3;
     constexpr unsigned char fin3_pin = 22;
     constexpr unsigned char fin4_pin = 23;
+    constexpr unsigned char motor1_pin = 4;
+    constexpr unsigned char motor2_pin = 5;
 
     // bounds expected from GNC
     constexpr float servo_cmd_range = 90;
@@ -63,6 +65,15 @@ namespace SERVO {
     // range used for actual write microseconds
     constexpr float flap_write_min = servo_center - servo_cmd_range/2.0;
     constexpr float flap_write_max = servo_center + servo_cmd_range/2.0;
+
+}
+
+namespace CONTROLS{
+    constexpr lin::Vector3d setpoint_1 {1.0,0.0,0.0}; //Setpoints in the hop
+    constexpr lin::Vector3d setpoint_2 {1.0,3.0,3.0}; 
+    constexpr lin::Vector3d setpoint_3 {0.0,3.0,3.0}; 
+    constexpr double max_position_error = 5;
+
 }
 
 #endif

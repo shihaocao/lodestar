@@ -28,6 +28,8 @@ class MissionManager_a : public TimedControlTask<void> {
          * @brief Current mission mode (see mission_mode_t.enum)
          */
         InternalStateField<unsigned char> mission_mode_f;
+        InternalStateField<lin::Vector3f> acc_error_f;
+        InternalStateField<lin::Vector4d> init_quat_d;
         InternalStateField<float> ground_level_f;
         InternalStateField<bool> engine_on_f;
         InternalStateField<bool> servo_on_f;
@@ -36,6 +38,8 @@ class MissionManager_a : public TimedControlTask<void> {
 
         InternalStateField<float>* alt_fp;
         InternalStateField<lin::Vector3f>* acc_vec_fp;
+        InternalStateField<lin::Vector4d>* quat_fp;
+        InternalStateField<lin::Vector3f>* lin_acc_vec_fp;
         InternalStateField<lin::Vector3f>* omega_vec_fp;
 
         long enter_init_millis;
