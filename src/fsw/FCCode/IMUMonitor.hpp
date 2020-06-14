@@ -50,6 +50,16 @@ protected:
 
     InternalStateField<bool> functional_f;
 
+    /**
+     * @brief Calibration statuses
+     * 
+     */
+    InternalStateField<unsigned char> sys_cal;
+    InternalStateField<unsigned char> gyro_cal;
+    InternalStateField<unsigned char> accel_cal;
+    InternalStateField<unsigned char> mag_cal;
+
+
     // InternalStateField<f_vector_t> 
     //     //linear_acc_vec does not include gravity
     //     linear_acc_vec_f,

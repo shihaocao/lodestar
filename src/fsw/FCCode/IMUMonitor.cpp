@@ -13,7 +13,11 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
     gyr_vec_f("imu.gyr_vec"),
     mag_vec_f("imu.mag_vec"),
     quat_f("imu.quat"),
-    quat_inv_f("imu.quat_inv")
+    quat_inv_f("imu.quat_inv"),
+    sys_cal("imu.sys_cal"),
+    gyro_cal("imu.gyro_cal"),
+    accel_cal("imu.accel_cal"),
+    mag_cal("imu.mag_cal")
     {
         //add statefields to registry
         add_internal_field(functional_f);
@@ -25,6 +29,11 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
         add_internal_field(gyr_vec_f);
         add_internal_field(mag_vec_f);
         add_internal_field(quat_f);
+
+        add_internal_field(sys_cal);
+        add_internal_field(gyro_cal);
+        add_internal_field(accel_cal);
+        add_internal_field(mag_cal);
 
         // /** Remap Axis Settings to P5 per the BNO055 spec. */
         // imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
@@ -75,6 +84,23 @@ void IMUMonitor::execute(){
     imu.getEvent(&euler_vec, Adafruit_BNO055::VECTOR_EULER);
     imu.getEvent(&gyr_vec, Adafruit_BNO055::VECTOR_GYROSCOPE);
     imu.getEvent(&mag_vec, Adafruit_BNO055::VECTOR_MAGNETOMETER);
+
+    // temp calibration containers
+    unsigned char s, g, a, m;
+    imu.getCalibration(&s, &g, &a, &m);
+    
+
+    // Serial1.print(sys_stat);
+    // Serial1.print(",");
+    // Serial1.print(gyro_stat);
+    // Serial1.print(",");
+
+    // Serial1.print(accel_stat);
+    // Serial1.print(",");
+
+    // Serial1.print(mag_stat);
+    // Serial1.print("\n");
+
 
     //poll for quatnernion
     imu::Quaternion local_quat = imu.getQuat();
