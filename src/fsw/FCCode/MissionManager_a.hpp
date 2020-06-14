@@ -38,6 +38,11 @@ class MissionManager_a : public TimedControlTask<void> {
         InternalStateField<lin::Vector3f>* acc_vec_fp;
         InternalStateField<lin::Vector3f>* omega_vec_fp;
 
+        InternalStateField<unsigned char>* sys_cal;
+        InternalStateField<unsigned char>* gyro_cal;
+        InternalStateField<unsigned char>* accel_cal;
+        InternalStateField<unsigned char>* mag_cal;
+
         long enter_init_millis;
         int enter_init_ccno;
         int enter_freefall_cnno;
