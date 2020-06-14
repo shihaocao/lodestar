@@ -96,16 +96,33 @@ void setup()
     displaySensorDetails();
 }
 void execute_calibration(){
-    uint8_t offsets[11];
+    uint8_t offsets[11] = { 0 };
     bno.getSensorOffsets(offsets);
     for(int i = 0; i < 11; i++){
         Serial.printf("%u,",offsets[i]);
     }
     Serial.print("\n");
     counter++;
+
+    adafruit_bno055_offsets_t offset_data = { 0 };
+    bno.getSensorOffsets(offset_data);
+    Serial.print("struct:\n");
+    Serial.printf("%i,",offset_data.accel_offset_x);
+    Serial.printf("%i,",offset_data.accel_offset_y);
+    Serial.printf("%i,",offset_data.accel_offset_z);
+    Serial.printf("%i,",offset_data.mag_offset_x);
+    Serial.printf("%i,",offset_data.mag_offset_y);
+    Serial.printf("%i,",offset_data.mag_offset_z);
+    Serial.printf("%i,",offset_data.gyro_offset_x);
+    Serial.printf("%i,",offset_data.gyro_offset_y);
+    Serial.printf("%i,",offset_data.gyro_offset_z);
+    Serial.printf("%i,",offset_data.accel_radius);
+    Serial.printf("%i,",offset_data.mag_radius);
+    Serial.print("\n");
+
 }
 void dispatch_calibration(){
-    bno.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_CONFIG);
+    //bno.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_CONFIG);
     state = 1;
 }
 
@@ -116,7 +133,7 @@ void loop()
     if(bno.isFullyCalibrated() && state == 0){
         dispatch_calibration();
     }
-    if(state == 1){
+    if(state == 1 && bno.isFullyCalibrated()){
         execute_calibration();
     }
     else
