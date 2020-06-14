@@ -88,7 +88,10 @@ void IMUMonitor::execute(){
     // temp calibration containers
     unsigned char s, g, a, m;
     imu.getCalibration(&s, &g, &a, &m);
-    
+    sys_cal.set(s);
+    gyro_cal.set(g);
+    accel_cal.set(a);
+    mag_cal.set(m);
 
     // Serial1.print(sys_stat);
     // Serial1.print(",");
