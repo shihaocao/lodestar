@@ -104,21 +104,21 @@ void execute_calibration(){
     Serial.print("\n");
     counter++;
 
-    adafruit_bno055_offsets_t offset_data = { 0 };
-    bno.getSensorOffsets(offset_data);
-    Serial.print("struct:\n");
-    Serial.printf("%i,",offset_data.accel_offset_x);
-    Serial.printf("%i,",offset_data.accel_offset_y);
-    Serial.printf("%i,",offset_data.accel_offset_z);
-    Serial.printf("%i,",offset_data.mag_offset_x);
-    Serial.printf("%i,",offset_data.mag_offset_y);
-    Serial.printf("%i,",offset_data.mag_offset_z);
-    Serial.printf("%i,",offset_data.gyro_offset_x);
-    Serial.printf("%i,",offset_data.gyro_offset_y);
-    Serial.printf("%i,",offset_data.gyro_offset_z);
-    Serial.printf("%i,",offset_data.accel_radius);
-    Serial.printf("%i,",offset_data.mag_radius);
-    Serial.print("\n");
+    // adafruit_bno055_offsets_t offset_data = { 0 };
+    // bno.getSensorOffsets(offset_data);
+    // Serial.print("struct:\n");
+    // Serial.printf("%i,",offset_data.accel_offset_x);
+    // Serial.printf("%i,",offset_data.accel_offset_y);
+    // Serial.printf("%i,",offset_data.accel_offset_z);
+    // Serial.printf("%i,",offset_data.mag_offset_x);
+    // Serial.printf("%i,",offset_data.mag_offset_y);
+    // Serial.printf("%i,",offset_data.mag_offset_z);
+    // Serial.printf("%i,",offset_data.gyro_offset_x);
+    // Serial.printf("%i,",offset_data.gyro_offset_y);
+    // Serial.printf("%i,",offset_data.gyro_offset_z);
+    // Serial.printf("%i,",offset_data.accel_radius);
+    // Serial.printf("%i,",offset_data.mag_radius);
+    // Serial.print("\n");
 
 }
 void dispatch_calibration(){

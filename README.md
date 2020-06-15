@@ -58,6 +58,27 @@ Error:
 
 If you run into a isnan() definition error in utility/vector.h in the Adafruit BNO_055 library within the .pio folder, change `#include <math.h>` to `#include <cmath>` and `isnan()` to `std::isnan()`within the utility/vector.h file.
 
+## BNO055 Calibration
+
+Run
+```
+pio run -e imu_calibration -t upload
+```
+
+Place the imu on with every face of the chip pointing up to the sky. Basically try to have the imu sit on each face for 3 to 5 seconds.
+Repeat this until the IMU is fully calibrated. You are waiting until the 3rd integer reaches 3 (the accelerometer calibration state).
+All the other integers should reach 3 before the accelerometer does.
+
+Once all sensors have been fully calibrated, the script will print out 50 lines of calibration state.
+They should all be the same integers. If they are changing from line to line, the calibration failed.
+
+Grab one of those lines, and save it. That line is the calibration offsets.
+
+### Flight vs Ground Testing
+
+You may want to use preloaded offsets so that for flight software development, you don't need to calibrate on every run.
+However, I would recommend for a real flight to calibrate at the range.
+
 ## Github Basics
 
 To checkout the most recent changes, make sure you're on master, then pull the changes.
