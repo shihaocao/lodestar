@@ -96,9 +96,10 @@ void setup()
     displaySensorDetails();
 }
 void execute_calibration(){
-    uint8_t offsets[11] = { 0 };
+    int len = 22;
+    uint8_t offsets[len] = { 0 };
     bno.getSensorOffsets(offsets);
-    for(int i = 0; i < 11; i++){
+    for(int i = 0; i < len; i++){
         Serial.printf("%u,",offsets[i]);
     }
     Serial.print("\n");

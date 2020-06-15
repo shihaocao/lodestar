@@ -58,9 +58,13 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
         imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P1);
         imu.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P1);
         
+        #ifdef LOAD_CALI
         /** Load a specific set of sensor offsets */
-        unsigned char offsets[11] = {254,255,205,255,251,255,3,255,9,255,81}; // calibrated from scao imu @ 06/14
+        unsigned char offsets[22] = {242,255,214,255,243,255,250,254,0,255,105,0,255,255,1,0,255,255,232,3,146,2}; // calibrated from scao imu @ 06/14
         imu.setSensorOffsets(offsets);
+        #endif
+        // set mode just in case
+        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF);
 
         // NOT NECESSARY MODIFY SHIHAO FORK IF DEFAULT INITIALIZATION IS REQUIRED
 

@@ -96,10 +96,16 @@ void MissionManager_a::dispatch_warmup() {
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
+    #ifdef LOAD_CALI
     if(millis() > MM::warmup_millis && calibration_sum == 12){
+    #else
+    if(millis() > MM::warmup_millis){
+    #endif
         set_mission_mode(mission_mode_t::initialization);
         enter_init_ccno = control_cycle_count;
     }
+
+    calibration_sum += 1; // to avoid "unused error", ignore this line
 }
 
 void MissionManager_a::dispatch_initialization() {
