@@ -79,6 +79,15 @@ Grab one of those lines, and save it. That line is the calibration offsets.
 You may want to use preloaded offsets so that for flight software development, you don't need to calibrate on every run.
 However, I would recommend for a real flight to calibrate at the range.
 
+## Sensor Checkouts
+
+To check the functionality of the GPS:
+```
+pio run -e gps_serial
+```
+
+TODO: Other sensors
+
 ## Github Basics
 
 To checkout the most recent changes, make sure you're on master, then pull the changes.
