@@ -46,6 +46,30 @@ Adafruit_GPS Boat;
 
 uint32_t timer = millis();
 
+#ifdef NMEA_EXTENSIONS
+void updateBoat() { // fill up the boat values with some test data to use in
+                    // build()
+  double t = millis() / 1000.;
+  double theta = t / 100.;   // slow
+  double gamma = theta * 10; // faster
+  Boat.latitude = 4400 + sin(theta) * 60;
+  Boat.lat = 'N';
+  Boat.longitude = 7600 + cos(theta) * 60;
+  Boat.lon = 'W';
+  Boat.fixquality = 2;
+  Boat.speed = 3 + sin(gamma);
+  Boat.hour = abs(cos(theta)) * 24;
+  Boat.minute = 30 + sin(theta / 2) * 30;
+  Boat.seconds = 30 + sin(gamma) * 30;
+  Boat.milliseconds = 500 + sin(gamma) * 500;
+  Boat.year = 1 + abs(sin(theta)) * 25;
+  Boat.month = 1 + abs(sin(gamma)) * 11;
+  Boat.day = 1 + abs(sin(gamma)) * 26;
+  Boat.satellites = abs(cos(gamma)) * 10;
+}
+#endif
+
+
 void setup() {
   // while (!Serial);  // uncomment to have the sketch wait until Serial is
   // ready
@@ -191,25 +215,3 @@ void loop() // run over and over again
   }
 }
 
-#ifdef NMEA_EXTENSIONS
-void updateBoat() { // fill up the boat values with some test data to use in
-                    // build()
-  double t = millis() / 1000.;
-  double theta = t / 100.;   // slow
-  double gamma = theta * 10; // faster
-  Boat.latitude = 4400 + sin(theta) * 60;
-  Boat.lat = 'N';
-  Boat.longitude = 7600 + cos(theta) * 60;
-  Boat.lon = 'W';
-  Boat.fixquality = 2;
-  Boat.speed = 3 + sin(gamma);
-  Boat.hour = abs(cos(theta)) * 24;
-  Boat.minute = 30 + sin(theta / 2) * 30;
-  Boat.seconds = 30 + sin(gamma) * 30;
-  Boat.milliseconds = 500 + sin(gamma) * 500;
-  Boat.year = 1 + abs(sin(theta)) * 25;
-  Boat.month = 1 + abs(sin(gamma)) * 11;
-  Boat.day = 1 + abs(sin(gamma)) * 26;
-  Boat.satellites = abs(cos(gamma)) * 10;
-}
-#endif
