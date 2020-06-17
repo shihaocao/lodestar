@@ -37,7 +37,10 @@ protected:
     InternalStateField<lin::Vector3f>* grav_vec_fp;
     InternalStateField<lin::Vector4d>* quat_fp;
     InternalStateField<lin::Vector4d>* init_quat_dp;
-    InternalStateField<lin::Vector4d>* quat_inv_fp;
+    InternalStateField<float>* altitude_fp;
+    InternalStateField<float>* ground_level_fp;
+
+
 
 
     /**

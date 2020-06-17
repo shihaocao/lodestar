@@ -56,10 +56,15 @@ void MissionManager_a::execute() {
     }
     switch(mode) {
         case mission_mode_t::warmup:
+            Serial.print("Warmup"); ///////////////////////////////////
             dispatch_warmup();
             break;
         case mission_mode_t::initialization:
+            Serial.print("Initialization"); ///////////////////////////////////
             dispatch_initialization();
+            break;
+        case mission_mode_t::accel_calibration:
+            acc_cal();
             break;
         case mission_mode_t::starhopper1:
             tvc();
@@ -138,10 +143,17 @@ void MissionManager_a::dispatch_initialization() {
     });
 
     if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
-        set_mission_mode(mission_mode_t::starhopper2);
+        set_mission_mode(mission_mode_t::accel_calibration);
         servo_on_f.set(true);
         engine_on_f.set(true);
     }
+}
+
+void MissionManager_a::acc_cal() {
+    if (accel_cal->get()==3){
+        set_mission_mode(mission_mode_t::starhopper1);
+    }
+
 }
 
 
@@ -149,6 +161,7 @@ void MissionManager_a::tvc() {
     //Exit condition for starhopper is if the FTS time is exceeded (Eventaully it will be an altitude condition)
     if(millis() > MM::FTS_millis){
         set_mission_mode(mission_mode_t::landed);
+        
     }
 
 }

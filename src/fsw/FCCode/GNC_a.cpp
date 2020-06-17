@@ -50,8 +50,10 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         euler_vec_fp = find_internal_field<lin::Vector3f>("imu.euler_vec", __FILE__, __LINE__);
         quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
         init_quat_dp = find_internal_field<lin::Vector4d>("ls.init_quat", __FILE__, __LINE__);
-        quat_inv_fp = find_internal_field<lin::Vector4d>("imu.quat_inv", __FILE__, __LINE__);
-     
+        altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
+        ground_level_fp = find_internal_field<float>("ls.ground_level", __FILE__, __LINE__);
+
+
         // default all fins to no actuation
         fin_commands_f.set({
             0.0,
@@ -143,6 +145,7 @@ void GNC_a::tvc(){
     lin::Vector3d glob_acc = glob_acc_vec_f.get();
     lin::Vector3d setpoint = setpoint_d.get();
     lin::Vector4d quat = quat_fp->get();
+    double altitude = altitude_fp->get()-ground_level_fp->get();
 
     lin::Vector4d init_quat_conj;
     lin::Vector4d quat_inv;
@@ -176,7 +179,8 @@ void GNC_a::tvc(){
 
     //Calculates Position via numerical integration (Will eventually be calculated from GPS)
     position_d.set({
-        position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
+        altitude,
+        //position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(1)+velocity(1)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(1)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(2)+velocity(2)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(2)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
     });
@@ -195,9 +199,9 @@ void GNC_a::tvc(){
 
     //Sets the value of global acceleration while accounting for any bias in the IMU acceleration readings
     glob_acc_vec_f.set({
-        glob_acc(0)-acc_error_fp->get()(0),
-        glob_acc(1)-acc_error_fp->get()(1),
-        glob_acc(2)-acc_error_fp->get()(2),
+        glob_acc(0),//-acc_error_fp->get()(0),
+        glob_acc(1),//-acc_error_fp->get()(1),
+        glob_acc(2),//-acc_error_fp->get()(2),
     });
 
     //Sets global position error
@@ -373,14 +377,41 @@ void GNC_a::tvc(){
     fin_commands_f.set(fin_commands);
     thrust_commands_f.set(thrust_commands);
 
-    Serial.print("(");
-    Serial.print(roll);
+    Serial.print("      (");
+    Serial.print(glob_acc_vec_f.get()(0));
     Serial.print(",");
-    Serial.print(pitch);
+    Serial.print(glob_acc_vec_f.get()(1));
     Serial.print(",");
-    Serial.print(yaw);
+    Serial.print(glob_acc_vec_f.get()(2));
     Serial.print(")");
 
+    /*
+    Serial.print("      (");
+    Serial.print(lin_acc_vec_fp->get()(0));
+    Serial.print(",");
+    Serial.print(lin_acc_vec_fp->get()(1));
+    Serial.print(",");
+    Serial.print(lin_acc_vec_fp->get()(2));
+    Serial.println(")");
+    */
+    
+    Serial.print("      (");
+    Serial.print(velocity_d.get()(0));
+    Serial.print(",");
+    Serial.print(velocity_d.get()(1));
+    Serial.print(",");
+    Serial.print(velocity_d.get()(2));
+    Serial.print(")");
+    
+    Serial.print("      (");
+    Serial.print(position(0));
+    Serial.print(",");
+    Serial.print(position(1));
+    Serial.print(",");
+    Serial.print(position(2));
+    Serial.println(")");
+
+    /*
     Serial.print("      (");
     Serial.print(x_a_com);
     Serial.print(",");
@@ -388,6 +419,7 @@ void GNC_a::tvc(){
     Serial.print(",");
     Serial.print(yaw_alph_com);
     Serial.println(")");
+    */
    
 }
 

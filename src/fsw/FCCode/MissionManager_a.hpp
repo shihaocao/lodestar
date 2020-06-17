@@ -20,6 +20,7 @@ class MissionManager_a : public TimedControlTask<void> {
         void calibrate_data();
         void dispatch_warmup();
         void dispatch_initialization();
+        void acc_cal();
         void tvc();
         void dispatch_landed();
 

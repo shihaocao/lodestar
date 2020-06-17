@@ -103,6 +103,8 @@ void IMUMonitor::execute(){
     accel_cal.set(a);
     mag_cal.set(m);
 
+    Serial.print(a);
+
     // Serial1.print(sys_stat);
     // Serial1.print(",");
     // Serial1.print(gyro_stat);
