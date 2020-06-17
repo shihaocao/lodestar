@@ -17,7 +17,6 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
     mag_vec_f("imu.mag_vec"),
     quat_f("imu.quat"),
     quat_inv_f("imu.quat_inv")
-    
     {
         //add statefields to registry
         add_internal_field(functional_f);

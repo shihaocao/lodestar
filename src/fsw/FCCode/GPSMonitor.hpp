@@ -29,7 +29,6 @@ public:
     /** ADCS Driver. **/
     //Devices::ADCS& adcs_system;
     //Adafruit_BNO055& imu;
-    Adafruit_BNO055 imu = Adafruit_BNO055(55, 0x28);
 
     /**
     * @brief Gets inputs from the ADCS box and dumps them into the state
