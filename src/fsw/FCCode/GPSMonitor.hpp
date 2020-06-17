@@ -9,6 +9,8 @@
 #include <Adafruit_BNO055.h>
 //#include <utility/imumaths.h>
 
+#include <Adafruit_GPS.h>
+
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.

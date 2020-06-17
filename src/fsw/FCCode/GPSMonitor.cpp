@@ -28,6 +28,9 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
         add_internal_field(mag_vec_f);
         add_internal_field(quat_f);
 
+        Serial1.begin(57600);
+
+        
     }
 
 void GPSMonitor::execute(){

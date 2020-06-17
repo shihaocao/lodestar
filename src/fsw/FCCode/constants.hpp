@@ -10,6 +10,14 @@ namespace PAN {
     constexpr unsigned int control_cycle_time = control_cycle_time_us;
 }
 
+namespace PINOUT {
+
+    // let the GPS be connected to TX and RX 3
+    // let the telemetry radio (57600 baud) be connected to TX1 and RX1
+
+    
+}
+
 namespace MM {
     constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;

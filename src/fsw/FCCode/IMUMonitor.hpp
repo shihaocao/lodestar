@@ -50,7 +50,6 @@ protected:
 
     InternalStateField<bool> functional_f;
 
-
     /**
      * @brief Calibration statuses
      * 
