@@ -189,10 +189,10 @@ void loop() // run over and over again
     Serial.println(GPS.secondsSinceDate(), 3);
     if (GPS.fix) {
       Serial.print("Location: ");
-      Serial.print(GPS.latitude_fixed, 4);
+      Serial.print(GPS.latitudeDegrees, 4);
       Serial.print(GPS.lat);
       Serial.print(", ");
-      Serial.print(GPS.longitude_fixed, 4);
+      Serial.print(GPS.longitudeDegrees, 4);
       Serial.println(GPS.lon);
       Serial.print("Speed (knots): ");
       Serial.println(GPS.speed);
