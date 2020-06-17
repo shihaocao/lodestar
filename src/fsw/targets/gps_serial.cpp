@@ -27,7 +27,7 @@
 #include <Adafruit_GPS.h>
 
 // what's the name of the hardware serial port?
-#define GPSSerial Serial1
+#define GPSSerial Serial3
 
 // Connect to the GPS on the hardware port
 Adafruit_GPS GPS(&GPSSerial);
