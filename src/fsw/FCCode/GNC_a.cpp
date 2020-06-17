@@ -145,7 +145,7 @@ void GNC_a::tvc(){
     lin::Vector3d glob_acc = glob_acc_vec_f.get();
     lin::Vector3d setpoint = setpoint_d.get();
     lin::Vector4d quat = quat_fp->get();
-    double altitude = altitude_fp->get()-ground_level_fp->get();
+    //double altitude = altitude_fp->get()-ground_level_fp->get();
 
     lin::Vector4d init_quat_conj;
     lin::Vector4d quat_inv;
@@ -179,8 +179,8 @@ void GNC_a::tvc(){
 
     //Calculates Position via numerical integration (Will eventually be calculated from GPS)
     position_d.set({
-        altitude,
-        //position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
+        //altitude,
+        position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(1)+velocity(1)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(1)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(2)+velocity(2)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(2)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
     });
