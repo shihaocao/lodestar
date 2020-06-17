@@ -51,12 +51,22 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
             functional_f.set(true);
         }
 
-        // /** Remap Axis Settings to P1 per the BNO055 spec. */
-        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_CONFIG);
+        // absolute fusion mode
+        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF);
+
+
+        /** Remap Axis Settings to P1 per the BNO055 spec. */
         imu.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P1);
         imu.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P1);
-        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF);
         
+        #ifdef LOAD_CALI
+        /** Load a specific set of sensor offsets */
+        unsigned char offsets[22] = {242,255,214,255,243,255,250,254,0,255,105,0,255,255,1,0,255,255,232,3,146,2}; // calibrated from scao imu @ 06/14
+        imu.setSensorOffsets(offsets);
+        #endif
+        // set mode just in case
+        imu.setMode(Adafruit_BNO055::adafruit_bno055_opmode_t::OPERATION_MODE_NDOF);
+
         // NOT NECESSARY MODIFY SHIHAO FORK IF DEFAULT INITIALIZATION IS REQUIRED
 
         /* Use external crystal for better accuracy */
