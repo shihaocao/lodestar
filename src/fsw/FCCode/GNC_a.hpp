@@ -49,9 +49,20 @@ protected:
     InternalStateField<lin::Vector3d> setpoint_d;
     InternalStateField<lin::Vector3d> velocity_d;
     InternalStateField<lin::Vector3d> position_d;
+    InternalStateField<lin::Vector4d> net_quat_d;
     InternalStateField<lin::Vector3d> glob_pos_err_d;
-    InternalStateField<lin::Vector3d> body_pos_err_d;
-    InternalStateField<lin::Vector3d> body_velocity_d;
+    InternalStateField<lin::Vector2d> body_pos_err_d;
+    InternalStateField<lin::Vector2d> body_velocity_d;
+    InternalStateField<double> pitch_integral_d;
+    InternalStateField<double> yaw_integral_d;
+    InternalStateField<double> x_integral_d;
+    InternalStateField<lin::Vector3d> euler_d;
+    InternalStateField<lin::Vector3d> a_com_d;
+
+
+
+
+
 
 
 

@@ -72,7 +72,38 @@ namespace CONTROLS{
     constexpr lin::Vector3d setpoint_1 {1.0,0.0,0.0}; //Setpoints in the hop
     constexpr lin::Vector3d setpoint_2 {1.0,3.0,3.0}; 
     constexpr lin::Vector3d setpoint_3 {0.0,3.0,3.0}; 
-    constexpr double max_position_error = 5;
+
+
+    constexpr double max_position_error = 5.0;
+    constexpr double max_tilt = 3.0;
+    constexpr double alph_pitch_max=5;
+    constexpr double alph_yaw_max=5;
+    constexpr double a_x_max=2;
+    constexpr double weight=2; //Factor by which attitude control commands thrust
+    constexpr double T_max=10; //Maximum thrust in Newtons
+    constexpr double servo_max=20; //Measured from equilibrium
+
+
+    constexpr double Kd_p_tilt = 1.5;
+    constexpr double Kd_y_tilt = 1.5;
+    constexpr double Kp_pitch = 1.1;
+    constexpr double Ki_pitch = 0.01;
+    constexpr double Kd_pitch = 0.5;
+    constexpr double Kp_yaw = 1.1;
+    constexpr double Ki_yaw = 0.01;
+    constexpr double Kd_yaw = 0.5;
+
+    //Ascent Gains
+    constexpr double Kp_xa = 1.5;
+    constexpr double Ki_xa = 0.8;
+    constexpr double Kd_xa = 0.6;
+
+    //Landing Gains
+    constexpr double Kp_xd = 0.6;
+    constexpr double Ki_xd = 0.0;
+    constexpr double Kd_xd = 4;
+
+
 
 }
 

@@ -92,11 +92,11 @@ void MissionManager_a::calibrate_data(){
 }
 void MissionManager_a::dispatch_warmup() {
 
-    unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
+    //unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
-    if(millis() > MM::warmup_millis && calibration_sum == 12){
+    if(millis() > MM::warmup_millis /*&& calibration_sum == 12*/){
         set_mission_mode(mission_mode_t::initialization);
         enter_init_ccno = control_cycle_count;
     }

@@ -5,6 +5,10 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "imu_monitor", offset),
     //imu(_imu),
     functional_f("imu.functional"),
+    sys_cal("imu.sys_cal"),
+    gyro_cal("imu.gyro_cal"),
+    accel_cal("imu.accel_cal"),
+    mag_cal("imu.mag_cal"),
     linear_acc_vec_f("imu.linear_acc_vec"),
     acc_vec_f("imu.acc_vec"),
     grav_vec_f("imu.grav_vec"),
@@ -12,11 +16,8 @@ IMUMonitor::IMUMonitor(StateFieldRegistry &registry,
     gyr_vec_f("imu.gyr_vec"),
     mag_vec_f("imu.mag_vec"),
     quat_f("imu.quat"),
-    quat_inv_f("imu.quat_inv"),
-    sys_cal("imu.sys_cal"),
-    gyro_cal("imu.gyro_cal"),
-    accel_cal("imu.accel_cal"),
-    mag_cal("imu.mag_cal")
+    quat_inv_f("imu.quat_inv")
+    
     {
         //add statefields to registry
         add_internal_field(functional_f);

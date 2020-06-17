@@ -48,6 +48,9 @@
         "utility": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "random": "cpp"
+        "random": "cpp",
+        "csignal": "cpp",
+        "list": "cpp",
+        "iomanip": "cpp"
     }
 }
