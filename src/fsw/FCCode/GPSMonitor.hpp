@@ -58,22 +58,20 @@ protected:
      */
     InternalStateField<bool> has_fix_f;
 
+    /**
+     * @brief True iff there is new nmea data that
+     * has been parsed correctly.
+     * 
+     */
     InternalStateField<bool> has_new_nmea_f;
-
-    // InternalStateField<f_vector_t> 
-    //     //linear_acc_vec does not include gravity
-    //     linear_acc_vec_f,
-    //     //acc_vec includes gravity
-    //     acc_vec_f,
-    //     //gravity vector
-    //     grav_vec_f,
-    //     //orientation in euler angles
-    //     euler_vec_f,
-    //     //gyroscope, angular acceleration vector
-    //     gyr_vec_f,
-    //     //magnetometer vector
-    //     mag_vec_f;
     
+    /**
+     * @brief Contains the most recent lattitude and longitude
+     * as decimal degrees
+     * 
+     * For now, it assumes that you're running this in the USA
+     * 
+     */
     InternalStateField<lin::Vector2f> lat_long_f;
 
 };
