@@ -60,20 +60,21 @@ void GPSMonitor::execute(){
     GPS.read(); // pretty sure this is necessary
 
     if (GPS.newNMEAreceived()) {
-    // a tricky thing here is if we print the NMEA sentence, or data
-    // we end up not listening and catching other sentences!
-    // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
-    // Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived()
-    // flag to false
+        // a tricky thing here is if we print the NMEA sentence, or data
+        // we end up not listening and catching other sentences!
+        // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
+        // Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived()
+        // flag to false
 
-    //if this line is reached, there is new data, so set flag to true
-    has_new_nmea_f.set(true);
-    if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag
-                                    // to false
+        //if this line is reached, there is new data, so set flag to true
+        has_new_nmea_f.set(true);
+        if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag
+                                        // to false
 
-        // however, if we fail to parse for whatever reason, don't trust data
-        has_new_nmea_f.set(false);
+            // however, if we fail to parse for whatever reason, don't trust data
+            has_new_nmea_f.set(false);
     }
+    else has_new_nmea_f.set(false);
 
     // only update the statefields if we have new and correctly parsed data
     if(has_new_nmea_f.get()){
