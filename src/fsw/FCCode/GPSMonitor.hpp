@@ -9,6 +9,7 @@
 #include <Adafruit_BNO055.h>
 //#include <utility/imumaths.h>
 
+#include "constants.hpp"
 #include <Adafruit_GPS.h>
 
 /**
@@ -28,9 +29,9 @@ public:
     //GPSMonitor(StateFieldRegistry &registry, unsigned int offset, Adafruit_BNO055& _imu);
     GPSMonitor(StateFieldRegistry &registry, unsigned int offset);
 
-    /** ADCS Driver. **/
-    //Devices::ADCS& adcs_system;
-    //Adafruit_BNO055& imu;
+    Adafruit_GPS GPS;
+
+    void update_state_fields();
 
     /**
     * @brief Gets inputs from the ADCS box and dumps them into the state
@@ -57,6 +58,8 @@ protected:
      */
     InternalStateField<bool> has_fix_f;
 
+    InternalStateField<bool> has_new_nmea_f;
+
     // InternalStateField<f_vector_t> 
     //     //linear_acc_vec does not include gravity
     //     linear_acc_vec_f,
@@ -71,25 +74,7 @@ protected:
     //     //magnetometer vector
     //     mag_vec_f;
     
-    InternalStateField<lin::Vector3f> 
-        //linear_acc_vec does not include gravity
-        linear_acc_vec_f,
-        //acc_vec includes gravity
-        acc_vec_f,
-        //net_acc_vec doesn't contain gravity
-        net_acc_vec_f,
-        //gravity vector
-        grav_vec_f,
-        //orientation in euler angles
-        euler_vec_f,
-        //gyroscope, angular acceleration vector
-        gyr_vec_f,
-        //magnetometer vector
-        mag_vec_f;
-
-    // quaternion
-    InternalStateField<lin::Vector4d> quat_f;
-    InternalStateField<lin::Vector4d> quat_inv_f;
+    InternalStateField<lin::Vector2f> lat_long_f;
 
 };
 

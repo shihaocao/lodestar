@@ -3,52 +3,80 @@
 GPSMonitor::GPSMonitor(StateFieldRegistry &registry, 
     unsigned int offset)
     : TimedControlTask<void>(registry, "imu_monitor", offset),
-    //imu(_imu),
+    GPS(&GPSSerial),
     functional_f("gps.functional"),
     has_fix_f("gps.fix"),
-
-    linear_acc_vec_f("imu.linear_acc_vec"),
-    acc_vec_f("imu.acc_vec"),
-    net_acc_vec_f("imu.net_acc_vec"),
-    grav_vec_f("imu.grav_vec"),
-    euler_vec_f("imu.euler_vec"),
-    gyr_vec_f("imu.gyr_vec"),
-    mag_vec_f("imu.mag_vec"),
-    quat_f("imu.quat"),
-    quat_inv_f("imu.quat_inv")
+    has_new_nmea_f("gps.new"),
+    lat_long_f("gps.lat_long")
     {
         //add statefields to registry
-        add_internal_field(functional_f);
-        add_internal_field(linear_acc_vec_f);
-        add_internal_field(acc_vec_f);
-        add_internal_field(net_acc_vec_f);
-        add_internal_field(grav_vec_f);
-        add_internal_field(euler_vec_f);
-        add_internal_field(gyr_vec_f);
-        add_internal_field(mag_vec_f);
-        add_internal_field(quat_f);
+        add_internal_field(lat_long_f);
+        add_internal_field(has_fix_f);
+        add_internal_field(has_new_nmea_f);
+        add_internal_field(lat_long_f);
 
-        Serial1.begin(57600);
+        // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
+        GPS.begin(9600);
+        // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data)
+        // including altitude
+        GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCGGA);
+        // uncomment this line to turn on only the "minimum recommended" data
+        // GPS.sendCommand(PMTK_SET_NMEA_OUTPUT_RMCONLY);
+        // For parsing data, we don't suggest using anything but either RMC only or
+        // RMC+GGA since the parser doesn't care about other sentences at this time
+        // Set the update rate (uncomment the one you want.)
+        // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
+        // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_200_MILLIHERTZ); // 5 second update
+        // time
 
-        
+        // command to set actual 5HZ fix updating
+        GPS.sendCommand(PMTK_API_SET_FIX_CTL_5HZ);
+
+        GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ); // 5 hz set by shihao
+        // For the parsing code to work nicely and have time to sort thru the data,
+        // and print it out we don't suggest using anything higher than 1 Hz
+
+        // Request updates on antenna status, comment out to keep quiet
+        GPS.sendCommand(PGCMD_ANTENNA);
+
+        functional_f.set(false);
+        has_fix_f.set(false);    
+        has_new_nmea_f.set(false);
+        lat_long_f.set(lin::Vector2f{0});
     }
+
+void GPSMonitor::update_state_fields(){
+
+    lat_long_f.set({
+        GPS.latitudeDegrees,
+        GPS.longitudeDegrees
+    });
+
+}
 
 void GPSMonitor::execute(){
 
-    //IF THIS IS TOO SLOW, DELETE READ OPERATIONS OF ^VECTORS WE DON'T NEED
+    // char c = GPS.read();
+    GPS.read(); // pretty sure this is necessary
 
-    //IF BELOW TOO SLOW, STOP USING SENSOR EVENTS YIKES
-    //dump temporary containers into statefields
+    if (GPS.newNMEAreceived()) {
+    // a tricky thing here is if we print the NMEA sentence, or data
+    // we end up not listening and catching other sentences!
+    // so be very wary if using OUTPUT_ALLDATA and trytng to print out data
+    // Serial.println(GPS.lastNMEA()); // this also sets the newNMEAreceived()
+    // flag to false
 
-    // lin::Vector3f v1{
-    //     linear_acc_vec.acceleration.x, 
-    //     linear_acc_vec.acceleration.y, 
-    //     linear_acc_vec.acceleration.z};
-    // linear_acc_vec_f.set({
-    //     linear_acc_vec.acceleration.x, 
-    //     linear_acc_vec.acceleration.y, 
-    //     linear_acc_vec.acceleration.z});
+    //if this line is reached, there is new data, so set flag to true
+    has_new_nmea_f.set(true);
+    if (!GPS.parse(GPS.lastNMEA())) // this also sets the newNMEAreceived() flag
+                                    // to false
 
-    // OLD STD ARRAY VECTORS:
+        // however, if we fail to parse for whatever reason, don't trust data
+        has_new_nmea_f.set(false);
+    }
 
+    // only update the statefields if we have new and correctly parsed data
+    if(has_new_nmea_f.get()){
+        update_state_fields();
+    }
 }

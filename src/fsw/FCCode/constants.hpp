@@ -15,6 +15,9 @@ namespace PINOUT {
     // let the GPS be connected to TX and RX 3
     // let the telemetry radio (57600 baud) be connected to TX1 and RX1
 
+    // not actually a member variable, just putting it here
+    #define GPSSerial Serial3
+
     
 }
 
