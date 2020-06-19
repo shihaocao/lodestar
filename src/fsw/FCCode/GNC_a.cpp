@@ -52,6 +52,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         init_quat_dp = find_internal_field<lin::Vector4d>("ls.init_quat", __FILE__, __LINE__);
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
         ground_level_fp = find_internal_field<float>("ls.ground_level", __FILE__, __LINE__);
+        lat_long_fp = find_internal_field<lin::Vector2f>("gps.lat_long", __FILE__, __LINE__);
 
 
         // default all fins to no actuation
@@ -377,24 +378,22 @@ void GNC_a::tvc(){
     fin_commands_f.set(fin_commands);
     thrust_commands_f.set(thrust_commands);
 
-    Serial.print("      (");
-    Serial.print(glob_acc_vec_f.get()(0));
+    Serial.print("(");
+    Serial.print(lat_long_fp->get()(0));
     Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(1));
-    Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(2));
-    Serial.print(")");
+    Serial.print(lat_long_fp->get()(1));
+    Serial.println(")");
+
 
     /*
     Serial.print("      (");
-    Serial.print(lin_acc_vec_fp->get()(0));
+    Serial.print(glob_acc_vec_f.get()(0)-acc_error_fp->get()(0));
     Serial.print(",");
-    Serial.print(lin_acc_vec_fp->get()(1));
+    Serial.print(glob_acc_vec_f.get()(1)-acc_error_fp->get()(1));
     Serial.print(",");
-    Serial.print(lin_acc_vec_fp->get()(2));
-    Serial.println(")");
-    */
-    
+    Serial.print(glob_acc_vec_f.get()(2)-acc_error_fp->get()(2));
+    Serial.print(")");
+
     Serial.print("      (");
     Serial.print(velocity_d.get()(0));
     Serial.print(",");
@@ -410,6 +409,19 @@ void GNC_a::tvc(){
     Serial.print(",");
     Serial.print(position(2));
     Serial.println(")");
+    */
+
+    /*
+    Serial.print("      (");
+    Serial.print(lin_acc_vec_fp->get()(0));
+    Serial.print(",");
+    Serial.print(lin_acc_vec_fp->get()(1));
+    Serial.print(",");
+    Serial.print(lin_acc_vec_fp->get()(2));
+    Serial.println(")");
+    */
+    
+    
 
     /*
     Serial.print("      (");

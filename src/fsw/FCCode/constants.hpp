@@ -25,7 +25,7 @@ namespace MM {
     constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;
     constexpr unsigned int acc_millis = 5 * 1000;
-    constexpr unsigned int init_cycles = 100;
+    constexpr unsigned int init_cycles = 200;
 
     /**
      * @brief Terminate flight after N minutes. Automatically transition to landing.

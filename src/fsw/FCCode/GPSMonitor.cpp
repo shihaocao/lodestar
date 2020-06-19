@@ -10,7 +10,6 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
     lat_long_f("gps.lat_long")
     {
         //add statefields to registry
-        add_internal_field(lat_long_f);
         add_internal_field(has_fix_f);
         add_internal_field(has_new_nmea_f);
         add_internal_field(lat_long_f);

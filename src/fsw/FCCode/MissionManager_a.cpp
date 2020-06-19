@@ -56,11 +56,15 @@ void MissionManager_a::execute() {
     }
     switch(mode) {
         case mission_mode_t::warmup:
-            Serial.print("Warmup"); ///////////////////////////////////
+            Serial.println("Warmup"); ///////////////////////////////////
             dispatch_warmup();
             break;
+        case mission_mode_t::pause:
+            Serial.println("Pause"); ///////////////////////////////////
+            pause();
+            break;
         case mission_mode_t::initialization:
-            Serial.print("Initialization      "); ///////////////////////////////////
+            Serial.println("Initialization      "); ///////////////////////////////////
             dispatch_initialization();
             break;
         case mission_mode_t::starhopper1:
@@ -101,13 +105,22 @@ void MissionManager_a::dispatch_warmup() {
     #ifdef WARMUP_CALI
     if(millis() > MM::warmup_millis && calibration_sum == 12){
     #else
-    if(millis() > MM::warmup_millis && accel_cal->get()==3){
-    #endif
-        set_mission_mode(mission_mode_t::initialization);
-        enter_init_ccno = control_cycle_count;
-    }
+    
 
+    if(accel_cal->get()==3){ //&&m millis() > MM::warmup_millis){
+    #endif
+        pause_ccno = control_cycle_count;
+        set_mission_mode(mission_mode_t::pause);
+    }
     calibration_sum += 1; // to avoid "unused error", ignore this line
+}
+
+
+void MissionManager_a::pause() {
+    if(control_cycle_count-pause_ccno>=30){
+        enter_init_ccno = control_cycle_count;
+        set_mission_mode(mission_mode_t::initialization);
+    }
 }
 
 void MissionManager_a::dispatch_initialization() {
@@ -117,6 +130,17 @@ void MissionManager_a::dispatch_initialization() {
 
     init_quat_d.set( init_quat_d.get() + quat_fp->get() / MM::init_cycles);
 
+    acc_error_f.set( acc_error_f.get() + lin_acc_vec_fp->get() / MM::init_cycles);
+
+    Serial.print("      (");
+    Serial.print(acc_error_f.get()(0));
+    Serial.print(",");
+    Serial.print(acc_error_f.get()(1));
+    Serial.print(",");
+    Serial.print(acc_error_f.get()(2));
+    Serial.print(")");
+
+
     double quat_norm=lin::norm(init_quat_d.get());
 
     init_quat_d.set({
@@ -125,12 +149,6 @@ void MissionManager_a::dispatch_initialization() {
         init_quat_d.get()(2)/quat_norm,
         init_quat_d.get()(3)/quat_norm,
     });
-
-    acc_error_f.set({
-            acc_error_f.get()(0)+lin_acc_vec_fp->get()(0) / MM::acc_millis / 100.0,
-            acc_error_f.get()(1)+lin_acc_vec_fp->get()(1) / MM::acc_millis / 100.0,
-            acc_error_f.get()(2)+lin_acc_vec_fp->get()(2) / MM::acc_millis / 100.0,
-        });
 
     if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
         set_mission_mode(mission_mode_t::starhopper1);
