@@ -98,7 +98,7 @@ void MissionManager_a::dispatch_warmup() {
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
-    #ifdef LOAD_CALI
+    #ifdef WARMUP_CALI
     if(millis() > MM::warmup_millis && calibration_sum == 12){
     #else
     if(millis() > MM::warmup_millis && accel_cal->get()==3){
