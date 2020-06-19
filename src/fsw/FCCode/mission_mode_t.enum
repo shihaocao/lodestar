@@ -5,7 +5,6 @@
 enum class mission_mode_t {
     warmup,
     initialization,
-    accel_calibration,
     standby,
     detumble,
     bellyflop,
