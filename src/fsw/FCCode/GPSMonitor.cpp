@@ -29,10 +29,10 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
         // time
 
         // command to set actual 5HZ fix updating
-        GPS.sendCommand(PMTK_API_SET_FIX_CTL_5HZ); // line a
+        // GPS.sendCommand(PMTK_API_SET_FIX_CTL_5HZ); // line a
 
-        GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ); // line b
-        // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_10HZ); // line c
+        // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_5HZ); // line b
+        GPS.sendCommand(PMTK_SET_NMEA_UPDATE_10HZ); // line c
 
         // For the parsing code to work nicely and have time to sort thru the data,
         // and print it out we don't suggest using anything higher than 1 Hz
