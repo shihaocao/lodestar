@@ -92,7 +92,7 @@ void setup() {
   // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_1HZ); // 1 Hz update rate
   // GPS.sendCommand(PMTK_SET_NMEA_UPDATE_200_MILLIHERTZ); // 5 second update
   // time
-  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_100_MILLIHERTZ); // 10 second update time
+  GPS.sendCommand(PMTK_SET_NMEA_UPDATE_10HZ); // 10 second update time
   // For the parsing code to work nicely and have time to sort thru the data,
   // and print it out we don't suggest using anything higher than 1 Hz
 
@@ -128,7 +128,7 @@ void loop() // run over and over again
 
   // approximately every 2 seconds or so, random intervals, print out the
   // current stats
-  static unsigned nextInterval = 2000;
+  static unsigned nextInterval = 100; // govind look here
   if (millis() - timer > nextInterval) {
     timer = millis(); // reset the timer
     nextInterval = 1500 + random(1000);
