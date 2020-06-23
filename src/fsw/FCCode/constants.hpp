@@ -20,9 +20,11 @@ namespace PINOUT {
     
     #ifdef HARDLINE
     #define TelemSerial Serial
+    constexpr unsigned int telem_serial_baud = 9600;
     #endif
     #ifdef AIR
     #define TelemSERIAL Serial1
+    constexpr unsigned int telem_serial_baud = 57600;
     #endif
 }
 

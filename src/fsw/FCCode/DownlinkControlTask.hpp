@@ -47,47 +47,27 @@ protected:
 
     // helper functions for debug out
     template<typename T, size_t N>
-    void hardline_compact(std::array<T, N>& array){
+    void telem_compact(std::array<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
-            hardline_element(array[i]);
+            telem_element(array[i]);
             TelemSERIAL.print(",");
         }
-        hardline_element(array[N-1]);
+        telem_element(array[N-1]);
         TelemSERIAL.print(";");
     }
 
     template<typename T, size_t N>
-    void hardline_compact(lin::Vector<T, N>& array){
+    void telem_compact(lin::Vector<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
-            hardline_element(array(i));
+            telem_element(array(i));
             TelemSERIAL.print(",");
         }
-        hardline_element(array(N-1));
+        telem_element(array(N-1));
         TelemSERIAL.print(";");
-    }
-
-    template<typename T, size_t N>
-    void airline_compact(std::array<T, N>& array){
-        for(size_t i = 0; i < N - 1; i++){
-            airline_element(array(i));
-            TelemSERIAL.print(",");
-        }
-        airline_element(array(N-1));
-        TelemSERIAL.print(";");
-    }
-
-    template<typename T, size_t N>
-    void airline_compact(lin::Vector<T, N>& array){
-        for(size_t i = 0; i < N - 1; i++){
-            airline_element(array(i));
-            TelemSERIAL.print(",");
-        }
-        airline_element(array(N-1));
-        TelemSERIAL.print(";");        
     }
 
     template<typename T>
-    void hardline_element(T element){
+    void telem_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
             TelemSERIAL.printf("%g", element);
         else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
@@ -99,26 +79,8 @@ protected:
     }
 
     template<typename T>
-    void airline_element(T element){
-        if(std::is_same<T, float>::value || std::is_same<T, double>::value)
-            TelemSERIAL.printf("%g", element);
-        else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
-            TelemSERIAL.printf("%u", element);
-        else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
-            TelemSERIAL.printf("%d", element);
-        else
-            TelemSERIAL.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
-    }
-
-    template<typename T>
-    void airline_solo(T element){
-        airline_element(element);
-        TelemSERIAL.print(";");
-    }
-
-    template<typename T>
-    void hardline_solo(T element){
-        hardline_element(element);
+    void telem_solo(T element){
+        telem_element(element);
         TelemSERIAL.print(";");
     }    
 };
