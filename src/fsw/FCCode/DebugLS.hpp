@@ -28,10 +28,10 @@ namespace DEBUG {
 
     template<typename T, size_t N>
     void debug_lin_vec(std::string& label, lin::Vector<T, N>& lin_vec){
-        DebugSERIAL.print(F)
-        for(int i = 0; i < N; i++){
-            DebugSERIAL.print()
-        }
+        // DebugSERIAL.print(label);
+        // for(int i = 0; i < N; i++){
+        //     DebugSERIAL.print(lin_vec(i));
+        // }
     }
 
     void debug_terminator(){
