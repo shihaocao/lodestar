@@ -19,7 +19,7 @@ namespace PINOUT {
     #define GPSSerial Serial3
     
     #ifdef HARDLINE
-    #define TelemSerial Serial
+    #define TelemSERIAL Serial
     constexpr unsigned int telem_serial_baud = 9600;
     #endif
     #ifdef AIR
