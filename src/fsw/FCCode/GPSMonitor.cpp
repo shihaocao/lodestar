@@ -2,7 +2,7 @@
 
 GPSMonitor::GPSMonitor(StateFieldRegistry &registry, 
     unsigned int offset)
-    : TimedControlTask<void>(registry, "imu_monitor", offset),
+    : TimedControlTask<void>(registry, "gps_monitor", offset),
     GPS(&GPSSerial),
     functional_f("gps.functional"),
     has_fix_f("gps.fix"),
