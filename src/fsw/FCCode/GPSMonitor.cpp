@@ -87,4 +87,7 @@ void GPSMonitor::execute(){
     if(has_new_nmea_f.get()){
         update_state_fields();
     }
+
+    DebugSERIAL.print("fix qual: ");
+    DebugSERIAL.println(fix_quality_f.get());
 }

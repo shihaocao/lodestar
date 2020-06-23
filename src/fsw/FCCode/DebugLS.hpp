@@ -22,7 +22,7 @@ void debug_print(T& field_ref, std::string& label){
 template<typename T, size_t N>
 void debug_lin_vec(std::string& label, lin::Vector<T, N>& lin_vec){
     // for(int i = 0; i < N; i++){
-
+    //     DebugSERIAL.printf
     // }
 }
 
