@@ -2,6 +2,7 @@
 #define  DEBUG_LS_HPP_
 
 #include "constants.hpp"
+#include <iostream>
 
 // #define debug_print(x) DebugSERIAL.print(x);
 // #define debug_println(x) DebugSERIAL.println(x)
@@ -28,7 +29,7 @@ namespace DEBUG {
 
     template<typename T, size_t N>
     void debug_lin_vec(std::string& label, lin::Vector<T, N>& lin_vec){
-        // DebugSERIAL.print(label);
+        // DebugSERIAL.print(label.getName().cstr());
         // for(int i = 0; i < N; i++){
         //     DebugSERIAL.print(lin_vec(i));
         // }

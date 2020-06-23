@@ -69,7 +69,8 @@ void GPSMonitor::update_state_fields(){
 void GPSMonitor::execute(){
 
     // char c = GPS.read();
-    GPS.read(); // pretty sure this is necessary
+    char c = GPS.read(); // pretty sure this is necessary
+    DebugSERIAL.print(c);
 
     if (GPS.newNMEAreceived()) {
         // a tricky thing here is if we print the NMEA sentence, or data
