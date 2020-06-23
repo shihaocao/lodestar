@@ -3,7 +3,7 @@
 GPSMonitor::GPSMonitor(StateFieldRegistry &registry, 
     unsigned int offset)
     : TimedControlTask<void>(registry, "gps_monitor", offset),
-    GPS(&GPSSerial),
+    GPS(&Serial3),
     functional_f("gps.functional"),
     has_fix_f("gps.fix"),
     has_new_nmea_f("gps.new"),
@@ -41,6 +41,11 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
 
         // Request updates on antenna status, comment out to keep quiet
         GPS.sendCommand(PGCMD_ANTENNA);
+
+        delay(1000);
+
+        // Ask for firmware version
+        GPSSerial.println(PMTK_Q_RELEASE);
 
         functional_f.set(false);
         has_fix_f.set(false);    
