@@ -22,7 +22,7 @@ namespace PINOUT {
     #define TelemSerial Serial
     #endif
     #ifdef AIR
-    #define TelemSerial Serial1
+    #define TelemSERIAL Serial1
     #endif
 }
 

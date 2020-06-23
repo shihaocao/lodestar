@@ -50,76 +50,76 @@ protected:
     void hardline_compact(std::array<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
             hardline_element(array[i]);
-            Serial.print(",");
+            TelemSERIAL.print(",");
         }
         hardline_element(array[N-1]);
-        Serial.print(";");
+        TelemSERIAL.print(";");
     }
 
     template<typename T, size_t N>
     void hardline_compact(lin::Vector<T, N>& array){
         for(size_t i = 0; i < N-1; i++){
             hardline_element(array(i));
-            Serial.print(",");
+            TelemSERIAL.print(",");
         }
         hardline_element(array(N-1));
-        Serial.print(";");
+        TelemSERIAL.print(";");
     }
 
     template<typename T, size_t N>
     void airline_compact(std::array<T, N>& array){
         for(size_t i = 0; i < N - 1; i++){
             airline_element(array(i));
-            Serial1.print(",");
+            TelemSERIAL.print(",");
         }
         airline_element(array(N-1));
-        Serial1.print(";");
+        TelemSERIAL.print(";");
     }
 
     template<typename T, size_t N>
     void airline_compact(lin::Vector<T, N>& array){
         for(size_t i = 0; i < N - 1; i++){
             airline_element(array(i));
-            Serial1.print(",");
+            TelemSERIAL.print(",");
         }
         airline_element(array(N-1));
-        Serial1.print(";");        
+        TelemSERIAL.print(";");        
     }
 
     template<typename T>
     void hardline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
-            Serial.printf("%g", element);
+            TelemSERIAL.printf("%g", element);
         else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
-            Serial.printf("%u", element);
+            TelemSERIAL.printf("%u", element);
         else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
-            Serial.printf("%d", element);
+            TelemSERIAL.printf("%d", element);
         else
-            Serial.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
+            TelemSERIAL.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
 
     template<typename T>
     void airline_element(T element){
         if(std::is_same<T, float>::value || std::is_same<T, double>::value)
-            Serial1.printf("%g", element);
+            TelemSERIAL.printf("%g", element);
         else if(std::is_same<T, unsigned char>::value || std::is_same<T, unsigned int>::value)
-            Serial1.printf("%u", element);
+            TelemSERIAL.printf("%u", element);
         else if(std::is_same<T, char>::value || std::is_same<T, int>::value)
-            Serial1.printf("%d", element);
+            TelemSERIAL.printf("%d", element);
         else
-            Serial1.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
+            TelemSERIAL.print("[ERROR] UNEXPECTED ELEMENT TYPE.");
     }
 
     template<typename T>
     void airline_solo(T element){
         airline_element(element);
-        Serial1.print(";");
+        TelemSERIAL.print(";");
     }
 
     template<typename T>
     void hardline_solo(T element){
         hardline_element(element);
-        Serial.print(";");
+        TelemSERIAL.print(";");
     }    
 };
 
