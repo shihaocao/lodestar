@@ -3,7 +3,7 @@
 #pragma once
 
 #include "TimedControlTask.hpp"
-
+#include "constants.hpp"
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.

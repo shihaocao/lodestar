@@ -4,7 +4,7 @@
 #include "constants.hpp"
 
 void debug_header(){
-    DebugSERIAL.printf("[ DEBUG ] $ ");
+    DebugSERIAL.print(F("[ DEBUG ] $ "));
 }
 
 //not in use yet
@@ -24,4 +24,7 @@ void debug_lin_vec(std::string& label, lin::Vector<T, N>& lin_vec){
     
 }
 
+void debug_terminator(){
+    DebugSERIAL.print(F("\n"));
+}
 #endif

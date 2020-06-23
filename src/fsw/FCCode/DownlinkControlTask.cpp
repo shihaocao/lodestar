@@ -1,5 +1,4 @@
 #include "DownlinkControlTask.hpp"
-#include "constants.hpp"
 
 DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry, 
     unsigned int offset)
