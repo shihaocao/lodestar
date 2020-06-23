@@ -61,9 +61,9 @@ void GPSMonitor::update_state_fields(){
         GPS.longitudeDegrees
     });
 
-    fix_quality_f.set({
+    fix_quality_f.set(
         GPS.fixquality_3d
-    });
+    );
 }
 
 void GPSMonitor::execute(){
