@@ -13,6 +13,8 @@
 #include <Arduino.h>
 #endif
 
+#include "DebugLS.hpp"
+
 /**
  * The sys_time_t and systime_duration_t are common types for tracking system
  * time across both the desktop and the native platforms.

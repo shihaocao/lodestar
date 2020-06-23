@@ -8,14 +8,12 @@
 // #define debug_println(x) DebugSERIAL.println(x)
 // #define debug_printF(x) DebugSERIAL.print(F(x))
 // #define debug_printlnF(x) DebugSERIAL.println(F(x))
+#define debug_header() DebugSERIAL.print(F("[ DEBUG ] $ "));
+#define debug_terminator() DebugSERIAL.print(F("\n"));
 
-void debug_header1(void){
-    DebugSERIAL.print(F("[ DEBUG ] $ "));
-} // macro this
-
-// //not in use yet
+//not in use yet
 // template<typename T, typename L, size_t N>
-// void debug_print(String label, T& field_ref){
+// void debug_print(String label, T field_ref){
     
 //     if(std::is_same<T, lin::Vector<L, N>>::value)
 //         debug_lin_vec(label, field_ref);
@@ -25,8 +23,17 @@ void debug_header1(void){
 //     }
 // }
 
-template<typename T, size_t N, size_t M>
-void debug_lin_vec(String label, lin::Vector<T, N, M> lin_vec){
+template<typename T>
+void debug_solo(String label, T a){
+    debug_header()
+    DebugSERIAL.print(label);
+    DebugSERIAL.print(": ");
+    DebugSERIAL.print(a);
+}
+
+template<typename T, size_t N>
+void debug_lin_vec(String label, lin::Vector<T, N> lin_vec){
+    debug_header()
     DebugSERIAL.print(label);
     DebugSERIAL.print(": (");
     for(unsigned int i = 0; i < N-1; i++){
@@ -37,8 +44,5 @@ void debug_lin_vec(String label, lin::Vector<T, N, M> lin_vec){
     DebugSERIAL.print(")");
 }
 
-// void debug_terminator(){
-//     DebugSERIAL.print(F("\n"));
-// }
 
 #endif
