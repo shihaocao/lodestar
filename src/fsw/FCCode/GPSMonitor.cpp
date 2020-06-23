@@ -94,6 +94,8 @@ void GPSMonitor::execute(){
         update_state_fields();
     }
 
+    // debug_header();
+    debug_lin_vec("Lat_Long: ", lat_long_f.get());
     DebugSERIAL.print("fix qual: ");
     DebugSERIAL.println(fix_quality_f.get());
 }

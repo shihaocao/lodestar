@@ -5,6 +5,8 @@
 #include <math.h>
 #include "TimedControlTask.hpp"
 #include "mission_mode_t.enum"
+#include "GPSMonitor.hpp"
+
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
 * fields listed below.

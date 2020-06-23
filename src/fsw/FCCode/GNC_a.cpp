@@ -1,6 +1,5 @@
 #include "GNC_a.hpp"
 #include <gnc/utilities.hpp>
-#include "DebugLS.hpp"
 
 GNC_a::GNC_a(StateFieldRegistry &registry, 
     unsigned int offset)

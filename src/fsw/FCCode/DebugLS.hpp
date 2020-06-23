@@ -1,42 +1,44 @@
 #ifndef DEBUG_LS_HPP_
-#define  DEBUG_LS_HPP_
+#define DEBUG_LS_HPP_
+#pragma once
 
 #include "constants.hpp"
-#include <iostream>
 
 // #define debug_print(x) DebugSERIAL.print(x);
 // #define debug_println(x) DebugSERIAL.println(x)
 // #define debug_printF(x) DebugSERIAL.print(F(x))
 // #define debug_printlnF(x) DebugSERIAL.println(F(x))
 
-namespace DEBUG {
+void debug_header1(void){
+    DebugSERIAL.print(F("[ DEBUG ] $ "));
+} // macro this
 
-    void debug_header(){
-        DebugSERIAL.print(F("[ DEBUG ] $ "));
-    }
+// //not in use yet
+// template<typename T, typename L, size_t N>
+// void debug_print(String label, T& field_ref){
+    
+//     if(std::is_same<T, lin::Vector<L, N>>::value)
+//         debug_lin_vec(label, field_ref);
+//     else{
+//         assert(false);
+//         // other debug statements dont exist yet!
+//     }
+// }
 
-    //not in use yet
-    template<typename T, typename L, size_t N>
-    void debug_print(T& field_ref, std::string& label){
-        
-        if(std::is_same<T, lin::Vector<L, N>>::value)
-            debug_lin_vec(label, field_ref);
-        else{
-            assert(false);
-            // other debug statements dont exist yet!
-        }
+template<typename T, size_t N, size_t M>
+void debug_lin_vec(String label, lin::Vector<T, N, M> lin_vec){
+    DebugSERIAL.print(label);
+    DebugSERIAL.print(": (");
+    for(unsigned int i = 0; i < N-1; i++){
+        DebugSERIAL.print(lin_vec(i));
     }
-
-    template<typename T, size_t N>
-    void debug_lin_vec(std::string& label, lin::Vector<T, N>& lin_vec){
-        // DebugSERIAL.print(label.getName().cstr());
-        // for(int i = 0; i < N; i++){
-        //     DebugSERIAL.print(lin_vec(i));
-        // }
-    }
-
-    void debug_terminator(){
-        DebugSERIAL.print(F("\n"));
-    }
+    DebugSERIAL.print(", ");
+    DebugSERIAL.print(lin_vec(N-1));
+    DebugSERIAL.print(")");
 }
+
+// void debug_terminator(){
+//     DebugSERIAL.print(F("\n"));
+// }
+
 #endif
