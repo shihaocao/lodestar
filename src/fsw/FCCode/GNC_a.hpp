@@ -40,7 +40,7 @@ protected:
     InternalStateField<float>* altitude_fp;
     InternalStateField<float>* ground_level_fp;
     InternalStateField<lin::Vector2f>* lat_long_fp;
-
+    InternalStateField<unsigned char>* fix_qual_fp;
 
 
 

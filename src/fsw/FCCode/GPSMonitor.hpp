@@ -65,6 +65,8 @@ protected:
      */
     InternalStateField<bool> has_new_nmea_f;
     
+    InternalStateField<unsigned char> fix_quality_f;
+
     /**
      * @brief Contains the most recent lattitude and longitude
      * as decimal degrees

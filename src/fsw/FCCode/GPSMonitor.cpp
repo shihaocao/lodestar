@@ -7,11 +7,13 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
     functional_f("gps.functional"),
     has_fix_f("gps.fix"),
     has_new_nmea_f("gps.new"),
+    fix_quality_f("gps.fix_qual"),
     lat_long_f("gps.lat_long")
     {
         //add statefields to registry
         add_internal_field(has_fix_f);
         add_internal_field(has_new_nmea_f);
+        add_internal_field(fix_quality_f);
         add_internal_field(lat_long_f);
 
         // 9600 NMEA is the default baud rate for Adafruit MTK GPS's- some use 4800
@@ -43,6 +45,7 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
         functional_f.set(false);
         has_fix_f.set(false);    
         has_new_nmea_f.set(false);
+        fix_quality_f.set(0);
         lat_long_f.set(lin::Vector2f{0});
     }
 
@@ -53,6 +56,9 @@ void GPSMonitor::update_state_fields(){
         GPS.longitudeDegrees
     });
 
+    fix_quality_f.set({
+        GPS.fixquality_3d
+    });
 }
 
 void GPSMonitor::execute(){

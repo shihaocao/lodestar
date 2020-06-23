@@ -53,7 +53,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
         ground_level_fp = find_internal_field<float>("ls.ground_level", __FILE__, __LINE__);
         lat_long_fp = find_internal_field<lin::Vector2f>("gps.lat_long", __FILE__, __LINE__);
-
+        fix_qual_fp = find_internal_field<unsigned char>("gps.fix_qual", __FILE__, __LINE__);
 
         // default all fins to no actuation
         fin_commands_f.set({
@@ -378,6 +378,8 @@ void GNC_a::tvc(){
     fin_commands_f.set(fin_commands);
     thrust_commands_f.set(thrust_commands);
 
+    DebugSERIAL.print("Fix Qual: ");
+    DebugSERIAL.print(fix_qual_fp->get());
     Serial.print("(");
     Serial.print(lat_long_fp->get()(0));
     Serial.print(",");

@@ -17,7 +17,7 @@ DownlinkControlTask::DownlinkControlTask(StateFieldRegistry &registry,
         TelemSERIAL.begin(PINOUT::telem_serial_baud);
 
         // just have this for debug availability
-        Serial.begin(115200);
+        DebugSERIAL.begin(115200);
     }
 
 void DownlinkControlTask::execute(){
