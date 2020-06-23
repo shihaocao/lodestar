@@ -89,7 +89,7 @@ void GPSMonitor::execute(){
     else has_new_nmea_f.set(false);
 
     // only update the statefields if we have new and correctly parsed data
-    if(has_new_nmea_f.get()){
+    if(true){
         update_state_fields();
     }
 
