@@ -17,8 +17,13 @@ namespace PINOUT {
 
     // not actually a member variable, just putting it here
     #define GPSSerial Serial3
-
     
+    #ifdef HARDLINE
+    #define TelemSerial Serial
+    #endif
+    #ifdef AIR
+    #define TelemSerial Serial1
+    #endif
 }
 
 namespace MM {
