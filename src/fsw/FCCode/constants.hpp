@@ -26,6 +26,8 @@ namespace PINOUT {
     #define TelemSERIAL Serial1
     constexpr unsigned int telem_serial_baud = 57600;
     #endif
+
+    #define DebugSERIAL Serial
 }
 
 namespace MM {
