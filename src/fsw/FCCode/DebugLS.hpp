@@ -23,6 +23,13 @@
 //     }
 // }
 
+/**
+ * @brief Debug print a data value
+ * 
+ * @tparam T can be a bool, int of any kind, float, double
+ * @param label The label of the value
+ * @param a The actual value, such as data_fp->get()
+ */
 template<typename T>
 void debug_solo(String label, T a){
     #ifdef DEBUG
@@ -34,6 +41,14 @@ void debug_solo(String label, T a){
     #endif
 }
 
+/**
+ * @brief Debug print a lin vector
+ * 
+ * @tparam T lin::Vector of any kind
+ * @tparam N Any positive number
+ * @param label Label for the lin vec
+ * @param lin_vec vector_fp->get() for example
+ */
 template<typename T, size_t N>
 void debug_lin_vec(String label, lin::Vector<T, N> lin_vec){
     #ifdef DEBUG
