@@ -25,14 +25,18 @@
 
 template<typename T>
 void debug_solo(String label, T a){
+    #ifdef DEBUG
     debug_header()
     DebugSERIAL.print(label);
     DebugSERIAL.print(": ");
     DebugSERIAL.print(a);
+    debug_terminator()
+    #endif
 }
 
 template<typename T, size_t N>
 void debug_lin_vec(String label, lin::Vector<T, N> lin_vec){
+    #ifdef DEBUG
     debug_header()
     DebugSERIAL.print(label);
     DebugSERIAL.print(": (");
@@ -42,6 +46,8 @@ void debug_lin_vec(String label, lin::Vector<T, N> lin_vec){
     DebugSERIAL.print(", ");
     DebugSERIAL.print(lin_vec(N-1));
     DebugSERIAL.print(")");
+    debug_terminator()
+    #endif
 }
 
 
