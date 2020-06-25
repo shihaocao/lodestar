@@ -51,6 +51,7 @@
         "random": "cpp",
         "csignal": "cpp",
         "list": "cpp",
-        "iomanip": "cpp"
+        "iomanip": "cpp",
+        "unordered_set": "cpp"
     }
 }

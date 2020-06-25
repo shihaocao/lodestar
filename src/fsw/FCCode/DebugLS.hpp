@@ -35,8 +35,12 @@ void debug_solo(String label, T a){
     #ifdef DEBUG
     debug_header()
     DebugSERIAL.print(label);
+
     DebugSERIAL.print(": ");
-    DebugSERIAL.print(a);
+    if(std::is_same<T, float>::value || std::is_same<T, double>::value )
+        DebugSERIAL.printf("%d", a);
+    else 
+        DebugSERIAL.print(a);
     debug_terminator()
     #endif
 }
