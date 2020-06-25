@@ -23,6 +23,20 @@
 //     }
 // }
 
+template <typename T>
+void debug_ele(T a){
+    #ifdef DEBUG
+    if(std::is_same<T, float>::value || std::is_same<T, double>::value )
+        DebugSERIAL.printf("%f", a);
+    else if(std::is_same<T, bool>::value){
+        if(a) DebugSERIAL.print("true");
+        else DebugSERIAL.print("false");
+    }
+    else
+        DebugSERIAL.print(a);  
+    #endif  
+}
+
 /**
  * @brief Debug print a data value
  * 
@@ -37,10 +51,7 @@ void debug_solo(String label, T a){
     DebugSERIAL.print(label);
 
     DebugSERIAL.print(": ");
-    if(std::is_same<T, float>::value || std::is_same<T, double>::value )
-        DebugSERIAL.printf("%f", a);
-    else 
-        DebugSERIAL.print(a);
+    debug_ele(a);
     debug_terminator()
     #endif
 }
@@ -60,10 +71,10 @@ void debug_lin_vec(String label, lin::Vector<T, N> lin_vec){
     DebugSERIAL.print(label);
     DebugSERIAL.print(": (");
     for(unsigned int i = 0; i < N-1; i++){
-        DebugSERIAL.print(lin_vec(i));
+        debug_ele(lin_vec(i));
     }
     DebugSERIAL.print(", ");
-    DebugSERIAL.print(lin_vec(N-1));
+    debug_ele(lin_vec(N-1));
     DebugSERIAL.print(")");
     debug_terminator()
     #endif
