@@ -14,16 +14,19 @@ ClockManager::ClockManager(StateFieldRegistry &registry,
 }
 
 void ClockManager::execute() {
+    unsigned int dt = 0;
     if (has_executed) {
         sys_time_t earliest_start_time =
             TimedControlTaskBase::control_cycle_start_time + control_cycle_size;
-        wait_until_time(earliest_start_time);
+        dt = wait_until_time(earliest_start_time);
     }
 
     has_executed = true;
     TimedControlTaskBase::control_cycle_start_time = get_system_time();
     control_cycle_count++;
     control_cycle_count_f.set(control_cycle_count);
+
+    debug_solo("Delta_T", dt);
 }
 
 unsigned int ClockManager::systime_to_cycle(sys_time_t time) {

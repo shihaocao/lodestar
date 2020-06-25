@@ -150,7 +150,7 @@ class TimedControlTask : public ControlTask<T>, public TimedControlTaskBase {
      * 
      * @param time Time until which the system should pause.
      */
-    void wait_until_time(const sys_time_t& time) {
+    sys_time_t wait_until_time(const sys_time_t& time) {
       // Compute timing statistics and publish them to state fields
       const signed int delta_t = (signed int) duration_to_us(time - get_system_time());
       if (delta_t <= 0) {
@@ -162,6 +162,7 @@ class TimedControlTask : public ControlTask<T>, public TimedControlTaskBase {
       avg_wait_f.set(new_avg_wait);
 
       wait_duration(wait_time); 
+      return delta_t;
     }
 
     /**
