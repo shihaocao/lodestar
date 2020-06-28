@@ -96,9 +96,11 @@ void GPSMonitor::execute(){
         update_state_fields();
     }
 
+    /*
     debug_solo("has_new_nmea_f", has_new_nmea_f.get());
     debug_solo("Lat", GPS.latitudeDegrees);
     debug_solo("Fix_qual", GPS.fixquality_3d);
     debug_lin_vec("Lat_Long_f", lat_long_f.get());
     debug_solo("Fix_qual_f", fix_quality_f.get());
+    */
 }

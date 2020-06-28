@@ -103,7 +103,6 @@ void IMUMonitor::execute(){
     accel_cal.set(a);
     mag_cal.set(m);
 
-    Serial.print(a);
 
     // Serial1.print(sys_stat);
     // Serial1.print(",");
@@ -170,6 +169,21 @@ void IMUMonitor::execute(){
         mag_vec.magnetic.y,
         mag_vec.magnetic.z
     });
+
+    //Experimenting with Global Heading (Using Magnetometer)
+    /*
+    DebugSERIAL.print(m);
+    DebugSERIAL.print("(");
+    DebugSERIAL.print(mag_vec_f.get()(0));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(mag_vec_f.get()(1));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(mag_vec_f.get()(2));
+    DebugSERIAL.print(")  ");
+    DebugSERIAL.print(sqrt(mag_vec_f.get()(1)*mag_vec_f.get()(1)+mag_vec_f.get()(2)*mag_vec_f.get()(2)));
+    DebugSERIAL.print("  ");
+    DebugSERIAL.println((180.0/PI)*atan2(-mag_vec_f.get()(1),-mag_vec_f.get()(2)));
+    */
 
     quat_f.set({
         local_quat.w(),

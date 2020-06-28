@@ -48,11 +48,14 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         acc_error_fp = find_internal_field<lin::Vector3f>("ls.acc_error", __FILE__, __LINE__);     
         euler_vec_fp = find_internal_field<lin::Vector3f>("imu.euler_vec", __FILE__, __LINE__);
         quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
+        mag_vec_fp = find_internal_field<lin::Vector3f>("imu.mag_vec", __FILE__, __LINE__);
         init_quat_dp = find_internal_field<lin::Vector4d>("ls.init_quat", __FILE__, __LINE__);
         altitude_fp = find_internal_field<float>("bmp.altitude", __FILE__, __LINE__);
         ground_level_fp = find_internal_field<float>("ls.ground_level", __FILE__, __LINE__);
         lat_long_fp = find_internal_field<lin::Vector2f>("gps.lat_long", __FILE__, __LINE__);
+        init_lat_long_fp=find_internal_field<lin::Vector2f>("ls.init_coord", __FILE__, __LINE__);
         fix_qual_fp = find_internal_field<unsigned char>("gps.fix_qual", __FILE__, __LINE__);
+        init_global_roll_dp = find_internal_field<double>("ls.glob_roll", __FILE__, __LINE__);
 
         // default all fins to no actuation
         fin_commands_f.set({
@@ -99,7 +102,7 @@ void GNC_a::execute(){
 }
 
 void quat_conj(lin::Vector4d const &q, lin::Vector4d &res) {
-  res = {q(0), -q(1), -q(2), q(3) };
+  res = {q(0), -q(1), -q(2), -q(3) };
 }
 
 void hamilton_product(lin::Vector4d const &q, lin::Vector4d const &r,
@@ -130,6 +133,23 @@ void quat2euler(lin::Vector4d const &q, lin::Vector3d &res){
     res(1)=asin(2* ( q(0) * q(2) - q(3) * q(1) ));
     res(2)=atan2( 2* ( q(0) * q(3) + q(1) * q(2) ), 1-2*( pow(q(2),2) + pow(q(3),2) ));
 
+}
+
+void distance(lin::Vector2d const &coord1, lin::Vector2d const &coord2, double &res){
+    double R = 6371e3;
+    double p1 = coord1(0)*PI/180;
+    double p2 = coord2(0)*PI/180;
+    double dp = p2-p1;
+    double dl = (coord2(1)-coord1(1))*PI/180;
+    double a = sin(dp/2)*sin(dp/2) + cos(p1)*cos(p2)*sin(dl/2)*sin(dl/2);
+    double c = 2*atan2(sqrt(a),sqrt(1-a));
+    res = R*c;
+}
+
+//Coord1 is reference position. 
+void distance1(lin::Vector2d const &coord1, lin::Vector2d const &coord2, lin::Vector2d &res){
+    res(0)=(coord2(1)-coord1(1))*40075000 * cos( coord1(0) * PI/180 ) / 360.0;
+    res(1)=(coord2(0)-coord1(0))*111320;
 }
 
 
@@ -176,14 +196,42 @@ void GNC_a::tvc(){
         net_quat(3),
     });
 
+    //Calculates Position via GPS
 
-    //Calculates Position via numerical integration (Will eventually be calculated from GPS)
+    //Converts current GPS position into double (higher precision during calcuation)
+    double lat = lat_long_fp->get()(0);
+    double lon = lat_long_fp->get()(1);
+    lin::Vector2d lat_long = {lat, lon};
+
+    //Converts initial GPS position into double
+    double init_lat = init_lat_long_fp->get()(0);
+    double init_lon = init_lat_long_fp->get()(1);
+    lin::Vector2d init_lat_long = {init_lat, init_lon};
+
+    lin::Vector2d global_pos;
+
+    distance1(init_lat_long, lat_long, global_pos);
+
+    /*
+    double th = init_global_roll_dp->get();
+    position_d.set({
+        altitude,
+        cos(th)*global_pos(0)+sin(th)*global_pos(1),
+        -sin(th)*global_pos(0)+sin(th)*global_pos(1)
+    });
+    */
+
+
+    //Calculates Position via numerical integration
+
+    
     position_d.set({
         //altitude,
         position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(1)+velocity(1)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(1)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
         position(2)+velocity(2)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(2)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
     });
+    
 
     //Calculates Velocity via numerical integration (Will eventually be calculated by differentiating GPS readings)
     velocity_d.set({
@@ -199,9 +247,9 @@ void GNC_a::tvc(){
 
     //Sets the value of global acceleration while accounting for any bias in the IMU acceleration readings
     glob_acc_vec_f.set({
-        glob_acc(0),//-acc_error_fp->get()(0),
-        glob_acc(1),//-acc_error_fp->get()(1),
-        glob_acc(2),//-acc_error_fp->get()(2),
+        glob_acc(0)-acc_error_fp->get()(0),
+        glob_acc(1)-acc_error_fp->get()(1),
+        glob_acc(2)-acc_error_fp->get()(2),
     });
 
     //Sets global position error
@@ -360,6 +408,55 @@ void GNC_a::tvc(){
         tvc_angles(1)=tvc_angles(1)/max(tvc_angles(0),tvc_angles(1));
     }
 
+    double dist;
+    distance(init_lat_long, lat_long, dist);
+
+
+
+    Serial.print("(");
+    Serial.print(glob_acc_vec_f.get()(0));
+    Serial.print(",");
+    Serial.print(glob_acc_vec_f.get()(1));
+    Serial.print(",");
+    Serial.print(glob_acc_vec_f.get()(2));
+    Serial.print(")   ");
+    
+    Serial.print("(");
+    Serial.print(velocity_d.get()(0));
+    Serial.print(",");
+    Serial.print(velocity_d.get()(1));
+    Serial.print(",");
+    Serial.print(velocity_d.get()(2));
+    Serial.print(")     ");
+
+    Serial.print("(");
+    Serial.print(position_d.get()(0));
+    Serial.print(",");
+    Serial.print(position_d.get()(1));
+    Serial.print(",");
+    Serial.print(position_d.get()(2));
+    Serial.println(")");
+    
+
+
+    //Prints Distance from reference point
+    /*
+    Serial.print("(");
+    Serial.print(init_lat,8);
+    Serial.print(",");
+    Serial.print(init_lon,8);
+    Serial.print(")     ");
+
+    Serial.print("(");
+    Serial.print(lat,8);
+    Serial.print(",");
+    Serial.print(lon,8);
+    Serial.print(")   ");
+
+    Serial.println(dist);
+    */
+
+    
 
     
 
@@ -377,62 +474,11 @@ void GNC_a::tvc(){
     fin_commands_f.set(fin_commands);
     thrust_commands_f.set(thrust_commands);
 
-    DebugSERIAL.print("Fix Qual: ");
-    DebugSERIAL.print(fix_qual_fp->get());
-    Serial.print("(");
-    Serial.print(lat_long_fp->get()(0));
-    Serial.print(",");
-    Serial.print(lat_long_fp->get()(1));
-    Serial.println(")");
+    //DebugSERIAL.print("Fix Qual: ");
+    //DebugSERIAL.print(fix_qual_fp->get());
 
-
-    /*
-    Serial.print("      (");
-    Serial.print(glob_acc_vec_f.get()(0)-acc_error_fp->get()(0));
-    Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(1)-acc_error_fp->get()(1));
-    Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(2)-acc_error_fp->get()(2));
-    Serial.print(")");
-
-    Serial.print("      (");
-    Serial.print(velocity_d.get()(0));
-    Serial.print(",");
-    Serial.print(velocity_d.get()(1));
-    Serial.print(",");
-    Serial.print(velocity_d.get()(2));
-    Serial.print(")");
-    
-    Serial.print("      (");
-    Serial.print(position(0));
-    Serial.print(",");
-    Serial.print(position(1));
-    Serial.print(",");
-    Serial.print(position(2));
-    Serial.println(")");
-    */
-
-    /*
-    Serial.print("      (");
-    Serial.print(lin_acc_vec_fp->get()(0));
-    Serial.print(",");
-    Serial.print(lin_acc_vec_fp->get()(1));
-    Serial.print(",");
-    Serial.print(lin_acc_vec_fp->get()(2));
-    Serial.println(")");
-    */
-    
     
 
-    /*
-    Serial.print("      (");
-    Serial.print(x_a_com);
-    Serial.print(",");
-    Serial.print(pitch_alph_com);
-    Serial.print(",");
-    Serial.print(yaw_alph_com);
-    Serial.println(")");
-    */
    
 }
 

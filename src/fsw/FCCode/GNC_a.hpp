@@ -38,11 +38,14 @@ protected:
     InternalStateField<lin::Vector3f>* euler_vec_fp;
     InternalStateField<lin::Vector3f>* grav_vec_fp;
     InternalStateField<lin::Vector4d>* quat_fp;
+    InternalStateField<lin::Vector3f>* mag_vec_fp;
     InternalStateField<lin::Vector4d>* init_quat_dp;
     InternalStateField<float>* altitude_fp;
     InternalStateField<float>* ground_level_fp;
     InternalStateField<lin::Vector2f>* lat_long_fp;
+    InternalStateField<lin::Vector2f>* init_lat_long_fp;
     InternalStateField<unsigned char>* fix_qual_fp;
+    InternalStateField<double>* init_global_roll_dp;
 
 
 

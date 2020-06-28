@@ -49,15 +49,21 @@ void execute_sensor(){
     */
 
     /* The processing sketch expects data as roll, pitch, heading */
+    /*
     Serial.print(F("Orientation: "));
-    Serial.print((float)event.orientation.x);
+    Serial.print((float)event.magnetic.x);
     Serial.print(F(" "));
-    Serial.print((float)event.orientation.y);
+    Serial.print((float)event.magnetic.y);
     Serial.print(F(" "));
-    Serial.print((float)event.orientation.z);
+    Serial.print((float)event.magnetic.z);
     Serial.println(F(""));
+    */
+
+    Serial.print(event.magnetic.x);
+    
 
     /* Also send calibration data for each sensor. */
+    /*
     uint8_t sys, gyro, accel, mag = 0;
     bno.getCalibration(&sys, &gyro, &accel, &mag);
     Serial.print(F("Calibration: "));
@@ -68,6 +74,7 @@ void execute_sensor(){
     Serial.print(accel, DEC);
     Serial.print(F(" "));
     Serial.println(mag, DEC);
+    */
 
     delay(BNO055_SAMPLERATE_DELAY_MS);
 }

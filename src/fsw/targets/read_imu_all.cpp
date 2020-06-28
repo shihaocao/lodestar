@@ -37,8 +37,8 @@ Adafruit_BNO055 bno = Adafruit_BNO055(55, 0x28);
 void setup(void)
 {
   
-  bno.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P5);
-  bno.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P5);
+  bno.setAxisRemap(Adafruit_BNO055::adafruit_bno055_axis_remap_config_t::REMAP_CONFIG_P1);
+  bno.setAxisSign(Adafruit_BNO055::adafruit_bno055_axis_remap_sign_t::REMAP_SIGN_P1);
   Serial.begin(115200);
   Serial.println("Orientation Sensor Test"); Serial.println("");
 
@@ -52,6 +52,7 @@ void setup(void)
 
   delay(1000);
 }
+
 void printEvent(sensors_event_t* event) {
   Serial.println();
   Serial.print(event->type);
@@ -88,13 +89,15 @@ void printEvent(sensors_event_t* event) {
 void loop(void)
 {
   //could add VECTOR_ACCELEROMETER, VECTOR_MAGNETOMETER,VECTOR_GRAVITY...
-  sensors_event_t orientationData , angVelocityData , linearAccelData;
+  sensors_event_t orientationData , angVelocityData , linearAccelData, magData;
   bno.getEvent(&orientationData, Adafruit_BNO055::VECTOR_EULER);
   bno.getEvent(&angVelocityData, Adafruit_BNO055::VECTOR_GYROSCOPE);
   bno.getEvent(&linearAccelData, Adafruit_BNO055::VECTOR_LINEARACCEL);
+  bno.getEvent(&magData, Adafruit_BNO055::VECTOR_MAGNETOMETER);
+
 
   //printEvent(&orientationData);
-  printEvent(&angVelocityData);
+  //printEvent(&magData);
   //printEvent(&linearAccelData);
 
   int8_t boardTemp = bno.getTemp();
