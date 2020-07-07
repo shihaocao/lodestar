@@ -17,7 +17,10 @@ namespace PINOUT {
 
     // not actually a member variable, just putting it here
     #define GPSSerial Serial3
-    
+
+    // faster than 9600, hopefully supports 10hz
+    constexpr unsigned int gps_serial_baud = 115200;
+
     #ifdef HARDLINE
     #define TelemSERIAL Serial
     constexpr unsigned int telem_serial_baud = 115200;
