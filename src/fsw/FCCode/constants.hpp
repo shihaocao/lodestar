@@ -110,12 +110,21 @@ namespace CONTROLS{
 
     constexpr double Kd_p_tilt = 1.5;
     constexpr double Kd_y_tilt = 1.5;
+
+    //Pitch Gains
     constexpr double Kp_pitch = 1.1;
     constexpr double Ki_pitch = 0.01;
     constexpr double Kd_pitch = 0.5;
+
+    //Yaw Gains
     constexpr double Kp_yaw = 1.1;
     constexpr double Ki_yaw = 0.01;
     constexpr double Kd_yaw = 0.5;
+
+    //Roll Gains
+    constexpr double Kp_roll = 2;
+    constexpr double Ki_roll = 0.01;
+    constexpr double Kd_roll = 0.5;
 
     //Ascent Gains
     constexpr double Kp_xa = 1.5;

@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <Servo.h>
-Servo m1;
+Servo m1;   //Top motor
+Servo m2;   //Bottom motor
 Servo s1;
 Servo s2;
 Servo s3;
@@ -28,25 +29,29 @@ void execute()
     digitalWrite(13, LOW);
     delay(500);
     Serial.write("LED cycle\n");
+    
+
+
+
 
     
-    
-    for (pos = 0; pos <= 144; pos += 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        set(20,-20,0,0);
-        m1.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(150);                       // waits 15ms for the servo to reach the position
-    }
-    for (pos = 144; pos >=0; pos -= 1) { // goes from 0 degrees to 180 degrees
-        // in steps of 1 degree
-        set(20,-20,0,0);
-        m1.write(pos);              // tell servo to go to position in variable 'pos'
-        delay(150);                       // waits 15ms for the servo to reach the position
+    //Throttle up in increments of 10 staying on each step for 3 seconds
+    for (pos = 0; pos <= 180; pos += 10) { 
+        m1.write(pos);              
+        m2.write(pos);
+        Serial.println(pos);                       
+        delay(4500);
     }
     
-   
-   
+    //Throttle down
+    for (pos = 180; pos >=0; pos -= 20) { 
+        m1.write(pos);              
+        m2.write(pos);
+        delay(150);                       
+    }
+    
 }
+
 
 void setup()
 {
@@ -55,6 +60,7 @@ void setup()
     pinMode(13, OUTPUT);
     Serial.begin(9600);
     m1.attach(29);
+    m2.attach(30);
     s1.attach(2);
     s2.attach(23);
     s3.attach(3);
@@ -63,6 +69,5 @@ void setup()
 
 void loop()
 {
-    // put your main code here, to run repeatedly:
     execute();
 }

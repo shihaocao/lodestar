@@ -21,7 +21,7 @@ GPSMonitor::GPSMonitor(StateFieldRegistry &registry,
 
         // batch of code to go to 115200
         GPS.sendCommand(PMTK_SET_BAUD_115200);
-        GPSSerial.end();
+        //GPSSerial.end();
         GPS.begin(PINOUT::gps_serial_baud);
 
         // uncomment this line to turn on RMC (recommended minimum) and GGA (fix data)
@@ -102,11 +102,11 @@ void GPSMonitor::execute(){
         update_state_fields();
     }
 
-    /*
+    
     debug_solo("has_new_nmea_f", has_new_nmea_f.get());
     debug_solo("Lat", GPS.latitudeDegrees);
     debug_solo("Fix_qual", GPS.fixquality_3d);
     debug_lin_vec("Lat_Long_f", lat_long_f.get());
     debug_solo("Fix_qual_f", fix_quality_f.get());
-    */
+    
 }

@@ -14,6 +14,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
     glob_pos_err_d("gnc_a.glob_pos_err"),
     body_pos_err_d("gnc_a.body_pos_err"),
     body_velocity_d("gnc_a.body_velocity"),
+    roll_integral_d("gnc_a.roll_integral"),
     pitch_integral_d("gnc_a.pitch_integral"),
     yaw_integral_d("gnc_a.yaw_integral"),
     x_integral_d("gnc_a.x_integral"),
@@ -152,6 +153,69 @@ void distance1(lin::Vector2d const &coord1, lin::Vector2d const &coord2, lin::Ve
     res(1)=(coord2(0)-coord1(0))*111320;
 }
 
+lin::Matrix2x2d inv(lin::Matrix2x2d &A) {
+    double a = A(0);
+    double b = A(1);
+    double c = A(2);
+    double d = A(3);
+
+    double det=a*d-b*c;
+    lin::Matrix2x2d res = {d/det, -b/det, -c/det, a/det};
+    return res;
+}
+
+//x_kmo is the previous state vector, P_kmo is the previous covariance matrix, a is the acceleration, z is the GPS state vector
+void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d const &P_kmo, double const &a, lin::Vector2d const &z, lin::Vector2d &x_kf, lin::Matrix2x2d &P_kf){
+    //F is state transition matrix, B is control matrix, Q is IMU noise, R is GPS noise
+    //P_k is predicted covariance matrix, x_k is dead reckoned position, 
+    //P_kf is returned covariance matrix, x_kf is final position, K is Kalman Gain
+
+    double dt = PAN::control_cycle_time_ms/1000.0;
+
+
+    lin::Matrix2x2d F = {1.0, dt, 0.0, 1.0}; //Generates Transition Matrix
+    lin::Vector2d B = {0.5*dt*dt, dt};      //Generates Control Matrix
+
+    lin::Matrix2x2d Q = {1.0,0.0,1.0,0.0};  //Initializes IMU noise
+    lin::Matrix2x2d R = {1.0,0.0,1.0,0.0};  //Initializes GPS noise
+
+    //Prediction Step
+    lin::Vector2d x_k = F*x_kmo+B*a;
+    lin::Matrix2x2d P_k = F*P_kmo* lin::transpose(F)+Q;
+
+    //Update Step
+    lin::Matrix2x2d helper = P_k+R;
+    lin::Matrix2x2d K = P_k*inv(helper);
+
+    x_kf = x_k+K*(z-x_k);
+    P_kf = P_k-K*P_k;
+    
+}
+
+//Input is the desired thrust, output is the commands given to the two motors to get roll control
+lin::Vector2f thrust(double const force, double const diff){
+    lin::Vector2f out = {0.0,0.0};
+
+    //Converts the desired thrust into a total actuatior value
+    double a = (force+267.9944)/16.1234;
+
+    //Distributes the Actuation value to each actuator depending on the differential
+    out(0)=(a+diff)/2.0;
+    out(1)=(a-diff)/2.0;
+
+    //Limits actuator values from 0-180
+    if (out(0)<0){
+        out(0)=0;
+    }if (out(1)<0){
+        out(1)=0;
+    }if (out(0)>180){
+        out(0)=180;
+    }if (out(1)>180){
+        out(1)=180;
+    }
+
+    return out;
+}
 
 
 void GNC_a::tvc(){
@@ -186,8 +250,6 @@ void GNC_a::tvc(){
     quat_conj(net_quat,net_quat_conj);
     quat2euler(net_quat,euler);
 
-
-
     //Saves net_quat to statefield
     net_quat_d.set({
         net_quat(0),
@@ -208,23 +270,43 @@ void GNC_a::tvc(){
     double init_lon = init_lat_long_fp->get()(1);
     lin::Vector2d init_lat_long = {init_lat, init_lon};
 
+    //Generates Global Position Vector (pos_east,pos_north)
     lin::Vector2d global_pos;
-
     distance1(init_lat_long, lat_long, global_pos);
 
-    /*
-    double th = init_global_roll_dp->get();
-    position_d.set({
-        altitude,
-        cos(th)*global_pos(0)+sin(th)*global_pos(1),
-        -sin(th)*global_pos(0)+sin(th)*global_pos(1)
+    //Converts acceleration in body frame to acceleration in global frame (accounts for the boot quat not being (1,0,0,0))
+    rotate_frame(net_quat, lin_acc_vec_d, glob_acc);
+
+    //Sets the value of global acceleration while accounting for any bias in the IMU acceleration readings
+    glob_acc_vec_f.set({
+        glob_acc(0)-acc_error_fp->get()(0),
+        glob_acc(1)-acc_error_fp->get()(1),
+        glob_acc(2)-acc_error_fp->get()(2),
     });
-    */
+
+   //Generates GPS Acceleration (acc_east,acc_north)
+    double th = init_global_roll_dp->get();
+    lin::Vector2d GPS_acc;
+    GPS_acc = {
+        cos(th)*glob_acc(1)+sin(th)*glob_acc(2),
+        -sin(th)*glob_acc(1)+sin(th)*glob_acc(2)
+    };
+
+    Serial.print("(");
+    Serial.print(glob_acc(1));
+    Serial.print(",");
+    Serial.print(glob_acc(2));
+    Serial.print(")     ");
+
+    Serial.print("(");
+    Serial.print(GPS_acc(0));
+    Serial.print(",");
+    Serial.print(GPS_acc(1));
+    Serial.println(")");
+
 
 
     //Calculates Position via numerical integration
-
-    
     position_d.set({
         //altitude,
         position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
@@ -239,18 +321,6 @@ void GNC_a::tvc(){
         velocity(1)+glob_acc(1)*PAN::control_cycle_time_ms/1000,
         velocity(2)+glob_acc(2)*PAN::control_cycle_time_ms/1000,
         });
-
-
-    //Converts acceleration in body frame to acceleration in global frame (accounts for the boot quat not being (1,0,0,0))
-    rotate_frame(net_quat, lin_acc_vec_d, glob_acc);
-
-
-    //Sets the value of global acceleration while accounting for any bias in the IMU acceleration readings
-    glob_acc_vec_f.set({
-        glob_acc(0)-acc_error_fp->get()(0),
-        glob_acc(1)-acc_error_fp->get()(1),
-        glob_acc(2)-acc_error_fp->get()(2),
-    });
 
     //Sets global position error
     glob_pos_err_d.set({
@@ -290,8 +360,6 @@ void GNC_a::tvc(){
             body_pos_err_d.get()(1)/max(body_pos_err_d.get()(0),body_pos_err_d.get()(1))
             }; 
     }
-
-
 
 
 
@@ -341,6 +409,21 @@ void GNC_a::tvc(){
     double yaw_i_correction = CONTROLS::Ki_yaw*yaw_integral;
     double yaw_d_correction = CONTROLS::Kd_yaw*yaw_derivative;
     double yaw_alph_com = yaw_p_correction+yaw_i_correction+yaw_d_correction;
+
+    //Roll Control
+    roll_integral_d.set({
+        roll_integral_d.get()+roll*delta_t
+    });
+
+    double roll_integral = roll_integral_d.get();
+    double roll_derivative = omega_vec_fp->get()(0);
+
+    double roll_error = -roll;
+    double roll_p_correction = CONTROLS::Kp_roll*roll_error;
+    double roll_i_correction = CONTROLS::Ki_roll*roll_integral;
+    double roll_d_correction = CONTROLS::Kd_roll*roll_derivative;
+    double roll_differential = roll_p_correction+roll_i_correction+roll_d_correction;
+    
 
     //X (altitude) control
 
@@ -408,36 +491,26 @@ void GNC_a::tvc(){
         tvc_angles(1)=tvc_angles(1)/max(tvc_angles(0),tvc_angles(1));
     }
 
-    double dist;
-    distance(init_lat_long, lat_long, dist);
+    lin::Vector2d dist;
+    distance1(init_lat_long, lat_long, dist);
 
-
-
+    /*
     Serial.print("(");
     Serial.print(glob_acc_vec_f.get()(0));
     Serial.print(",");
     Serial.print(glob_acc_vec_f.get()(1));
     Serial.print(",");
     Serial.print(glob_acc_vec_f.get()(2));
-    Serial.print(")   ");
-    
+    Serial.print(")     ");
+
     Serial.print("(");
     Serial.print(velocity_d.get()(0));
     Serial.print(",");
     Serial.print(velocity_d.get()(1));
     Serial.print(",");
     Serial.print(velocity_d.get()(2));
-    Serial.print(")     ");
-
-    Serial.print("(");
-    Serial.print(position_d.get()(0));
-    Serial.print(",");
-    Serial.print(position_d.get()(1));
-    Serial.print(",");
-    Serial.print(position_d.get()(2));
-    Serial.println(")");
-    
-
+    Serial.println(")     ");
+    */
 
     //Prints Distance from reference point
     /*
@@ -445,7 +518,7 @@ void GNC_a::tvc(){
     Serial.print(init_lat,8);
     Serial.print(",");
     Serial.print(init_lon,8);
-    Serial.print(")     ");
+    Serial.print(")    ");
 
     Serial.print("(");
     Serial.print(lat,8);
@@ -453,25 +526,16 @@ void GNC_a::tvc(){
     Serial.print(lon,8);
     Serial.print(")   ");
 
-    Serial.println(dist);
-    */
-
-    
-
-    
-
-
-    //No Control Method (Simply Sets Servos to Angle of Gyro)
-
-    /*
-    fin_commands(0)=(euler_vec_fp->get()(1));
-    fin_commands(1)=-(euler_vec_fp->get()(2));
-    fin_commands(2)=(euler_vec_fp->get()(2));
-    fin_commands(3)=-(euler_vec_fp->get()(1));
+    Serial.print("(");
+    Serial.print(dist(0),8);
+    Serial.print(",");
+    Serial.print(dist(1),8);
+    Serial.println(")   ");
     */
 
 
     fin_commands_f.set(fin_commands);
+    thrust_commands = thrust(400,roll_differential);
     thrust_commands_f.set(thrust_commands);
 
     //DebugSERIAL.print("Fix Qual: ");

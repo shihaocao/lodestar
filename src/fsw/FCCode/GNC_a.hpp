@@ -62,6 +62,7 @@ protected:
     InternalStateField<lin::Vector3d> glob_pos_err_d;
     InternalStateField<lin::Vector2d> body_pos_err_d;
     InternalStateField<lin::Vector2d> body_velocity_d;
+    InternalStateField<double> roll_integral_d;
     InternalStateField<double> pitch_integral_d;
     InternalStateField<double> yaw_integral_d;
     InternalStateField<double> x_integral_d;

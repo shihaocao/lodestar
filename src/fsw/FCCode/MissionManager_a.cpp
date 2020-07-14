@@ -107,7 +107,7 @@ void MissionManager_a::calibrate_data(){
 void MissionManager_a::dispatch_warmup() {
 
     unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
-    Serial.print(accel_cal->get());
+    Serial.print(mag_cal->get());
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
@@ -116,7 +116,7 @@ void MissionManager_a::dispatch_warmup() {
     #else
     
 
-    if(accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
+    if(mag_cal->get()==3){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
     #endif
         pause_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::pause);
@@ -140,15 +140,14 @@ void MissionManager_a::dispatch_initialization() {
     // Gets the offset in each axis for acceleration
     acc_error_f.set( acc_error_f.get() + lin_acc_vec_fp->get() / MM::init_cycles);
 
-    /*
-    Serial.print("      (");
+    Serial.print("(");
     Serial.print(acc_error_f.get()(0));
     Serial.print(",");
     Serial.print(acc_error_f.get()(1));
     Serial.print(",");
-    Serial.print(acc_error_f.get()(2));
-    Serial.print(")");
-    */
+    Serial.print(acc_error_f.get()(3));
+    Serial.println(")");
+
 
    //Averages Orientations to get a value for the "equilibrium quaternion"
     init_quat_d.set( init_quat_d.get() + quat_fp->get() / MM::init_cycles);
@@ -189,14 +188,6 @@ void MissionManager_a::dispatch_initialization() {
     double m_z = mag_vec_fp->get()(2);
     double roll = (180.0/PI) * atan2(-m_y,-m_z);
     init_global_roll.set(init_global_roll.get()+roll/MM::init_cycles);
-    
-    Serial.print("      (");
-    Serial.print(acc_error_f.get()(0));
-    Serial.print(",");
-    Serial.print(acc_error_f.get()(1));
-    Serial.print(",");
-    Serial.print(acc_error_f.get()(2));
-    Serial.print(")");
 
     if(control_cycle_count - enter_init_ccno >= MM::init_cycles){
         //Performs final division necessary for position averaging

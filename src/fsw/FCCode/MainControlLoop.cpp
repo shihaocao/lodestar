@@ -28,7 +28,7 @@ void MainControlLoop::execute() {
     clock_manager.execute();
     imu_monitor.execute_on_time();
     bmp_monitor.execute_on_time();
-    gps_monitor.execute_on_time();
+    //gps_monitor.execute_on_time();
 
     /*
     mission_manager.execute_on_time();
