@@ -28,4 +28,5 @@ void MotorControlTask::actuate(){
     lin::Vector2f thrust_commands = thrust_commands_fp->get();
     motor1.write(thrust_commands(0));
     motor2.write(thrust_commands(1));
+    Serial.println("sent");
 }

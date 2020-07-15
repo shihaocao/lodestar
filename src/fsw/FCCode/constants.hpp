@@ -61,16 +61,16 @@ namespace MM {
  */
 namespace SERVO {
     constexpr unsigned char num_flaps = 4;
-    constexpr unsigned char flap1_pin = 29;
-    constexpr unsigned char flap2_pin = 30;
+    constexpr unsigned char flap1_pin = 2;
+    constexpr unsigned char flap2_pin = 3;
     constexpr unsigned char flap3_pin = 35;
     constexpr unsigned char flap4_pin = 36;
     constexpr unsigned char fin1_pin = 2;
     constexpr unsigned char fin2_pin = 3;
     constexpr unsigned char fin3_pin = 22;
     constexpr unsigned char fin4_pin = 23;
-    constexpr unsigned char motor1_pin = 4;
-    constexpr unsigned char motor2_pin = 5;
+    constexpr unsigned char motor1_pin = 29;
+    constexpr unsigned char motor2_pin = 30;
 
     // bounds expected from GNC
     constexpr float servo_cmd_range = 90;

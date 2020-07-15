@@ -16,6 +16,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       mission_manager_a(registry, mission_manager_offset),
       gnc_a(registry, gnc_offset),
       servo_controller(registry, servo_ct_offset),
+      motor_controller(registry,motor_ct_offset),
       downlink_control_task(registry, downlink_ct_offset),
       led_control_task(registry, led_control_task_offset)
 
@@ -39,6 +40,7 @@ void MainControlLoop::execute() {
     gnc_a.execute_on_time();
     #ifndef STATIC
     servo_controller.execute_on_time();
+    motor_controller.execute_on_time();
     #endif
     #ifndef DL_OFF
     downlink_control_task.execute_on_time();

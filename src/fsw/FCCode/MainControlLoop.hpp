@@ -18,6 +18,7 @@
 #include "GNC.hpp"
 #include "GNC_a.hpp"
 #include "ServoControlTask.hpp"
+#include "MotorControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
    protected:
@@ -40,6 +41,7 @@ class MainControlLoop : public ControlTask<void> {
     GNC_a gnc_a;
 
     ServoControlTask servo_controller;
+    MotorControlTask motor_controller;
     DownlinkControlTask downlink_control_task;
     LEDControlTask led_control_task;
 
@@ -53,7 +55,8 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int mission_manager_offset     =  10000;
         static constexpr unsigned int gnc_offset                 =  11000;
         static constexpr unsigned int servo_ct_offset            =  12000;
-        static constexpr unsigned int downlink_ct_offset         =  13000;
+        static constexpr unsigned int motor_ct_offset            =  13000;
+        static constexpr unsigned int downlink_ct_offset         =  14000;
         static constexpr unsigned int led_control_task_offset    =  15000;
     #else
         // static constexpr unsigned int debug_task_offset          =   3000;
@@ -84,8 +87,10 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int mission_manager_offset     =   5;
         static constexpr unsigned int gnc_offset                 =   6;
         static constexpr unsigned int servo_ct_offset            =   7;
-        static constexpr unsigned int downlink_ct_offset         =   8;
-        static constexpr unsigned int led_control_task_offset    =   9;    
+        static constexpr unsigned int motor_ct_offset            =   8;
+        static constexpr unsigned int downlink_ct_offset         =   9;
+        static constexpr unsigned int led_control_task_offset    =   11;
+
         
     #endif
 

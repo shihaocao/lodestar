@@ -292,18 +292,6 @@ void GNC_a::tvc(){
         -sin(th)*glob_acc(1)+sin(th)*glob_acc(2)
     };
 
-    Serial.print("(");
-    Serial.print(glob_acc(1));
-    Serial.print(",");
-    Serial.print(glob_acc(2));
-    Serial.print(")     ");
-
-    Serial.print("(");
-    Serial.print(GPS_acc(0));
-    Serial.print(",");
-    Serial.print(GPS_acc(1));
-    Serial.println(")");
-
 
 
     //Calculates Position via numerical integration

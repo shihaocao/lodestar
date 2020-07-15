@@ -29,14 +29,18 @@ void execute()
     digitalWrite(13, LOW);
     delay(500);
     Serial.write("LED cycle\n");
-    
+
+    m1.write(0);              
+    m2.write(0);
+    delay(1000);
+    m1.write(50);              
+    m2.write(55);
+    delay(5000);
 
 
-
-
-    
+    /*
     //Throttle up in increments of 10 staying on each step for 3 seconds
-    for (pos = 0; pos <= 180; pos += 10) { 
+    for (pos = 0; pos <= 80; pos += 10) { 
         m1.write(pos);              
         m2.write(pos);
         Serial.println(pos);                       
@@ -44,11 +48,12 @@ void execute()
     }
     
     //Throttle down
-    for (pos = 180; pos >=0; pos -= 20) { 
+    for (pos = 80; pos >=0; pos -= 20) { 
         m1.write(pos);              
         m2.write(pos);
         delay(150);                       
     }
+    */
     
 }
 
@@ -59,8 +64,8 @@ void setup()
     delay(2000);
     pinMode(13, OUTPUT);
     Serial.begin(9600);
-    m1.attach(29);
-    m2.attach(30);
+    m1.attach(30);
+    m2.attach(29);
     s1.attach(2);
     s2.attach(23);
     s3.attach(3);
