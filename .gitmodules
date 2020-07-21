@@ -4,3 +4,6 @@
 [submodule "lib/common/psim"]
 	path = lib/common/psim
 	url = https://github.com/pathfinder-for-autonomous-navigation/psim.git
+[submodule "lib/common/SdFat-beta"]
+	path = lib/common/SdFat-beta
+	url = https://github.com/greiman/SdFat-beta.git
