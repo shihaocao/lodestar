@@ -16,10 +16,10 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
         flap3.attach(SERVO::flap3_pin);
         flap4.attach(SERVO::flap4_pin);
 
-        fin1.attach(SERVO::fin1_pin);
-        fin2.attach(SERVO::fin2_pin);
-        fin3.attach(SERVO::fin3_pin);
-        fin4.attach(SERVO::fin4_pin);
+        fin1.attach(3);
+        fin2.attach(22);
+        fin3.attach(2);
+        fin4.attach(23);
         #endif
     }
 
@@ -63,8 +63,24 @@ void ServoControlTask::actuate(){
     flap4.write(flap_servo_writes(3));
 
     //Add 90 degrees, since fin_commands are given with respect to equilibrium. The equilibrium fin position is 90 degrees
-    fin1.write(fin_commands(0)+90);
-    fin2.write(fin_commands(1)+90);
+    fin1.write(fin_commands(0)+100);
+    fin2.write(fin_commands(1)+80);
     fin3.write(fin_commands(2)+90);
-    fin4.write(fin_commands(3)+90);
+    fin4.write(fin_commands(3)+80);
+
+    
+    Serial.print("Servo: ");
+    Serial.print("(");
+    Serial.print(fin_commands(0));
+    Serial.print(",");
+    Serial.print(fin_commands(1));
+    Serial.print(",");
+    Serial.print(fin_commands(2));
+    Serial.print(",");
+    Serial.print(fin_commands(3));
+    Serial.print(")     ");
+    
+
+
+
 }

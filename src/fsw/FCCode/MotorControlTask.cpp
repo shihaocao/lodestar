@@ -5,7 +5,7 @@ MotorControlTask::MotorControlTask(StateFieldRegistry &registry,
     : TimedControlTask<void>(registry, "downlink_control_task", offset)
     {
         thrust_commands_fp = find_internal_field<lin::Vector2f>("gnc_a.thrust_cmds", __FILE__, __LINE__);
-
+        engine_on_fp = find_internal_field<bool>("ls.engine_on", __FILE__, __LINE__);
 
         #ifndef STATIC
         motor1.attach(SERVO::motor1_pin);
@@ -14,9 +14,9 @@ MotorControlTask::MotorControlTask(StateFieldRegistry &registry,
     }
 
 void MotorControlTask::execute(){
-
-    if(engine_on_fp->get())
+    if(engine_on_fp->get()){
         actuate();
+    }
     else{
         motor1.write(0);
         motor2.write(0);
@@ -26,7 +26,15 @@ void MotorControlTask::execute(){
 
 void MotorControlTask::actuate(){
     lin::Vector2f thrust_commands = thrust_commands_fp->get();
+    
+    Serial.print("Motor Output");
+    Serial.print("(");
+    Serial.print(thrust_commands(0));
+    Serial.print(",");
+    Serial.print(thrust_commands(1));
+    Serial.println(")");
+    
+
     motor1.write(thrust_commands(0));
-    motor2.write(thrust_commands(1));
-    Serial.println("sent");
+    motor2.write(thrust_commands(1)+5);
 }

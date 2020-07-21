@@ -9,10 +9,10 @@ Servo s4;
 
 int pos = 0;
 
-int eq1=90;
-int eq2=90;
-int eq3=94;
-int eq4=90;
+int eq1=100;
+int eq2=80;
+int eq3=90;
+int eq4=80;
 
 void set(int w, int x, int y, int z){
     s1.write(w+eq1);
@@ -30,30 +30,53 @@ void execute()
     delay(500);
     Serial.write("LED cycle\n");
 
-    m1.write(0);              
-    m2.write(0);
-    delay(1000);
-    m1.write(50);              
-    m2.write(55);
-    delay(5000);
+    set(0,0,0,0);
+    delay(8000);
+
+    set(0,0,0,0);
 
 
     /*
     //Throttle up in increments of 10 staying on each step for 3 seconds
-    for (pos = 0; pos <= 80; pos += 10) { 
-        m1.write(pos);              
+    for (pos = 0; pos <= 130; pos += 10) { 
+        //m1.write(pos);              
         m2.write(pos);
-        Serial.println(pos);                       
-        delay(4500);
+        delay(200);
     }
+
+
+    Serial.println("130");
+    delay(5500);                
+    set(5,-5,0,0);
+    Serial.println("5");                       
+    delay(5500);
+    set(10,-10,0,0);
+    Serial.println("10");                       
+    delay(5500);
+    set(15,-15,0,0);
+    Serial.println("15");                       
+    delay(5500);
+    set(20,-20,0,0);
+    Serial.println("20");                       
+    delay(5500);
+    set(25,-25,0,0);
+    Serial.println("25");                       
+    delay(5500);
+    set(30,-30,0,0);
+    Serial.println("30");                       
+    delay(5500);
+    set(0,0,0,0);
+
     
     //Throttle down
-    for (pos = 80; pos >=0; pos -= 20) { 
-        m1.write(pos);              
+    for (pos = 130; pos >=0; pos -= 20) { 
+        //m1.write(pos);              
         m2.write(pos);
         delay(150);                       
     }
     */
+    
+    
     
 }
 
@@ -64,12 +87,12 @@ void setup()
     delay(2000);
     pinMode(13, OUTPUT);
     Serial.begin(9600);
-    m1.attach(30);
-    m2.attach(29);
-    s1.attach(2);
-    s2.attach(23);
-    s3.attach(3);
-    s4.attach(22);
+    m1.attach(29);
+    m2.attach(30);
+    s1.attach(3);
+    s2.attach(22);
+    s3.attach(2);
+    s4.attach(23);
 }
 
 void loop()

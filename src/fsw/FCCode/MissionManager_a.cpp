@@ -76,9 +76,11 @@ void MissionManager_a::execute() {
             dispatch_initialization();
             break;
         case mission_mode_t::starhopper1:
+            //Serial.print("Starhopper1      ");
             tvc();
             break;
         case mission_mode_t::starhopper2:
+            //Serial.print("Starhopper2      ");
             tvc();
             break;
         case mission_mode_t::starhopper3:
@@ -107,7 +109,7 @@ void MissionManager_a::calibrate_data(){
 void MissionManager_a::dispatch_warmup() {
 
     unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
-    Serial.print(mag_cal->get());
+    Serial.print(accel_cal->get());
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
@@ -116,7 +118,7 @@ void MissionManager_a::dispatch_warmup() {
     #else
     
 
-    if(mag_cal->get()==3){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
+    if(1==1){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
     #endif
         pause_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::pause);
@@ -145,7 +147,7 @@ void MissionManager_a::dispatch_initialization() {
     Serial.print(",");
     Serial.print(acc_error_f.get()(1));
     Serial.print(",");
-    Serial.print(acc_error_f.get()(3));
+    Serial.print(acc_error_f.get()(2));
     Serial.println(")");
 
 
@@ -206,8 +208,9 @@ void MissionManager_a::dispatch_initialization() {
 
 
 void MissionManager_a::tvc() {
-    //Exit condition for starhopper is if the FTS time is exceeded (Eventaully it will be an altitude condition)
-    if(millis() > MM::FTS_millis){
+
+    //Exit condition for starhopper is if the FTS time is exceeded
+    if(millis() > MM::FTS_millis){ // || alt_fp->get()<=ground_level_f.get()){
         set_mission_mode(mission_mode_t::landed);
     }
 }

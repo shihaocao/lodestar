@@ -19,7 +19,12 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
     yaw_integral_d("gnc_a.yaw_integral"),
     x_integral_d("gnc_a.x_integral"),
     euler_d("gnc_a.euler"),
-    a_com_d("gnc_a.a_com")
+    a_com_d("gnc_a.a_com"),
+    P_x("gnc_a.x_cov"),
+    P_y("gnc_a.y_cov"),
+    P_z("gnc_a.z_cov")
+
+
 
     
 
@@ -39,6 +44,9 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         add_internal_field(x_integral_d);
         add_internal_field(euler_d);
         add_internal_field(a_com_d);
+        add_internal_field(P_x);
+        add_internal_field(P_y);
+        add_internal_field(P_z);
 
 
         mission_mode_fp = find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
@@ -57,6 +65,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         init_lat_long_fp=find_internal_field<lin::Vector2f>("ls.init_coord", __FILE__, __LINE__);
         fix_qual_fp = find_internal_field<unsigned char>("gps.fix_qual", __FILE__, __LINE__);
         init_global_roll_dp = find_internal_field<double>("ls.glob_roll", __FILE__, __LINE__);
+        velocity_bmp_dp = find_internal_field<double>("bmp.velocity", __FILE__, __LINE__);
 
         // default all fins to no actuation
         fin_commands_f.set({
@@ -165,10 +174,14 @@ lin::Matrix2x2d inv(lin::Matrix2x2d &A) {
 }
 
 //x_kmo is the previous state vector, P_kmo is the previous covariance matrix, a is the acceleration, z is the GPS state vector
-void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d const &P_kmo, double const &a, lin::Vector2d const &z, lin::Vector2d &x_kf, lin::Matrix2x2d &P_kf){
+void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d &P_kmo, double const &a, lin::Vector2d const &z, lin::Vector2d &x_kf, lin::Matrix2x2d &P_kf){
     //F is state transition matrix, B is control matrix, Q is IMU noise, R is GPS noise
     //P_k is predicted covariance matrix, x_k is dead reckoned position, 
     //P_kf is returned covariance matrix, x_kf is final position, K is Kalman Gain
+
+    if (P_kmo(0)==0 && P_kmo(1)==0 && P_kmo(2)==0 && P_kmo(3)==0){
+        P_kmo={0.3,0.5,0.5,0.15};
+    }
 
     double dt = PAN::control_cycle_time_ms/1000.0;
 
@@ -176,8 +189,8 @@ void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d const &P_kmo, double con
     lin::Matrix2x2d F = {1.0, dt, 0.0, 1.0}; //Generates Transition Matrix
     lin::Vector2d B = {0.5*dt*dt, dt};      //Generates Control Matrix
 
-    lin::Matrix2x2d Q = {1.0,0.0,1.0,0.0};  //Initializes IMU noise
-    lin::Matrix2x2d R = {1.0,0.0,1.0,0.0};  //Initializes GPS noise
+    lin::Matrix2x2d Q = {0.001,0.1,0.1,0.001};  //Initializes IMU noise
+    lin::Matrix2x2d R = {0.04,0.2,0.2,0.08};  //Initializes GPS noise
 
     //Prediction Step
     lin::Vector2d x_k = F*x_kmo+B*a;
@@ -197,7 +210,7 @@ lin::Vector2f thrust(double const force, double const diff){
     lin::Vector2f out = {0.0,0.0};
 
     //Converts the desired thrust into a total actuatior value
-    double a = (force+267.9944)/16.1234;
+    double a = (force+267.9944)/4.031;
 
     //Distributes the Actuation value to each actuator depending on the differential
     out(0)=(a+diff)/2.0;
@@ -223,19 +236,29 @@ void GNC_a::tvc(){
     //Converting Statefields into tangible vectors
     lin::Vector4f fin_commands = fin_commands_f.get();
     lin::Vector2f thrust_commands = thrust_commands_f.get();
-    lin::Vector3d position = position_d.get();
-    lin::Vector3d velocity = velocity_d.get();
+    
+    
+    lin::Vector3d pos_prev = position_d.get();
+    lin::Vector3d vel_prev = velocity_d.get();
     lin::Vector3d lin_acc_vec_d = lin_acc_vec_fp->get();
     lin::Vector3d glob_acc = glob_acc_vec_f.get();
     lin::Vector3d setpoint = setpoint_d.get();
     lin::Vector4d quat = quat_fp->get();
-    //double altitude = altitude_fp->get()-ground_level_fp->get();
+    double altitude = altitude_fp->get()-ground_level_fp->get();
+    lin::Matrix2x2d P_kmox = P_x.get();
+    lin::Matrix2x2d P_kmoy = P_y.get();
+    lin::Matrix2x2d P_kmoz = P_z.get();
 
     lin::Vector4d init_quat_conj;
     lin::Vector4d quat_inv;
     lin::Vector4d net_quat_conj;
     lin::Vector4d net_quat;
     lin::Vector3d euler;
+    lin::Vector3d pos_dr;
+    lin::Vector3d vel_dr;
+    lin::Matrix2x2d P_kx;
+    lin::Matrix2x2d P_ky;
+    lin::Matrix2x2d P_kz;
 
     lin::Vector4d init_quat = init_quat_dp->get();
     quat_conj(quat,quat_inv);
@@ -258,6 +281,9 @@ void GNC_a::tvc(){
         net_quat(3),
     });
 
+    //-----------------------------Calculating and Saving States-------------------------------
+
+
     //Calculates Position via GPS
 
     //Converts current GPS position into double (higher precision during calcuation)
@@ -274,7 +300,7 @@ void GNC_a::tvc(){
     lin::Vector2d global_pos;
     distance1(init_lat_long, lat_long, global_pos);
 
-    //Converts acceleration in body frame to acceleration in global frame (accounts for the boot quat not being (1,0,0,0))
+    //Converts acceleration in body frame to acceleration in initial frame (accounts for the boot quat not being (1,0,0,0))
     rotate_frame(net_quat, lin_acc_vec_d, glob_acc);
 
     //Sets the value of global acceleration while accounting for any bias in the IMU acceleration readings
@@ -284,31 +310,61 @@ void GNC_a::tvc(){
         glob_acc(2)-acc_error_fp->get()(2),
     });
 
-   //Generates GPS Acceleration (acc_east,acc_north)
+    //Changes Local glob_acc variable to account for bias
+    glob_acc={
+        glob_acc_vec_f.get()(0),
+        glob_acc_vec_f.get()(1),
+        glob_acc_vec_f.get()(2),
+    };
+
+   //Generates Sensor position (Rotates GPS Position from (east,north) to local frame)
     double th = init_global_roll_dp->get();
-    lin::Vector2d GPS_acc;
-    GPS_acc = {
-        cos(th)*glob_acc(1)+sin(th)*glob_acc(2),
-        -sin(th)*glob_acc(1)+sin(th)*glob_acc(2)
+    lin::Vector2d pos_sensor;
+    pos_sensor = {
+        altitude,
+        -cos(th* PI/180.0)*global_pos(0)+sin(th* PI/180.0)*global_pos(1),       //Negate East and North due to the IMU axes
+        -sin(th* PI/180.0)*global_pos(0)-cos(th* PI/180.0)*global_pos(1)
     };
 
 
+    //Uses Kalman Filter to Estimate Position
+    lin::Vector2d x_k;  //Estimated x pos and vel
+    lin::Vector2d y_k;  //Estimated y pos and vel
+    lin::Vector2d z_k;  //Estimated z pos and vel
 
-    //Calculates Position via numerical integration
+    lin::Vector2d x_sens = {altitude,velocity_bmp_dp->get()};   //Sensor x pos and vel
+    lin::Vector2d y_sens;   //Sensor x pos and vel
+    lin::Vector2d z_sens;   //Sensor x pos and vel
+
+
+    lin::Vector2d x_kmo = {pos_prev(0),vel_prev(0)};    //Previous x pos and vel
+    lin::Vector2d y_kmo = {pos_prev(1),vel_prev(1)};    //Previous y pos and vel
+    lin::Vector2d z_kmo = {pos_prev(2),vel_prev(2)};    //Previous z pos and vel
+
+
+
+    kalman(x_kmo,P_kmox,glob_acc(0),x_sens,x_k,P_kx);
+    kalman(y_kmo,P_kmoy,glob_acc(1),y_sens,y_k,P_ky);
+    kalman(z_kmo,P_kmoz,glob_acc(2),z_sens,z_k,P_kz);
+
+    //Saves Covariance Matrices
+    P_x.set({P_kx(0), P_kx(1), P_kx(2), P_kx(3)});
+    P_y.set({P_ky(0), P_ky(1), P_ky(2), P_ky(3)});
+    P_z.set({P_kz(0), P_kz(1), P_kz(2), P_kz(3)});
+
+    //Saves Position Estimation from Kalman Filter
     position_d.set({
-        //altitude,
-        position(0)+velocity(0)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(0)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
-        position(1)+velocity(1)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(1)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
-        position(2)+velocity(2)*PAN::control_cycle_time_ms/1000+0.5*glob_acc(2)*PAN::control_cycle_time_ms/1000*PAN::control_cycle_time_ms/1000,
+        x_k(0),
+        y_k(0),
+        z_k(0)
     });
-    
 
-    //Calculates Velocity via numerical integration (Will eventually be calculated by differentiating GPS readings)
+    //Saves Velocity Estimation from Kalman Filter
     velocity_d.set({
-        velocity(0)+glob_acc(0)*PAN::control_cycle_time_ms/1000,
-        velocity(1)+glob_acc(1)*PAN::control_cycle_time_ms/1000,
-        velocity(2)+glob_acc(2)*PAN::control_cycle_time_ms/1000,
-        });
+        x_k(1),
+        y_k(1),
+        z_k(1)
+    });
 
     //Sets global position error
     glob_pos_err_d.set({
@@ -322,8 +378,8 @@ void GNC_a::tvc(){
     //Rotates y and z components of velocity by the roll angle to get velocity in "body frame"
     //Sets body velocity vector
     body_velocity_d.set({
-        velocity(1)*cos(euler(0))+velocity(2)*sin(euler(0)),
-        -velocity(1)*sin(euler(0))+velocity(2)*cos(euler(0))
+        velocity_d.get()(1)*cos(euler(0))+velocity_d.get()(2)*sin(euler(0)),
+        -velocity_d.get()(1)*sin(euler(0))+velocity_d.get()(2)*cos(euler(0))
     });
 
     //Rotates y and z components of global position error by the roll angle to get the desired heading
@@ -376,7 +432,8 @@ void GNC_a::tvc(){
     double pitch_integral=pitch_integral_d.get();
     double pitch_derivative = omega_vec_fp->get()(1);
 
-    double pitch_error=-CONTROLS::max_tilt*body_pos_err_norm(1)+CONTROLS::Kd_p_tilt*body_velocity_d.get()(1)-pitch;
+    //double pitch_error=-CONTROLS::max_tilt*body_pos_err_norm(1)+CONTROLS::Kd_p_tilt*body_velocity_d.get()(1)-pitch;
+    double pitch_error=-pitch;
     double pitch_p_correction = CONTROLS::Kp_pitch*pitch_error;
     double pitch_i_correction = CONTROLS::Ki_pitch*pitch_integral;
     double pitch_d_correction = CONTROLS::Kd_pitch*pitch_derivative;
@@ -392,7 +449,8 @@ void GNC_a::tvc(){
     double yaw_integral=yaw_integral_d.get();
     double yaw_derivative = omega_vec_fp->get()(2);
 
-    double yaw_error=-CONTROLS::max_tilt*body_pos_err_norm(0)+CONTROLS::Kd_y_tilt*body_velocity_d.get()(0)-yaw;
+    //double yaw_error=-CONTROLS::max_tilt*body_pos_err_norm(0)+CONTROLS::Kd_y_tilt*body_velocity_d.get()(0)-yaw;
+    double yaw_error=-yaw;
     double yaw_p_correction = CONTROLS::Kp_yaw*yaw_error;
     double yaw_i_correction = CONTROLS::Ki_yaw*yaw_integral;
     double yaw_d_correction = CONTROLS::Kd_yaw*yaw_derivative;
@@ -404,14 +462,16 @@ void GNC_a::tvc(){
     });
 
     double roll_integral = roll_integral_d.get();
-    double roll_derivative = omega_vec_fp->get()(0);
+    double roll_derivative = -omega_vec_fp->get()(0);   //Negative bc roll_deriv is the derivative of ERROR
 
     double roll_error = -roll;
     double roll_p_correction = CONTROLS::Kp_roll*roll_error;
     double roll_i_correction = CONTROLS::Ki_roll*roll_integral;
     double roll_d_correction = CONTROLS::Kd_roll*roll_derivative;
     double roll_differential = roll_p_correction+roll_i_correction+roll_d_correction;
-    
+
+
+
 
     //X (altitude) control
 
@@ -475,8 +535,9 @@ void GNC_a::tvc(){
 
     //Prevent servo saturation
     if (max(tvc_angles(0),tvc_angles(1))>CONTROLS::servo_max){
-        tvc_angles(0)=tvc_angles(0)/max(tvc_angles(0),tvc_angles(1));
-        tvc_angles(1)=tvc_angles(1)/max(tvc_angles(0),tvc_angles(1));
+        double max_ang = max(tvc_angles(0),tvc_angles(1));
+        tvc_angles(0)=(tvc_angles(0)/max_ang)*CONTROLS::servo_max;
+        tvc_angles(1)=(tvc_angles(1)/max_ang)*CONTROLS::servo_max;
     }
 
     lin::Vector2d dist;
@@ -521,10 +582,36 @@ void GNC_a::tvc(){
     Serial.println(")   ");
     */
 
-
+    fin_commands={-tvc_angles(0),tvc_angles(0),-tvc_angles(1),tvc_angles(1)};
     fin_commands_f.set(fin_commands);
-    thrust_commands = thrust(400,roll_differential);
+    thrust_commands = thrust(100*T,roll_differential);
     thrust_commands_f.set(thrust_commands);
+
+
+    
+    Serial.print("Euler: ");
+    Serial.print("(");
+    Serial.print(roll);
+    Serial.print(",");
+    Serial.print(pitch);
+    Serial.print(",");
+    Serial.print(yaw);
+    Serial.print(")     ");
+
+    Serial.print("Altitude: ");
+    Serial.print(altitude);
+
+    Serial.print("  a_com: ");
+    Serial.print("(");
+    Serial.print(a_com_d.get()(0));
+    Serial.print(",");
+    Serial.print(a_com_d.get()(1));
+    Serial.print(",");
+    Serial.print(a_com_d.get()(2));
+    Serial.print(")     ");
+    
+
+
 
     //DebugSERIAL.print("Fix Qual: ");
     //DebugSERIAL.print(fix_qual_fp->get());

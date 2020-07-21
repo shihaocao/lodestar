@@ -40,8 +40,8 @@ void MainControlLoop::execute() {
     gnc_a.execute_on_time();
     #ifndef STATIC
     servo_controller.execute_on_time();
-    motor_controller.execute_on_time();
     #endif
+    motor_controller.execute_on_time();
     #ifndef DL_OFF
     downlink_control_task.execute_on_time();
     #endif

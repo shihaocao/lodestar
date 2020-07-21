@@ -76,6 +76,7 @@ protected:
         pressure_f,
         /** altitude statefield */
         altitude_f;
+    InternalStateField<double> velocity_bmp_d;
  };
 
 #endif

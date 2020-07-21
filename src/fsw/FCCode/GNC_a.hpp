@@ -46,6 +46,7 @@ protected:
     InternalStateField<lin::Vector2f>* init_lat_long_fp;
     InternalStateField<unsigned char>* fix_qual_fp;
     InternalStateField<double>* init_global_roll_dp;
+    InternalStateField<double>* velocity_bmp_dp;
 
 
 
@@ -68,6 +69,9 @@ protected:
     InternalStateField<double> x_integral_d;
     InternalStateField<lin::Vector3d> euler_d;
     InternalStateField<lin::Vector3d> a_com_d;
+    InternalStateField<lin::Matrix2x2d> P_x;
+    InternalStateField<lin::Matrix2x2d> P_y;
+    InternalStateField<lin::Matrix2x2d> P_z;
 
 
 

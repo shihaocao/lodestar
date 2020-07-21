@@ -7,13 +7,15 @@ BMPMonitor::BMPMonitor(StateFieldRegistry &registry,
     functional_f("bmp.functional"),
     temp_f("bmp.temp"),
     pressure_f("bmp.pressure"),
-    altitude_f("bmp.altitude")
+    altitude_f("bmp.altitude"),
+    velocity_bmp_d("bmp.velocity")
     {
         //add statefields to registry
         add_internal_field(functional_f);
         add_internal_field(temp_f);
         add_internal_field(pressure_f);
         add_internal_field(altitude_f);
+        add_internal_field(velocity_bmp_d);
 
         //set up imu?
         if(!bmp.begin()){
@@ -58,6 +60,12 @@ void BMPMonitor::execute(){
     float temp_K_float = temp_float + C_to_K;
     float exponent = g_0 * big_M / (R_star * L_b);
     float altitude_float = (temp_K_float / L_b) * (pow((pressure_float / P_b), -1.0f/exponent) - 1.0f) + h_b;
+
+    velocity_bmp_d.set(1.0*(altitude_float-altitude_f.get())/(PAN::control_cycle_time_ms/1000.0));
+   
     altitude_f.set(altitude_float);
+
+
+
 
 }
