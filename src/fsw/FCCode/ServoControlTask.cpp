@@ -2,7 +2,7 @@
 
 ServoControlTask::ServoControlTask(StateFieldRegistry &registry, 
     unsigned int offset)
-    : TimedControlTask<void>(registry, "downlink_control_task", offset)
+    : TimedControlTask<void>(registry, "servo_control_task", offset)
     {
         flap_commands_fp = find_internal_field<lin::Vector4f>("gnc.flap_cmds", __FILE__, __LINE__);
         servo_on_fp = find_internal_field<bool>("ls.servo_on", __FILE__, __LINE__);

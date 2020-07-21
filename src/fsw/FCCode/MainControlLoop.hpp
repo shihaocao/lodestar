@@ -19,6 +19,7 @@
 #include "GNC_a.hpp"
 #include "ServoControlTask.hpp"
 #include "MotorControlTask.hpp"
+#include "SDCardControlTask.hpp"
 
 class MainControlLoop : public ControlTask<void> {
    protected:
@@ -43,6 +44,7 @@ class MainControlLoop : public ControlTask<void> {
     ServoControlTask servo_controller;
     MotorControlTask motor_controller;
     DownlinkControlTask downlink_control_task;
+    SDCardControlTask sd_card_control_task;
     LEDControlTask led_control_task;
 
     // Control cycle time offsets, in microseconds
@@ -89,6 +91,7 @@ class MainControlLoop : public ControlTask<void> {
         static constexpr unsigned int servo_ct_offset            =   7;
         static constexpr unsigned int motor_ct_offset            =   8;
         static constexpr unsigned int downlink_ct_offset         =   9;
+        static constexpr unsigned int sd_card_control_task_offset=   10;
         static constexpr unsigned int led_control_task_offset    =   11;
 
         

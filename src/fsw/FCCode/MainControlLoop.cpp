@@ -18,6 +18,7 @@ MainControlLoop::MainControlLoop(StateFieldRegistry& registry)
       servo_controller(registry, servo_ct_offset),
       motor_controller(registry,motor_ct_offset),
       downlink_control_task(registry, downlink_ct_offset),
+      sd_card_control_task(registry, sd_card_control_task_offset),
       led_control_task(registry, led_control_task_offset)
 
  // This item is initialized last so it has access to all state fields
@@ -45,6 +46,7 @@ void MainControlLoop::execute() {
     #ifndef DL_OFF
     downlink_control_task.execute_on_time();
     #endif
+    sd_card_control_task.execute_on_time();
     led_control_task.execute_on_time();
     
 }
