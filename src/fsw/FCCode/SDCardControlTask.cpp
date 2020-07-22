@@ -11,12 +11,19 @@ SDCardControlTask::SDCardControlTask(StateFieldRegistry &registry,
 
         SD.begin(chipSelect);
         myFile = SD.open("data.txt", FILE_WRITE);
+        
     }
 
 void SDCardControlTask::execute(){
     if(myFile){
-        myFile.printf("%u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
+        myFile.printf("CCNO BLAH BLAH BLAH: %u\n", control_cycle_count);
     }
+    myFile.flush();
 }
 
 void SDCardControlTask::actuate(){
