@@ -1,9 +1,12 @@
 #ifndef SD_CARD_CONTROL_TASK_HPP_
 #define SD_CARD_CONTROL_TASK_HPP_
 #pragma once
-#include <Servo.h>
 
 #include "TimedControlTask.hpp"
+
+#include <SD.h>
+#include <SPI.h>
+
 
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
@@ -25,6 +28,9 @@ public:
     * fields listed below.
     */
     void execute() override;
+
+    const int chipSelect = BUILTIN_SDCARD;
+    File myFile;
 
 protected:
     /**

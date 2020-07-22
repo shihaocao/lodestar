@@ -9,10 +9,14 @@ SDCardControlTask::SDCardControlTask(StateFieldRegistry &registry,
 
         fin_commands_fp = find_internal_field<lin::Vector4f>("gnc_a.fin_cmds", __FILE__, __LINE__);
 
+        SD.begin(chipSelect);
+        myFile = SD.open("data.txt", FILE_WRITE);
     }
 
 void SDCardControlTask::execute(){
-
+    if(myFile){
+        myFile.printf("%u\n", control_cycle_count);
+    }
 }
 
 void SDCardControlTask::actuate(){
