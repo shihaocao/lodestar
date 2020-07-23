@@ -7,6 +7,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
     fin_commands_f("gnc_a.fin_cmds"),
     glob_acc_vec_f("imu.glob_acc_vec"),
     thrust_commands_f("gnc_a.thrust_cmds"),
+    euler_deg("gnc_a.euler_deg"),
     setpoint_d("gnc_a.setpoint"),
     velocity_d("gnc_a.velocity"),
     position_d("gnc_a.position"),
@@ -18,7 +19,6 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
     pitch_integral_d("gnc_a.pitch_integral"),
     yaw_integral_d("gnc_a.yaw_integral"),
     x_integral_d("gnc_a.x_integral"),
-    euler_d("gnc_a.euler"),
     a_com_d("gnc_a.a_com"),
     P_x("gnc_a.x_cov"),
     P_y("gnc_a.y_cov"),
@@ -32,6 +32,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         add_internal_field(fin_commands_f);
         add_internal_field(glob_acc_vec_f);
         add_internal_field(thrust_commands_f);
+        add_internal_field(euler_deg);
         add_internal_field(setpoint_d);
         add_internal_field(velocity_d);
         add_internal_field(position_d);
@@ -42,7 +43,6 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         add_internal_field(pitch_integral_d);
         add_internal_field(yaw_integral_d);
         add_internal_field(x_integral_d);
-        add_internal_field(euler_d);
         add_internal_field(a_com_d);
         add_internal_field(P_x);
         add_internal_field(P_y);
@@ -66,6 +66,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         fix_qual_fp = find_internal_field<unsigned char>("gps.fix_qual", __FILE__, __LINE__);
         init_global_roll_dp = find_internal_field<double>("ls.glob_roll", __FILE__, __LINE__);
         velocity_bmp_dp = find_internal_field<double>("bmp.velocity", __FILE__, __LINE__);
+        mission_mode_fp= find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
 
         // default all fins to no actuation
         fin_commands_f.set({
@@ -80,9 +81,13 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
             0.0,
             0.0,
         });
-    
-        
 
+        euler_deg.set({
+            69.0,
+            69.0,
+            69.0,
+        });
+    
     }
 
 
@@ -144,6 +149,21 @@ void quat2euler(lin::Vector4d const &q, lin::Vector3d &res){
     res(2)=atan2( 2* ( q(0) * q(3) + q(1) * q(2) ), 1-2*( pow(q(2),2) + pow(q(3),2) ));
 
 }
+
+void quat2eulerInt(lin::Vector4d const &q, lin::Vector3d &res){
+    double intermediate = 2*(q(1)*q(3)+q(2)*q(0));
+    if (intermediate>1)
+        intermediate=1;
+    if (intermediate<-1)
+        intermediate=-1;
+
+    res(0)=atan2( -2* ( q(2) * q(3) + q(1) * q(0) ), pow(q(0),2) - pow(q(1),2) - pow(q(2),2)+pow(q(3),2));
+    res(1)=asin(intermediate);
+    res(2)=atan2( -2* ( q(1) * q(2) - q(3) * q(0) ), pow(q(0),2) + pow(q(1),2) - pow(q(2),2)-pow(q(3),2));
+
+}
+
+
 
 void distance(lin::Vector2d const &coord1, lin::Vector2d const &coord2, double &res){
     double R = 6371e3;
@@ -271,7 +291,7 @@ void GNC_a::tvc(){
 
     //Creates quaternion to rotate about to go from equilibrium global frame to body frame
     quat_conj(net_quat,net_quat_conj);
-    quat2euler(net_quat,euler);
+    quat2eulerInt(net_quat,euler);
 
     //Saves net_quat to statefield
     net_quat_d.set({
@@ -282,8 +302,6 @@ void GNC_a::tvc(){
     });
 
     //-----------------------------Calculating and Saving States-------------------------------
-
-
     //Calculates Position via GPS
 
     //Converts current GPS position into double (higher precision during calcuation)
@@ -416,7 +434,7 @@ void GNC_a::tvc(){
     double delta_t = (PAN::control_cycle_time_ms/1000.0);
 
     //Stores Euler Angles to Statefield. These angles describe the orientation wrt equilibrium (vertical)
-    euler_d.set({
+    euler_deg.set({
         roll,
         pitch,
         yaw,
@@ -534,10 +552,12 @@ void GNC_a::tvc(){
     T=T+fabs(norm_alph_pitch+norm_alph_yaw)*CONTROLS::weight;
 
     //Prevent servo saturation
-    if (max(tvc_angles(0),tvc_angles(1))>CONTROLS::servo_max){
-        double max_ang = max(tvc_angles(0),tvc_angles(1));
-        tvc_angles(0)=(tvc_angles(0)/max_ang)*CONTROLS::servo_max;
-        tvc_angles(1)=(tvc_angles(1)/max_ang)*CONTROLS::servo_max;
+    if (max(abs(tvc_angles(0)),abs(tvc_angles(1)))>CONTROLS::servo_max){
+        double max_ang = max(abs(tvc_angles(0)),abs(tvc_angles(1)));
+        double x = tvc_angles(0);
+        double y = tvc_angles(1);
+        tvc_angles(0)=(x/max_ang)*CONTROLS::servo_max;
+        tvc_angles(1)=(y/max_ang)*CONTROLS::servo_max;
     }
 
     lin::Vector2d dist;
@@ -586,29 +606,30 @@ void GNC_a::tvc(){
     fin_commands_f.set(fin_commands);
     thrust_commands = thrust(100*T,roll_differential);
     thrust_commands_f.set(thrust_commands);
-
-
     
-    Serial.print("Euler: ");
-    Serial.print("(");
-    Serial.print(roll);
-    Serial.print(",");
-    Serial.print(pitch);
-    Serial.print(",");
-    Serial.print(yaw);
-    Serial.print(")     ");
+    
+    DebugSERIAL.print("Euler: ");
+    DebugSERIAL.print("(");
+    DebugSERIAL.print(roll);
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(pitch);
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(yaw);
+    DebugSERIAL.print(")     ");
+    
 
-    Serial.print("Altitude: ");
-    Serial.print(altitude);
+    DebugSERIAL.print("Altitude: ");
+    DebugSERIAL.print(altitude);
 
-    Serial.print("  a_com: ");
-    Serial.print("(");
-    Serial.print(a_com_d.get()(0));
-    Serial.print(",");
-    Serial.print(a_com_d.get()(1));
-    Serial.print(",");
-    Serial.print(a_com_d.get()(2));
-    Serial.print(")     ");
+    DebugSERIAL.print("  a_com: ");
+    DebugSERIAL.print("(");
+    DebugSERIAL.print(a_com_d.get()(0));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(a_com_d.get()(1));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(a_com_d.get()(2));
+    DebugSERIAL.print(")     ");
+    
     
 
 

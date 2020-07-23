@@ -38,8 +38,8 @@ void execute()
 
     /*
     //Throttle up in increments of 10 staying on each step for 3 seconds
-    for (pos = 0; pos <= 130; pos += 10) { 
-        //m1.write(pos);              
+    for (pos = 0; pos <= 100; pos += 10) { 
+        m1.write(pos);              
         m2.write(pos);
         delay(200);
     }
@@ -69,12 +69,12 @@ void execute()
 
     
     //Throttle down
-    for (pos = 130; pos >=0; pos -= 20) { 
-        //m1.write(pos);              
+    for (pos = 100; pos >=0; pos -= 20) { 
+        m1.write(pos);              
         m2.write(pos);
         delay(150);                       
     }
-    */
+    */    
     
     
     

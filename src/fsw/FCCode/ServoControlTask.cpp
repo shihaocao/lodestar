@@ -68,17 +68,18 @@ void ServoControlTask::actuate(){
     fin3.write(fin_commands(2)+90);
     fin4.write(fin_commands(3)+80);
 
-    
-    Serial.print("Servo: ");
-    Serial.print("(");
-    Serial.print(fin_commands(0));
-    Serial.print(",");
-    Serial.print(fin_commands(1));
-    Serial.print(",");
-    Serial.print(fin_commands(2));
-    Serial.print(",");
-    Serial.print(fin_commands(3));
-    Serial.print(")     ");
+    /*
+    DebugSERIAL.print("Servo: ");
+    DebugSERIAL.print("(");
+    DebugSERIAL.print(fin_commands(0));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(fin_commands(1));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(fin_commands(2));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(fin_commands(3));
+    DebugSERIAL.print(")     ");
+    */
     
 
 

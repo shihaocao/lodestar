@@ -6,6 +6,8 @@
 #include "TimedControlTask.hpp"
 #include "mission_mode_t.enum"
 #include "GPSMonitor.hpp"
+#include "adcs_mode_t.enum"
+
 
 /**
 * @brief Gets inputs from the ADCS box and dumps them into the state
@@ -50,12 +52,14 @@ protected:
 
 
 
+
     /**
     * @brief Outputs of GNC_a
     */
     InternalStateField<lin::Vector4f> fin_commands_f;
     InternalStateField<lin::Vector3f> glob_acc_vec_f;
     InternalStateField<lin::Vector2f> thrust_commands_f;
+    InternalStateField<lin::Vector3d> euler_deg;
     InternalStateField<lin::Vector3d> setpoint_d;
     InternalStateField<lin::Vector3d> velocity_d;
     InternalStateField<lin::Vector3d> position_d;
@@ -67,7 +71,6 @@ protected:
     InternalStateField<double> pitch_integral_d;
     InternalStateField<double> yaw_integral_d;
     InternalStateField<double> x_integral_d;
-    InternalStateField<lin::Vector3d> euler_d;
     InternalStateField<lin::Vector3d> a_com_d;
     InternalStateField<lin::Matrix2x2d> P_x;
     InternalStateField<lin::Matrix2x2d> P_y;

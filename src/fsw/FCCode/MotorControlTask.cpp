@@ -27,14 +27,16 @@ void MotorControlTask::execute(){
 void MotorControlTask::actuate(){
     lin::Vector2f thrust_commands = thrust_commands_fp->get();
     
-    Serial.print("Motor Output");
-    Serial.print("(");
-    Serial.print(thrust_commands(0));
-    Serial.print(",");
-    Serial.print(thrust_commands(1));
-    Serial.println(")");
+    
+    DebugSERIAL.print("Motor Output");
+    DebugSERIAL.print("(");
+    DebugSERIAL.print(thrust_commands(0));
+    DebugSERIAL.print(",");
+    DebugSERIAL.print(thrust_commands(1));
+    DebugSERIAL.println(")");
+    
     
 
     motor1.write(thrust_commands(0));
-    motor2.write(thrust_commands(1)+5);
+    motor2.write(thrust_commands(1)+10);
 }

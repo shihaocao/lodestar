@@ -28,10 +28,10 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
     acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
     lat_long_fp = find_internal_field<lin::Vector2f>("gps.lat_long", __FILE__, __LINE__);
     quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
+    euler_deg_p=find_internal_field<lin::Vector3d>("gnc_a.euler_deg", __FILE__, __LINE__);
     lin_acc_vec_fp = find_internal_field<lin::Vector3f>("imu.linear_acc_vec", __FILE__, __LINE__);
     omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
     mag_vec_fp = find_internal_field<lin::Vector3f>("imu.mag_vec", __FILE__, __LINE__);
-
     sys_cal = find_internal_field<unsigned char>("imu.sys_cal", __FILE__, __LINE__);
     gyro_cal = find_internal_field<unsigned char>("imu.gyro_cal", __FILE__, __LINE__);
     accel_cal = find_internal_field<unsigned char>("imu.accel_cal", __FILE__, __LINE__);
@@ -59,7 +59,6 @@ void MissionManager_a::execute() {
     calibrate_data();
 
     if(millis() > MM::FTS_millis){
-        Serial.print("Terminated"); ///////////////////////////////////
         set_mission_mode(mission_mode_t::landed);
     }
     switch(mode) {
@@ -109,7 +108,13 @@ void MissionManager_a::calibrate_data(){
 void MissionManager_a::dispatch_warmup() {
 
     unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
-    Serial.print(accel_cal->get());
+
+    DebugSERIAL.print("Accelerometer: ");
+    DebugSERIAL.print(accel_cal->get());
+    DebugSERIAL.print("     Magnometer: ");
+    DebugSERIAL.print(mag_cal->get());
+    DebugSERIAL.print("     Gyroscope: ");
+    DebugSERIAL.print(gyro_cal->get());
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
@@ -118,7 +123,7 @@ void MissionManager_a::dispatch_warmup() {
     #else
     
 
-    if(1==1){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
+    if(calibration_sum==12){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
     #endif
         pause_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::pause);
@@ -209,8 +214,10 @@ void MissionManager_a::dispatch_initialization() {
 
 void MissionManager_a::tvc() {
 
-    //Exit condition for starhopper is if the FTS time is exceeded
-    if(millis() > MM::FTS_millis){ // || alt_fp->get()<=ground_level_f.get()){
+    //Time and orientation based flight termination
+    Serial.print(euler_deg_p->get()(2));
+
+    if(millis() > MM::FTS_millis){
         set_mission_mode(mission_mode_t::landed);
     }
 }

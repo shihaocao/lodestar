@@ -62,7 +62,6 @@ void BMPMonitor::execute(){
     float altitude_float = (temp_K_float / L_b) * (pow((pressure_float / P_b), -1.0f/exponent) - 1.0f) + h_b;
 
     velocity_bmp_d.set(1.0*(altitude_float-altitude_f.get())/(PAN::control_cycle_time_ms/1000.0));
-   
     altitude_f.set(altitude_float);
 
 

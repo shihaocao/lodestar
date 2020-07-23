@@ -43,6 +43,7 @@ class MissionManager_a : public TimedControlTask<void> {
         InternalStateField<float>* alt_fp;
         InternalStateField<lin::Vector3f>* acc_vec_fp;
         InternalStateField<lin::Vector4d>* quat_fp;
+        InternalStateField<lin::Vector3d>* euler_deg_p;
         InternalStateField<lin::Vector2f>* lat_long_fp;
         InternalStateField<lin::Vector3f>* lin_acc_vec_fp;
         InternalStateField<lin::Vector3f>* omega_vec_fp;

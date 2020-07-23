@@ -43,7 +43,7 @@ namespace MM {
      * @brief Terminate flight after N minutes. Automatically transition to landing.
      * 
      */
-    constexpr unsigned int FTS_millis = 1 * 30 * 1000;
+    constexpr unsigned int FTS_millis = 4 * 60 * 1000;
 
     /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
@@ -93,7 +93,7 @@ namespace SERVO {
 }
 
 namespace CONTROLS{
-    constexpr lin::Vector3d setpoint_1 {0.5,0.0,0.0}; //Setpoints in the hop
+    constexpr lin::Vector3d setpoint_1 {1.0,0.0,0.0}; //Setpoints in the hop
     constexpr lin::Vector3d setpoint_2 {0.0,0.0,0.0}; 
     constexpr lin::Vector3d setpoint_3 {0.0,3.0,3.0}; 
 
@@ -112,24 +112,24 @@ namespace CONTROLS{
     constexpr double Kd_y_tilt = 1.5;
 
     //Pitch Gains
-    constexpr double Kp_pitch = 1.1;
+    constexpr double Kp_pitch = 2;
     constexpr double Ki_pitch = 0;
     constexpr double Kd_pitch = 0;
 
     //Yaw Gains
-    constexpr double Kp_yaw = 1.1;
+    constexpr double Kp_yaw = 2;
     constexpr double Ki_yaw = 0;
     constexpr double Kd_yaw = 0;
 
     //Roll Gains
-    constexpr double Kp_roll = 0.15;
+    constexpr double Kp_roll = 0.5;
     constexpr double Ki_roll = 0.001;
     constexpr double Kd_roll = 0.1;
 
     //Ascent Gains
     constexpr double Kp_xa = 2;
     constexpr double Ki_xa = 0.5;
-    constexpr double Kd_xa = 0.6;
+    constexpr double Kd_xa = 0.8;
 
     //Landing Gains
     constexpr double Kp_xd = 0.4;
