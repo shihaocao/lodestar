@@ -11,15 +11,15 @@ ServoControlTask::ServoControlTask(StateFieldRegistry &registry,
 
 
         #ifndef STATIC
-        flap1.attach(SERVO::flap1_pin);
-        flap2.attach(SERVO::flap2_pin);
-        flap3.attach(SERVO::flap3_pin);
-        flap4.attach(SERVO::flap4_pin);
+        //flap1.attach(SERVO::flap1_pin);
+        //flap2.attach(SERVO::flap2_pin);
+        //flap3.attach(SERVO::flap3_pin);
+        //flap4.attach(SERVO::flap4_pin);
 
-        fin1.attach(3);
-        fin2.attach(22);
-        fin3.attach(2);
-        fin4.attach(23);
+        fin1.attach(5);
+        fin2.attach(20);
+        fin3.attach(4);
+        fin4.attach(21);
         #endif
     }
 
@@ -57,10 +57,10 @@ void ServoControlTask::actuate(){
     //     flap_servo_writes(i) = 45;
     // }
 
-    flap1.write(flap_servo_writes(0));
-    flap2.write(flap_servo_writes(1));
-    flap3.write(flap_servo_writes(2));
-    flap4.write(flap_servo_writes(3));
+    //flap1.write(flap_servo_writes(0));
+    //flap2.write(flap_servo_writes(1));
+    //flap3.write(flap_servo_writes(2));
+    //flap4.write(flap_servo_writes(3));
 
     //Add 90 degrees, since fin_commands are given with respect to equilibrium. The equilibrium fin position is 90 degrees
     fin1.write(fin_commands(0)+100);
@@ -68,7 +68,7 @@ void ServoControlTask::actuate(){
     fin3.write(fin_commands(2)+90);
     fin4.write(fin_commands(3)+80);
 
-    /*
+    
     DebugSERIAL.print("Servo: ");
     DebugSERIAL.print("(");
     DebugSERIAL.print(fin_commands(0));
@@ -79,7 +79,8 @@ void ServoControlTask::actuate(){
     DebugSERIAL.print(",");
     DebugSERIAL.print(fin_commands(3));
     DebugSERIAL.print(")     ");
-    */
+    
+    
     
 
 

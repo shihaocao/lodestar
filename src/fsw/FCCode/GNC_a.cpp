@@ -7,7 +7,6 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
     fin_commands_f("gnc_a.fin_cmds"),
     glob_acc_vec_f("imu.glob_acc_vec"),
     thrust_commands_f("gnc_a.thrust_cmds"),
-    euler_deg("gnc_a.euler_deg"),
     setpoint_d("gnc_a.setpoint"),
     velocity_d("gnc_a.velocity"),
     position_d("gnc_a.position"),
@@ -32,7 +31,6 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         add_internal_field(fin_commands_f);
         add_internal_field(glob_acc_vec_f);
         add_internal_field(thrust_commands_f);
-        add_internal_field(euler_deg);
         add_internal_field(setpoint_d);
         add_internal_field(velocity_d);
         add_internal_field(position_d);
@@ -67,6 +65,7 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         init_global_roll_dp = find_internal_field<double>("ls.glob_roll", __FILE__, __LINE__);
         velocity_bmp_dp = find_internal_field<double>("bmp.velocity", __FILE__, __LINE__);
         mission_mode_fp= find_internal_field<unsigned char>("ls.mode", __FILE__, __LINE__);
+        euler_deg_p = find_internal_field<lin::Vector3d>("ls.euler_deg", __FILE__, __LINE__);
 
         // default all fins to no actuation
         fin_commands_f.set({
@@ -80,12 +79,6 @@ GNC_a::GNC_a(StateFieldRegistry &registry,
         thrust_commands_f.set({
             0.0,
             0.0,
-        });
-
-        euler_deg.set({
-            69.0,
-            69.0,
-            69.0,
         });
     
     }
@@ -142,25 +135,17 @@ void rotate_frame(lin::Vector4d const &q, lin::Vector3d const &v, lin::Vector3d 
    res(2)=q_res(3);
 }
 
-//Outputs Euler angles with the convention ZYX (Roll is outermost gimbal). Output is in radians
+//Outputs Euler angles with the Intrensic convention ZYX (Roll is outermost gimbal). Output is in radians.
 void quat2euler(lin::Vector4d const &q, lin::Vector3d &res){
-    res(0)=atan2( 2* ( q(0) * q(1) + q(2) * q(3) ), 1-2*( pow(q(1),2) + pow(q(2),2) ));
-    res(1)=asin(2* ( q(0) * q(2) - q(3) * q(1) ));
-    res(2)=atan2( 2* ( q(0) * q(3) + q(1) * q(2) ), 1-2*( pow(q(2),2) + pow(q(3),2) ));
-
-}
-
-void quat2eulerInt(lin::Vector4d const &q, lin::Vector3d &res){
     double intermediate = 2*(q(1)*q(3)+q(2)*q(0));
     if (intermediate>1)
         intermediate=1;
     if (intermediate<-1)
         intermediate=-1;
 
-    res(0)=atan2( -2* ( q(2) * q(3) + q(1) * q(0) ), pow(q(0),2) - pow(q(1),2) - pow(q(2),2)+pow(q(3),2));
+    res(0)=atan2( 2* ( q(2) * q(3) + q(1) * q(0) ), pow(q(0),2) - pow(q(1),2) - pow(q(2),2)+pow(q(3),2));
     res(1)=asin(intermediate);
     res(2)=atan2( -2* ( q(1) * q(2) - q(3) * q(0) ), pow(q(0),2) + pow(q(1),2) - pow(q(2),2)-pow(q(3),2));
-
 }
 
 
@@ -210,7 +195,7 @@ void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d &P_kmo, double const &a,
     lin::Vector2d B = {0.5*dt*dt, dt};      //Generates Control Matrix
 
     lin::Matrix2x2d Q = {0.001,0.1,0.1,0.001};  //Initializes IMU noise
-    lin::Matrix2x2d R = {0.04,0.2,0.2,0.08};  //Initializes GPS noise
+    lin::Matrix2x2d R = {0.01,0.02,0.02,0.01};  //Initializes GPS noise
 
     //Prediction Step
     lin::Vector2d x_k = F*x_kmo+B*a;
@@ -291,7 +276,7 @@ void GNC_a::tvc(){
 
     //Creates quaternion to rotate about to go from equilibrium global frame to body frame
     quat_conj(net_quat,net_quat_conj);
-    quat2eulerInt(net_quat,euler);
+    quat2euler(net_quat,euler);
 
     //Saves net_quat to statefield
     net_quat_d.set({
@@ -434,11 +419,10 @@ void GNC_a::tvc(){
     double delta_t = (PAN::control_cycle_time_ms/1000.0);
 
     //Stores Euler Angles to Statefield. These angles describe the orientation wrt equilibrium (vertical)
-    euler_deg.set({
-        roll,
-        pitch,
-        yaw,
-    });
+    lin::Vector3d euler_deg = {roll, pitch, yaw};
+    euler_deg_p->set(euler_deg);
+
+    
 
     //Pitch and Z control
 
@@ -563,48 +547,9 @@ void GNC_a::tvc(){
     lin::Vector2d dist;
     distance1(init_lat_long, lat_long, dist);
 
-    /*
-    Serial.print("(");
-    Serial.print(glob_acc_vec_f.get()(0));
-    Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(1));
-    Serial.print(",");
-    Serial.print(glob_acc_vec_f.get()(2));
-    Serial.print(")     ");
-
-    Serial.print("(");
-    Serial.print(velocity_d.get()(0));
-    Serial.print(",");
-    Serial.print(velocity_d.get()(1));
-    Serial.print(",");
-    Serial.print(velocity_d.get()(2));
-    Serial.println(")     ");
-    */
-
-    //Prints Distance from reference point
-    /*
-    Serial.print("(");
-    Serial.print(init_lat,8);
-    Serial.print(",");
-    Serial.print(init_lon,8);
-    Serial.print(")    ");
-
-    Serial.print("(");
-    Serial.print(lat,8);
-    Serial.print(",");
-    Serial.print(lon,8);
-    Serial.print(")   ");
-
-    Serial.print("(");
-    Serial.print(dist(0),8);
-    Serial.print(",");
-    Serial.print(dist(1),8);
-    Serial.println(")   ");
-    */
-
     fin_commands={-tvc_angles(0),tvc_angles(0),-tvc_angles(1),tvc_angles(1)};
     fin_commands_f.set(fin_commands);
-    thrust_commands = thrust(100*T,roll_differential);
+    thrust_commands = thrust(400,roll_differential);
     thrust_commands_f.set(thrust_commands);
     
     
@@ -631,8 +576,7 @@ void GNC_a::tvc(){
     DebugSERIAL.print(")     ");
     
     
-
-
+    
 
     //DebugSERIAL.print("Fix Qual: ");
     //DebugSERIAL.print(fix_qual_fp->get());

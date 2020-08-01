@@ -49,6 +49,8 @@ protected:
     InternalStateField<unsigned char>* fix_qual_fp;
     InternalStateField<double>* init_global_roll_dp;
     InternalStateField<double>* velocity_bmp_dp;
+    InternalStateField<lin::Vector3d>* euler_deg_p;
+
 
 
 
@@ -59,7 +61,6 @@ protected:
     InternalStateField<lin::Vector4f> fin_commands_f;
     InternalStateField<lin::Vector3f> glob_acc_vec_f;
     InternalStateField<lin::Vector2f> thrust_commands_f;
-    InternalStateField<lin::Vector3d> euler_deg;
     InternalStateField<lin::Vector3d> setpoint_d;
     InternalStateField<lin::Vector3d> velocity_d;
     InternalStateField<lin::Vector3d> position_d;

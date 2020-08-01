@@ -36,6 +36,7 @@ void MotorControlTask::actuate(){
     DebugSERIAL.println(")");
     
     
+    
 
     motor1.write(thrust_commands(0));
     motor2.write(thrust_commands(1)+10);

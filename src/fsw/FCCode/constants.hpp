@@ -43,7 +43,7 @@ namespace MM {
      * @brief Terminate flight after N minutes. Automatically transition to landing.
      * 
      */
-    constexpr unsigned int FTS_millis = 4 * 60 * 1000;
+    constexpr unsigned int FTS_millis = 6 * 60 * 1000;
 
     /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
@@ -114,12 +114,12 @@ namespace CONTROLS{
     //Pitch Gains
     constexpr double Kp_pitch = 2;
     constexpr double Ki_pitch = 0;
-    constexpr double Kd_pitch = 0;
+    constexpr double Kd_pitch = 0.5;
 
     //Yaw Gains
     constexpr double Kp_yaw = 2;
     constexpr double Ki_yaw = 0;
-    constexpr double Kd_yaw = 0;
+    constexpr double Kd_yaw = 0.5;
 
     //Roll Gains
     constexpr double Kp_roll = 0.5;

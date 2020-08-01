@@ -89,10 +89,10 @@ void setup()
     Serial.begin(9600);
     m1.attach(29);
     m2.attach(30);
-    s1.attach(3);
-    s2.attach(22);
-    s3.attach(2);
-    s4.attach(23);
+    s1.attach(5);
+    s2.attach(20);
+    s3.attach(4);
+    s4.attach(21);
 }
 
 void loop()

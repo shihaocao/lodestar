@@ -34,8 +34,9 @@ class MissionManager : public TimedControlTask<void> {
         InternalStateField<float> ground_level_f;
         InternalStateField<bool> engine_on_f;
         InternalStateField<bool> servo_on_f;
+        InternalStateField<float> agl_alt_f;
 
-        InternalStateField<float> agl_alt_f;        
+
 
         InternalStateField<float>* alt_fp;
         InternalStateField<lin::Vector3f>* acc_vec_fp;

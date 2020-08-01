@@ -5,6 +5,7 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
     mission_mode_f("ls.mode"),
     acc_error_f("ls.acc_error"),
     init_quat_d("ls.init_quat"),
+    euler_deg("ls.euler_deg"),
     init_lat_long_f("ls.init_coord"),
     ground_level_f("ls.ground_level"),
     engine_on_f("ls.engine_on"),
@@ -16,6 +17,7 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
     add_internal_field(mission_mode_f);
     add_internal_field(acc_error_f);
     add_internal_field(init_quat_d);
+    add_internal_field(euler_deg);
     add_internal_field(init_lat_long_f);
     add_internal_field(ground_level_f);
     add_internal_field(engine_on_f);
@@ -28,7 +30,6 @@ MissionManager_a::MissionManager_a(StateFieldRegistry& registry, unsigned int of
     acc_vec_fp = find_internal_field<lin::Vector3f>("imu.acc_vec", __FILE__, __LINE__);
     lat_long_fp = find_internal_field<lin::Vector2f>("gps.lat_long", __FILE__, __LINE__);
     quat_fp = find_internal_field<lin::Vector4d>("imu.quat", __FILE__, __LINE__);
-    euler_deg_p=find_internal_field<lin::Vector3d>("gnc_a.euler_deg", __FILE__, __LINE__);
     lin_acc_vec_fp = find_internal_field<lin::Vector3f>("imu.linear_acc_vec", __FILE__, __LINE__);
     omega_vec_fp = find_internal_field<lin::Vector3f>("imu.gyr_vec", __FILE__, __LINE__);
     mag_vec_fp = find_internal_field<lin::Vector3f>("imu.mag_vec", __FILE__, __LINE__);
@@ -109,12 +110,14 @@ void MissionManager_a::dispatch_warmup() {
 
     unsigned char calibration_sum = sys_cal->get() + accel_cal->get() + gyro_cal->get() + mag_cal->get();
 
+    
     DebugSERIAL.print("Accelerometer: ");
     DebugSERIAL.print(accel_cal->get());
     DebugSERIAL.print("     Magnometer: ");
     DebugSERIAL.print(mag_cal->get());
     DebugSERIAL.print("     Gyroscope: ");
     DebugSERIAL.print(gyro_cal->get());
+    
 
     // if 5 sec elapse go to init
     // AND ALSO CHECK THAT ALL SENSORS HAVE HIT 3,3,3,3 calibration
@@ -122,8 +125,8 @@ void MissionManager_a::dispatch_warmup() {
     if(millis() > MM::warmup_millis && calibration_sum == 12){
     #else
     
-
-    if(calibration_sum==12){//accel_cal->get()==3){//mag_cal->get()==3){ //&&m millis() > MM::warmup_millis){
+    Serial.print(accel_cal->get());
+    if(1==1){//calibration_sum==12){
     #endif
         pause_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::pause);
@@ -147,6 +150,7 @@ void MissionManager_a::dispatch_initialization() {
     // Gets the offset in each axis for acceleration
     acc_error_f.set( acc_error_f.get() + lin_acc_vec_fp->get() / MM::init_cycles);
 
+    /*
     Serial.print("(");
     Serial.print(acc_error_f.get()(0));
     Serial.print(",");
@@ -154,6 +158,7 @@ void MissionManager_a::dispatch_initialization() {
     Serial.print(",");
     Serial.print(acc_error_f.get()(2));
     Serial.println(")");
+    */
 
 
    //Averages Orientations to get a value for the "equilibrium quaternion"
@@ -213,11 +218,8 @@ void MissionManager_a::dispatch_initialization() {
 
 
 void MissionManager_a::tvc() {
-
     //Time and orientation based flight termination
-    Serial.print(euler_deg_p->get()(2));
-
-    if(millis() > MM::FTS_millis){
+    if(millis() > MM::FTS_millis || euler_deg.get()(1)>60.0 || euler_deg.get()(2)>60.0){
         set_mission_mode(mission_mode_t::landed);
     }
 }

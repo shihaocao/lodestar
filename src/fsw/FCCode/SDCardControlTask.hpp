@@ -39,6 +39,12 @@ protected:
     InternalStateField<lin::Vector4f>* flap_commands_fp;
     InternalStateField<bool>* servo_on_fp;
     InternalStateField<lin::Vector4f>* fin_commands_fp;
+    InternalStateField<lin::Vector3d>* euler_deg_p;
+    InternalStateField<lin::Vector3d>* position_dp;
+    InternalStateField<lin::Vector3d>* a_com_p;
+    InternalStateField<lin::Vector2f>* thrust_commands_fp;
+
+
 
     void actuate();
 };
