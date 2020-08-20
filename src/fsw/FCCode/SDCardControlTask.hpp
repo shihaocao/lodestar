@@ -42,7 +42,11 @@ protected:
     InternalStateField<lin::Vector3d>* euler_deg_p;
     InternalStateField<lin::Vector3d>* position_dp;
     InternalStateField<lin::Vector3d>* a_com_p;
+    InternalStateField<lin::Vector3f>* acc_error_fp;
+    InternalStateField<lin::Vector3f>* lin_acc_vec_fp;
     InternalStateField<lin::Vector2f>* thrust_commands_fp;
+    InternalStateField<lin::Vector3d>* acc_p;
+
 
 
 

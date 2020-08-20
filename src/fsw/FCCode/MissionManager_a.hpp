@@ -56,6 +56,7 @@ class MissionManager_a : public TimedControlTask<void> {
 
         long enter_init_millis;
         int enter_init_ccno;
+        long enter_flight_millis;
         int enter_freefall_cnno;
         int pause_ccno;
         //long enter_bellyflop_millis;

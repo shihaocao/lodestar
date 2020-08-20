@@ -89,16 +89,13 @@ void GNC_a::execute(){
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_fp->get());
 
     switch(mode) {
-        case mission_mode_t::starhopper1:
+        case mission_mode_t::flight:
              setpoint_d.set(CONTROLS::setpoint_1);
              tvc();
             break;
-        case mission_mode_t::starhopper2:
+        case mission_mode_t::descent:
              setpoint_d.set(CONTROLS::setpoint_2);
-             tvc();
-            break;
-        case mission_mode_t::starhopper3:
-             setpoint_d.set(CONTROLS::setpoint_3);
+             Serial.print("Descent");
              tvc();
             break;
         default:
@@ -178,9 +175,9 @@ lin::Matrix2x2d inv(lin::Matrix2x2d &A) {
     return res;
 }
 
-//x_kmo is the previous state vector, P_kmo is the previous covariance matrix, a is the acceleration, z is the GPS state vector
+//x_kmo is the previous state vector, P_kmo is the previous covariance matrix, a is the acceleration, z is the barometer state vector
 void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d &P_kmo, double const &a, lin::Vector2d const &z, lin::Vector2d &x_kf, lin::Matrix2x2d &P_kf){
-    //F is state transition matrix, B is control matrix, Q is IMU noise, R is GPS noise
+    //F is state transition matrix, B is control matrix, Q is IMU noise, R is barometer noise
     //P_k is predicted covariance matrix, x_k is dead reckoned position, 
     //P_kf is returned covariance matrix, x_kf is final position, K is Kalman Gain
 
@@ -195,7 +192,7 @@ void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d &P_kmo, double const &a,
     lin::Vector2d B = {0.5*dt*dt, dt};      //Generates Control Matrix
 
     lin::Matrix2x2d Q = {0.001,0.1,0.1,0.001};  //Initializes IMU noise
-    lin::Matrix2x2d R = {0.01,0.02,0.02,0.01};  //Initializes GPS noise
+    lin::Matrix2x2d R = {0.01,0.02,0.02,0.01};  //Initializes barometer noise
 
     //Prediction Step
     lin::Vector2d x_k = F*x_kmo+B*a;
@@ -214,12 +211,12 @@ void kalman(lin::Vector2d const &x_kmo, lin::Matrix2x2d &P_kmo, double const &a,
 lin::Vector2f thrust(double const force, double const diff){
     lin::Vector2f out = {0.0,0.0};
 
-    //Converts the desired thrust into a total actuatior value
-    double a = (force+267.9944)/4.031;
+    //Converts the desired thrust into a total actuator value
+    double a = (force+317.9111)/4.06;
 
     //Distributes the Actuation value to each actuator depending on the differential
-    out(0)=(a+diff)/2.0;
-    out(1)=(a-diff)/2.0;
+    out(0)=(a-diff)/2.0;
+    out(1)=(a+diff)/2.0;
 
     //Limits actuator values from 0-180
     if (out(0)<0){
@@ -228,7 +225,9 @@ lin::Vector2f thrust(double const force, double const diff){
         out(1)=0;
     }if (out(0)>180){
         out(0)=180;
+        out(1)=180+diff;
     }if (out(1)>180){
+        out(0)=180-diff;
         out(1)=180;
     }
 
@@ -432,7 +431,7 @@ void GNC_a::tvc(){
     );
 
     double pitch_integral=pitch_integral_d.get();
-    double pitch_derivative = omega_vec_fp->get()(1);
+    double pitch_derivative = -omega_vec_fp->get()(1);
 
     //double pitch_error=-CONTROLS::max_tilt*body_pos_err_norm(1)+CONTROLS::Kd_p_tilt*body_velocity_d.get()(1)-pitch;
     double pitch_error=-pitch;
@@ -449,7 +448,7 @@ void GNC_a::tvc(){
     });
 
     double yaw_integral=yaw_integral_d.get();
-    double yaw_derivative = omega_vec_fp->get()(2);
+    double yaw_derivative = -omega_vec_fp->get()(2);
 
     //double yaw_error=-CONTROLS::max_tilt*body_pos_err_norm(0)+CONTROLS::Kd_y_tilt*body_velocity_d.get()(0)-yaw;
     double yaw_error=-yaw;
@@ -490,7 +489,9 @@ void GNC_a::tvc(){
     double x_derivative = velocity_d.get()(0);
 
     //Sets appropriate PID gains depending on whether Lodestar is ascending or decending
-    if (position_d.get()(0)<setpoint(0)){
+    mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_fp->get());
+
+    if (mode==mission_mode_t::flight){
         Kp_x=CONTROLS::Kp_xa;
         Ki_x=CONTROLS::Ki_xa;
         Kd_x=CONTROLS::Kd_xa;
@@ -524,6 +525,12 @@ void GNC_a::tvc(){
     double norm_alph_yaw = yaw_alph_com/CONTROLS::alph_yaw_max;
     double norm_a_x = x_a_com/CONTROLS::a_x_max;
 
+    //Caps the normalized angular accelerations
+    if (norm_alph_pitch>1)
+        norm_alph_pitch=1;
+    if (norm_alph_yaw>1)
+        norm_alph_yaw=1;
+
     //Calculates desired thrust force to get desired commanded vertical acceleration
     if (norm_a_x>0){
         T=norm_a_x*CONTROLS::T_max;
@@ -547,9 +554,13 @@ void GNC_a::tvc(){
     lin::Vector2d dist;
     distance1(init_lat_long, lat_long, dist);
 
-    fin_commands={-tvc_angles(0),tvc_angles(0),-tvc_angles(1),tvc_angles(1)};
+    fin_commands={-tvc_angles(0),tvc_angles(0),tvc_angles(1),-tvc_angles(1)};
     fin_commands_f.set(fin_commands);
-    thrust_commands = thrust(400,roll_differential);
+    
+    //Offset of 500 caused loss of vehicle
+    //Actual thrust will be 100g greater than commanded due to offset of 25 on bottomn motor
+    thrust_commands = thrust(100*T+CONTROLS::thrust_offset-100,roll_differential);
+    //thrust_commands = thrust(430,roll_differential);
     thrust_commands_f.set(thrust_commands);
     
     
@@ -564,7 +575,10 @@ void GNC_a::tvc(){
     
 
     DebugSERIAL.print("Altitude: ");
-    DebugSERIAL.print(altitude);
+    DebugSERIAL.print(position_d.get()(0));
+
+    DebugSERIAL.print("  Thrust: ");
+    DebugSERIAL.print(100*T+CONTROLS::thrust_offset);
 
     DebugSERIAL.print("  a_com: ");
     DebugSERIAL.print("(");
@@ -575,14 +589,8 @@ void GNC_a::tvc(){
     DebugSERIAL.print(a_com_d.get()(2));
     DebugSERIAL.print(")     ");
     
-    
-    
-
     //DebugSERIAL.print("Fix Qual: ");
     //DebugSERIAL.print(fix_qual_fp->get());
-
-    
-
    
 }
 

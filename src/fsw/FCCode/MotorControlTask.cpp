@@ -32,12 +32,12 @@ void MotorControlTask::actuate(){
     DebugSERIAL.print("(");
     DebugSERIAL.print(thrust_commands(0));
     DebugSERIAL.print(",");
-    DebugSERIAL.print(thrust_commands(1));
+    DebugSERIAL.print(thrust_commands(1)+25);
     DebugSERIAL.println(")");
     
     
     
 
     motor1.write(thrust_commands(0));
-    motor2.write(thrust_commands(1)+10);
+    motor2.write(thrust_commands(1)+25);
 }

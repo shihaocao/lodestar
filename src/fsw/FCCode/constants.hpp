@@ -37,13 +37,18 @@ namespace MM {
     constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;
     constexpr unsigned int acc_millis = 5 * 1000;
+    constexpr unsigned int pause_cycles = 10;
     constexpr unsigned int init_cycles = 100;
 
-    /**
-     * @brief Terminate flight after N minutes. Automatically transition to landing.
-     * 
-     */
-    constexpr unsigned int FTS_millis = 6 * 60 * 1000;
+    //Flight Time Before Descent
+    constexpr unsigned int flight_millis = 5 * 1000;
+
+
+    //Flight Termination time, angle, and altitude
+    constexpr unsigned int FTS_millis = 1 * 15 * 1000;
+    constexpr float FTS_angle = 60.0;
+    constexpr float FTS_altitude = 5.0;
+    constexpr float FTS_acc = 3.0;
 
     /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
@@ -93,50 +98,51 @@ namespace SERVO {
 }
 
 namespace CONTROLS{
-    constexpr lin::Vector3d setpoint_1 {1.0,0.0,0.0}; //Setpoints in the hop
+    constexpr lin::Vector3d setpoint_1 {2.0,0.0,0.0}; //Setpoints in the hop
     constexpr lin::Vector3d setpoint_2 {0.0,0.0,0.0}; 
-    constexpr lin::Vector3d setpoint_3 {0.0,3.0,3.0}; 
+
 
 
     constexpr double max_position_error = 5.0;
     constexpr double max_tilt = 3.0;
     constexpr double alph_pitch_max=25;
     constexpr double alph_yaw_max=25;
-    constexpr double a_x_max=2;
-    constexpr double weight=2; //Factor by which attitude control commands thrust
+    constexpr double a_x_max=3;
+    constexpr double weight=1; //Factor by which attitude control commands thrust
     constexpr double T_max=8.5; //Maximum thrust in Newtons
-    constexpr double servo_max=30; //Measured from equilibrium
+    constexpr double servo_max=40; //Measured from equilibrium
 
     //Y and Z gains
-    constexpr double Kd_p_tilt = 1.5;
-    constexpr double Kd_y_tilt = 1.5;
+    constexpr double Kd_p_tilt = 1.25;
+    constexpr double Kd_y_tilt = 1.25;
 
     //Pitch Gains
-    constexpr double Kp_pitch = 2;
+    constexpr double Kp_pitch = 1.25;
     constexpr double Ki_pitch = 0;
-    constexpr double Kd_pitch = 0.5;
+    constexpr double Kd_pitch = 0.3;
 
     //Yaw Gains
-    constexpr double Kp_yaw = 2;
+    constexpr double Kp_yaw = 1.25;
     constexpr double Ki_yaw = 0;
-    constexpr double Kd_yaw = 0.5;
+    constexpr double Kd_yaw = 0.3;
 
     //Roll Gains
-    constexpr double Kp_roll = 0.5;
-    constexpr double Ki_roll = 0.001;
+    constexpr double Kp_roll = 0.7;
+    constexpr double Ki_roll = 0;
     constexpr double Kd_roll = 0.1;
 
     //Ascent Gains
-    constexpr double Kp_xa = 2;
-    constexpr double Ki_xa = 0.5;
-    constexpr double Kd_xa = 0.8;
+    constexpr double Kp_xa = 0.4;
+    constexpr double Ki_xa = 0;
+    constexpr double Kd_xa = 0.1;
 
     //Landing Gains
     constexpr double Kp_xd = 0.4;
     constexpr double Ki_xd = 0.0;
-    constexpr double Kd_xd = 4;
+    constexpr double Kd_xd = 0.1;
 
-
+    //Thrust Offset
+    constexpr int thrust_offset = 530;
 
 }
 

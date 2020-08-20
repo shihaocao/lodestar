@@ -58,10 +58,6 @@ void MissionManager_a::execute() {
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
 
     calibrate_data();
-
-    if(millis() > MM::FTS_millis){
-        set_mission_mode(mission_mode_t::landed);
-    }
     switch(mode) {
         case mission_mode_t::warmup:
             Serial.println("Warmup"); ///////////////////////////////////
@@ -75,15 +71,12 @@ void MissionManager_a::execute() {
             Serial.println("Initialization      "); ///////////////////////////////////
             dispatch_initialization();
             break;
-        case mission_mode_t::starhopper1:
+        case mission_mode_t::flight:
             //Serial.print("Starhopper1      ");
             tvc();
             break;
-        case mission_mode_t::starhopper2:
+        case mission_mode_t::descent:
             //Serial.print("Starhopper2      ");
-            tvc();
-            break;
-        case mission_mode_t::starhopper3:
             tvc();
             break;
         case mission_mode_t::landed:
@@ -125,7 +118,6 @@ void MissionManager_a::dispatch_warmup() {
     if(millis() > MM::warmup_millis && calibration_sum == 12){
     #else
     
-    Serial.print(accel_cal->get());
     if(1==1){//calibration_sum==12){
     #endif
         pause_ccno = control_cycle_count;
@@ -136,7 +128,7 @@ void MissionManager_a::dispatch_warmup() {
 
 
 void MissionManager_a::pause() {
-    if(control_cycle_count-pause_ccno>=50){
+    if(control_cycle_count-pause_ccno>=MM::pause_cycles){
         enter_init_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::initialization);
     }
@@ -210,7 +202,8 @@ void MissionManager_a::dispatch_initialization() {
         });
         */
 
-        set_mission_mode(mission_mode_t::starhopper1);
+        enter_flight_millis = millis();
+        set_mission_mode(mission_mode_t::flight);
         servo_on_f.set(true);
         engine_on_f.set(true);
     }
@@ -218,8 +211,19 @@ void MissionManager_a::dispatch_initialization() {
 
 
 void MissionManager_a::tvc() {
-    //Time and orientation based flight termination
-    if(millis() > MM::FTS_millis || euler_deg.get()(1)>60.0 || euler_deg.get()(2)>60.0){
+    float altitude = agl_alt_f.get();
+
+    //If time exceeds flight time, the mission mode is set to descent
+    if(millis()-enter_flight_millis> MM::flight_millis){
+        set_mission_mode(mission_mode_t::descent);
+    }
+
+    Serial.print(lin_acc_vec_fp->get()(0)-acc_error_f.get()(0));
+    //Time, attitude, and altitude based FTS. 
+    //If rocket is in descent and body vertical acceleration exceeds a limit (indicating ground contact), engines are cut
+    
+    mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
+    if(millis()-enter_flight_millis > MM::FTS_millis || euler_deg.get()(1)>MM::FTS_angle || euler_deg.get()(2)>MM::FTS_angle || altitude>MM::FTS_altitude || (mode==mission_mode_t::descent && abs(lin_acc_vec_fp->get()(0)-acc_error_f.get()(0))>MM::FTS_acc)){
         set_mission_mode(mission_mode_t::landed);
     }
 }
