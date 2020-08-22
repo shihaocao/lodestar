@@ -37,7 +37,7 @@ namespace MM {
     constexpr unsigned int warmup_millis = 10 * 1000;
     constexpr unsigned int init_millis = 10 * 1000;
     constexpr unsigned int acc_millis = 5 * 1000;
-    constexpr unsigned int pause_cycles = 10;
+    constexpr unsigned int pause_cycles = 170;
     constexpr unsigned int init_cycles = 100;
 
     //Flight Time Before Descent
@@ -45,10 +45,10 @@ namespace MM {
 
 
     //Flight Termination time, angle, and altitude
-    constexpr unsigned int FTS_millis = 1 * 15 * 1000;
+    constexpr unsigned int FTS_millis = 1 * 17 * 1000;
     constexpr float FTS_angle = 60.0;
-    constexpr float FTS_altitude = 5.0;
-    constexpr float FTS_acc = 3.0;
+    constexpr float FTS_altitude = 8.0;
+    constexpr float FTS_acc = 5.0;
 
     /**
      * @brief If measure acceleration is below this threshold, we're in free fall.
@@ -98,7 +98,7 @@ namespace SERVO {
 }
 
 namespace CONTROLS{
-    constexpr lin::Vector3d setpoint_1 {2.0,0.0,0.0}; //Setpoints in the hop
+    constexpr lin::Vector3d setpoint_1 {2.5,0.0,0.0}; //Setpoints in the hop
     constexpr lin::Vector3d setpoint_2 {0.0,0.0,0.0}; 
 
 
@@ -143,6 +143,7 @@ namespace CONTROLS{
 
     //Thrust Offset
     constexpr int thrust_offset = 530;
+    constexpr int landing_offset = 60;
 
 }
 

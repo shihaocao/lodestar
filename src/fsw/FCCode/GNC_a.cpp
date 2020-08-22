@@ -559,8 +559,19 @@ void GNC_a::tvc(){
     
     //Offset of 500 caused loss of vehicle
     //Actual thrust will be 100g greater than commanded due to offset of 25 on bottomn motor
-    thrust_commands = thrust(100*T+CONTROLS::thrust_offset-100,roll_differential);
-    //thrust_commands = thrust(430,roll_differential);
+
+    
+    if (mode==mission_mode_t::flight){
+        thrust_commands = thrust(100*T+CONTROLS::thrust_offset-100,roll_differential);
+    }else if (mode==mission_mode_t::descent){
+        thrust_commands = thrust(100*T+CONTROLS::thrust_offset-100+CONTROLS::landing_offset,roll_differential);
+    }
+    
+    
+    
+    
+
+    //thrust_commands = thrust(0,roll_differential);
     thrust_commands_f.set(thrust_commands);
     
     

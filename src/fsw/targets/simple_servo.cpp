@@ -31,22 +31,15 @@ void execute()
     Serial.write("LED cycle\n");
 
 
-    for (pos = 0; pos <= 130; pos += 10) { 
-        m1.write(pos);              
-        m2.write(pos);
-        delay(100);
-    }
-    
-    Serial.println("130");
-    delay(5000);
-    m1.write(140);
-    m2.write(140);
-    Serial.println("140");
-    delay(5000);
+    set(0,0,0,0);
+    /*
     m1.write(0);
-    m2.write(0);
-    delay(5000);
-
+    for (pos = 0; pos <= 100; pos += 10) { 
+        m1.write(pos);
+        m2.write(pos);
+        delay(200);
+    }
+    */
 
 
 

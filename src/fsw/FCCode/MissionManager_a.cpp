@@ -118,7 +118,7 @@ void MissionManager_a::dispatch_warmup() {
     if(millis() > MM::warmup_millis && calibration_sum == 12){
     #else
     
-    if(1==1){//calibration_sum==12){
+    if(calibration_sum==12){
     #endif
         pause_ccno = control_cycle_count;
         set_mission_mode(mission_mode_t::pause);
@@ -219,11 +219,14 @@ void MissionManager_a::tvc() {
     }
 
     Serial.print(lin_acc_vec_fp->get()(0)-acc_error_f.get()(0));
-    //Time, attitude, and altitude based FTS. 
+    //Time, attitude, acceleration, and altitude based FTS. 
     //If rocket is in descent and body vertical acceleration exceeds a limit (indicating ground contact), engines are cut
     
     mission_mode_t mode = static_cast<mission_mode_t>(mission_mode_f.get());
-    if(millis()-enter_flight_millis > MM::FTS_millis || euler_deg.get()(1)>MM::FTS_angle || euler_deg.get()(2)>MM::FTS_angle || altitude>MM::FTS_altitude || (mode==mission_mode_t::descent && abs(lin_acc_vec_fp->get()(0)-acc_error_f.get()(0))>MM::FTS_acc)){
+    double x_acc = lin_acc_vec_fp->get()(0)-acc_error_f.get()(0);
+
+
+    if(millis()-enter_flight_millis > MM::FTS_millis || euler_deg.get()(1)>MM::FTS_angle || euler_deg.get()(2)>MM::FTS_angle || altitude>MM::FTS_altitude || (mode==mission_mode_t::descent && abs(x_acc)>MM::FTS_acc)){
         set_mission_mode(mission_mode_t::landed);
     }
 }

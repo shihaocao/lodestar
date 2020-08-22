@@ -33,13 +33,17 @@ void SDCardControlTask::execute(){
         myFile.print(euler_deg_p->get()(2));
         myFile.print(")\n");
 
-        myFile.printf("Altitude:");
+        myFile.printf("Altitude: ");
         myFile.print(position_dp->get()(0));
         myFile.printf("\n");
 
-        myFile.printf("Body Vertical Acceleration:");
+        myFile.printf("Body Acceleration: (");
         myFile.print(lin_acc_vec_fp->get()(0)-acc_error_fp->get()(0));
-        myFile.printf("\n");
+        myFile.print(",");
+        myFile.print(lin_acc_vec_fp->get()(1)-acc_error_fp->get()(1));
+        myFile.print(",");
+        myFile.print(lin_acc_vec_fp->get()(2)-acc_error_fp->get()(2));
+        myFile.print(")\n");
 
         myFile.printf("Commanded Accelerations: (");
         myFile.print(a_com_p->get()(0));
@@ -48,6 +52,10 @@ void SDCardControlTask::execute(){
         myFile.print(",");
         myFile.print(a_com_p->get()(2));
         myFile.print(")\n");
+
+        myFile.printf("Thrust: ");
+        myFile.print(4.06*(thrust_commands_fp->get()(0)+thrust_commands_fp->get()(1))-317.9111);
+        myFile.printf("\n");
 
         myFile.printf("Fin Commands: (");
         myFile.print(fin_commands_fp->get()(0));
