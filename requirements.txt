@@ -35,7 +35,7 @@ numpy==1.17.2
 packaging==19.2
 platformio==5.0.4
 pluggy==0.13.0
-py==1.8.0
+py==1.10.0
 pycodestyle==2.5.0
 pyelftools==0.25
 pyflakes==2.1.1
