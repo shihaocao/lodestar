@@ -44,7 +44,7 @@ pyparsing==2.4.2
 pyserial==3.4
 pytest==5.2.0
 python-dateutil==2.8.0
-PyYAML==5.2
+PyYAML==5.4
 requests==2.22.0
 schema==0.7.1
 semantic-version==2.8.2
